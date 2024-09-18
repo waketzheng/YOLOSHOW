@@ -1,4 +1,4 @@
-if exists venv (
+if exist venv (
     echo venv exists, skip virtual environment initial.
 ) else (
     echo Create local virtual environment at: venv
