@@ -16,6 +16,7 @@ from yolocode.yolov8.data.augment import LetterBox, classify_transforms
 from yolocode.yolov8.data.utils import IMG_FORMATS, VID_FORMATS
 from yolocode.yolov8.engine.predictor import STREAM_WARNING
 from yolocode.yolov8.engine.results import Results
+from yolocode.yolov8.predictors import ColorPredictor
 from yolocode.yolov8.utils import LOGGER, MACOS, WINDOWS, callbacks, ops
 from yolocode.yolov8.utils.checks import check_imgsz
 from yolocode.yolov8.utils.torch_utils import select_device
@@ -321,7 +322,8 @@ class YOLOv8Thread(QThread):
             orig_img = orig_imgs[i]
             pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
             img_path = self.batch[0][i]
-            results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+            result = Results(orig_img, path=img_path, names=self.model.names, boxes=pred)
+            results.append(ColorPredictor.update_person_labels(result, orig_img))
         return results
 
     def preprocess(self, im):
