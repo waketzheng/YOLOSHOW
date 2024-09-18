@@ -1,7 +1,7 @@
-from ultralytics.models.yolo.detect import DetectionPredictor
 import torch
-from ultralytics.utils import ops
 from ultralytics.engine.results import Results
+from ultralytics.models.yolo.detect import DetectionPredictor
+from ultralytics.utils import ops
 
 
 class YOLOv10DetectionPredictor(DetectionPredictor):

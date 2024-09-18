@@ -13,7 +13,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from PIL import Image
-
 from ultralytics.utils import ARM64, LINUX, LOGGER, ROOT, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_version, check_yaml
 from ultralytics.utils.downloads import attempt_download_asset, is_url
@@ -276,7 +275,6 @@ class AutoBackend(nn.Module):
         elif pb:  # https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
             LOGGER.info(f"Loading {w} for TensorFlow GraphDef inference...")
             import tensorflow as tf
-
             from ultralytics.engine.exporter import gd_outputs
 
             def wrap_frozen_graph(gd, inputs, outputs):

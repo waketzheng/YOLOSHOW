@@ -6,43 +6,28 @@ glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8
 import json
 import os
 import shutil
-from ui.YOLOSHOWUI import Ui_MainWindow
-from PySide6.QtGui import QPixmap, QImage, QMouseEvent, QGuiApplication, QColor
+
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import (
+    Qt,
+    QTimer,
+)
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
-    QMessageBox,
     QFileDialog,
     QMainWindow,
-    QWidget,
-    QApplication,
-    QGraphicsBlurEffect,
-    QGraphicsDropShadowEffect,
-    QMenu,
-    QFrame,
-    QPushButton,
 )
-from PySide6.QtUiTools import QUiLoader, loadUiType
-from PySide6.QtCore import (
-    QFile,
-    QTimer,
-    Qt,
-    QEventLoop,
-    QThread,
-    QPropertyAnimation,
-    QEasingCurve,
-    QParallelAnimationGroup,
-    QPoint,
-    Signal,
-)
-from PySide6 import QtCore, QtGui
+
+from ui.YOLOSHOWUI import Ui_MainWindow
+from yolocode.yolov5.YOLOv5SegThread import YOLOv5SegThread
 from yolocode.yolov5.YOLOv5Thread import YOLOv5Thread
 from yolocode.yolov7.YOLOv7Thread import YOLOv7Thread
+from yolocode.yolov8.RTDETRThread import RTDETRThread
+from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
+from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
+from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.yolov8.YOLOv8Thread import YOLOv8Thread
 from yolocode.yolov9.YOLOv9Thread import YOLOv9Thread
-from yolocode.yolov5.YOLOv5SegThread import YOLOv5SegThread
-from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
-from yolocode.yolov8.RTDETRThread import RTDETRThread
-from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
-from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
 from yolocode.yolov10.YOLOv10Thread import YOLOv10Thread
 from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
 

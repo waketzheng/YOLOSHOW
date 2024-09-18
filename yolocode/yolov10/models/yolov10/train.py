@@ -1,8 +1,10 @@
-from ultralytics.models.yolo.detect import DetectionTrainer
-from .val import YOLOv10DetectionValidator
-from .model import YOLOv10DetectionModel
 from copy import copy
+
+from ultralytics.models.yolo.detect import DetectionTrainer
 from ultralytics.utils import RANK
+
+from .model import YOLOv10DetectionModel
+from .val import YOLOv10DetectionValidator
 
 
 class YOLOv10DetectionTrainer(DetectionTrainer):

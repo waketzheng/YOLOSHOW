@@ -4,7 +4,6 @@ from collections import defaultdict
 
 import cv2
 import numpy as np
-
 from ultralytics.utils.checks import check_imshow, check_requirements
 from ultralytics.utils.plotting import Annotator
 

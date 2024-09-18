@@ -196,7 +196,7 @@ class Semantic_Metrics:
                 # calculate IoU
                 intersection = (torch.logical_and(pred_mask, target_mask).sum()).item()
                 union = (torch.logical_or(pred_mask, target_mask).sum()).item()
-                iou = 0.0 if (0 == union) else (intersection / union)
+                iou = 0.0 if (union == 0) else (intersection / union)
 
                 # record class pixel counts, intersection counts, union counts
                 self.c_bit_counts[c] += target_mask.int().sum()
@@ -207,7 +207,7 @@ class Semantic_Metrics:
 
     def results(self):
         # Mean IoU
-        miou = 0.0 if (0 == len(self.iou)) else np.sum(self.iou) / (len(self.iou) * self.nc)
+        miou = 0.0 if (len(self.iou) == 0) else np.sum(self.iou) / (len(self.iou) * self.nc)
 
         # Frequency Weighted IoU
         c_iou = self.c_intersection_counts / (self.c_union_counts + 1)  # add smooth
@@ -215,7 +215,7 @@ class Semantic_Metrics:
         total_c_bit_counts = self.c_bit_counts.sum()
         freq_ious = (
             torch.zeros(1, dtype=torch.long).to(self.device)
-            if (0 == total_c_bit_counts)
+            if (total_c_bit_counts == 0)
             else (self.c_bit_counts / total_c_bit_counts) * c_iou
         )
         fwiou = (freq_ious.sum()).item()

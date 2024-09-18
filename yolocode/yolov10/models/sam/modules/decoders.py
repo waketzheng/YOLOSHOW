@@ -5,7 +5,6 @@ from typing import List, Tuple, Type
 import torch
 from torch import nn
 from torch.nn import functional as F
-
 from ultralytics.nn.modules import LayerNorm2d
 
 

@@ -1,30 +1,25 @@
-import argparse
 import os
 import time
 from pathlib import Path
-from PySide6.QtCore import Signal
+
 import cv2
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
-from PySide6.QtCore import QThread
 from numpy import random
+from PySide6.QtCore import QThread, Signal
+
+from yolocode.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS
 from yolocode.yolov7.models.experimental import attempt_load
-from yolocode.yolov7.utils.datasets import LoadStreams, LoadImages
+from yolocode.yolov7.utils.datasets import LoadImages, LoadStreams
 from yolocode.yolov7.utils.general import (
     check_img_size,
-    check_requirements,
-    check_imshow,
-    non_max_suppression,
-    apply_classifier,
-    scale_coords,
-    strip_optimizer,
-    set_logging,
     increment_path,
+    non_max_suppression,
+    scale_coords,
 )
 from yolocode.yolov7.utils.plots import plot_one_box
-from yolocode.yolov7.utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
-from yolocode.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS
+from yolocode.yolov7.utils.torch_utils import select_device
 
 
 class YOLOv7Thread(QThread):

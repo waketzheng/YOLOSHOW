@@ -11,8 +11,8 @@ import numpy as np
 import torch
 from PIL import Image, ImageDraw, ImageFont
 from PIL import __version__ as pil_version
-
 from ultralytics.utils import LOGGER, TryExcept, ops, plt_settings, threaded
+
 from .checks import check_font, check_version, is_ascii
 from .files import increment_path
 

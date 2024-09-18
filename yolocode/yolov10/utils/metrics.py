@@ -8,7 +8,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-
 from ultralytics.utils import LOGGER, SimpleClass, TryExcept, plt_settings
 
 OKS_SIGMA = (

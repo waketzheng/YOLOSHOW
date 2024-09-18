@@ -2,7 +2,6 @@
 
 import torch
 import torchvision
-
 from ultralytics.data import ClassificationDataset, build_dataloader
 from ultralytics.engine.trainer import BaseTrainer
 from ultralytics.models import yolo

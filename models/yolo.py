@@ -1,16 +1,15 @@
-import argparse
-import logging
-import sys
-import argparse
 import contextlib
+import logging
+import math
 import os
 import platform
 import sys
 from copy import deepcopy
 from pathlib import Path
-import math
+
 import torch
 import torch.nn as nn
+
 from utils import glo
 
 try:
@@ -66,15 +65,13 @@ if "yolov5" in yolo_name:
     )
     from yolocode.yolov5.models.experimental import MixConv2d
     from yolocode.yolov5.utils.autoanchor import check_anchor_order
-    from yolocode.yolov5.utils.general import LOGGER, check_version, check_yaml, colorstr, make_divisible, print_args
+    from yolocode.yolov5.utils.general import LOGGER, check_version, colorstr, make_divisible
     from yolocode.yolov5.utils.plots import feature_visualization
     from yolocode.yolov5.utils.torch_utils import (
         fuse_conv_and_bn,
         initialize_weights,
         model_info,
-        profile,
         scale_img,
-        select_device,
         time_sync,
     )
 
@@ -499,17 +496,16 @@ if "yolov7" in yolo_name:
     from yolocode.yolov7.models.common import *
     from yolocode.yolov7.models.experimental import *
     from yolocode.yolov7.utils.autoanchor import check_anchor_order
-    from yolocode.yolov7.utils.general import make_divisible, check_file, set_logging
+    from yolocode.yolov7.utils.general import make_divisible
+    from yolocode.yolov7.utils.loss import SigmoidBin
     from yolocode.yolov7.utils.torch_utils import (
-        time_synchronized,
+        copy_attr,
         fuse_conv_and_bn,
+        initialize_weights,
         model_info,
         scale_img,
-        initialize_weights,
-        select_device,
-        copy_attr,
+        time_synchronized,
     )
-    from yolocode.yolov7.utils.loss import SigmoidBin
 
     class Detect(nn.Module):
         stride = None  # strides computed during build
@@ -1435,9 +1431,7 @@ if "yolov7" in yolo_name:
                     n = 1
             elif m is nn.BatchNorm2d:
                 args = [ch[f]]
-            elif m is Concat:
-                c2 = sum([ch[x] for x in f])
-            elif m is Chuncat:
+            elif m is Concat or m is Chuncat:
                 c2 = sum([ch[x] for x in f])
             elif m is Shortcut:
                 c2 = ch[f[0]]
@@ -1479,18 +1473,16 @@ if "yolov9" in yolo_name:
 
     from yolocode.yolov9.models.common import *
     from yolocode.yolov9.models.experimental import *
-    from yolocode.yolov9.utils.general import LOGGER, check_version, check_yaml, make_divisible, print_args
+    from yolocode.yolov9.utils.general import LOGGER, check_version, make_divisible
     from yolocode.yolov9.utils.plots import feature_visualization
+    from yolocode.yolov9.utils.tal.anchor_generator import dist2bbox, make_anchors
     from yolocode.yolov9.utils.torch_utils import (
         fuse_conv_and_bn,
         initialize_weights,
         model_info,
-        profile,
         scale_img,
-        select_device,
         time_sync,
     )
-    from yolocode.yolov9.utils.tal.anchor_generator import make_anchors, dist2bbox
 
     class Detect_YOLOV9(nn.Module):
         # YOLO Detect head for detection models

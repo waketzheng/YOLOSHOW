@@ -9,7 +9,6 @@ import cv2
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-
 from ultralytics.data.utils import exif_size, img2label_paths
 from ultralytics.utils.checks import check_requirements
 

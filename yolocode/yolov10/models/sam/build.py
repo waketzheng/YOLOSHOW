@@ -9,8 +9,8 @@
 from functools import partial
 
 import torch
-
 from ultralytics.utils.downloads import attempt_download_asset
+
 from .modules.decoders import MaskDecoder
 from .modules.encoders import ImageEncoderViT, PromptEncoder
 from .modules.sam import Sam
@@ -150,7 +150,7 @@ def build_sam(ckpt="sam_b.pt"):
     """Build a SAM model specified by ckpt."""
     model_builder = None
     ckpt = str(ckpt)  # to allow Path ckpt types
-    for k in sam_model_map.keys():
+    for k in sam_model_map:
         if ckpt.endswith(k):
             model_builder = sam_model_map.get(k)
 

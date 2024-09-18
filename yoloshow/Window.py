@@ -1,10 +1,12 @@
-from utils import glo
 import json
 import os
+
 import cv2
-from PySide6.QtGui import QMouseEvent, QGuiApplication
-from PySide6.QtCore import Qt, QPropertyAnimation, Signal
+from PySide6.QtCore import QPropertyAnimation, Qt, Signal
+from PySide6.QtGui import QGuiApplication, QMouseEvent
+
 from ui.utils.customGrips import CustomGrip
+from utils import glo
 from yoloshow.YOLOSHOW import YOLOSHOW
 from yoloshow.YOLOSHOWVS import YOLOSHOWVS
 

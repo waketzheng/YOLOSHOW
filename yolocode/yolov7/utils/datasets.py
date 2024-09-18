@@ -16,27 +16,22 @@ import cv2
 import numpy as np
 import torch
 import torch.nn.functional as F
-from PIL import Image, ExifTags
+from PIL import ExifTags, Image
 from torch.utils.data import Dataset
-from tqdm import tqdm
-
-import pickle
-from copy import deepcopy
 
 # from pycocotools import mask as maskUtils
-from torchvision.utils import save_image
-from torchvision.ops import roi_pool, roi_align, ps_roi_pool, ps_roi_align
+from tqdm import tqdm
 
 from yolocode.yolov7.utils.general import (
     check_requirements,
-    xyxy2xywh,
-    xywh2xyxy,
-    xywhn2xyxy,
-    xyn2xy,
+    clean_str,
+    resample_segments,
     segment2box,
     segments2boxes,
-    resample_segments,
-    clean_str,
+    xyn2xy,
+    xywh2xyxy,
+    xywhn2xyxy,
+    xyxy2xywh,
 )
 from yolocode.yolov7.utils.torch_utils import torch_distributed_zero_first
 
@@ -62,9 +57,7 @@ def exif_size(img):
     s = img.size  # (width, height)
     try:
         rotation = dict(img._getexif().items())[orientation]
-        if rotation == 6:  # rotation 270
-            s = (s[1], s[0])
-        elif rotation == 8:  # rotation 90
+        if rotation == 6 or rotation == 8:  # rotation 270
             s = (s[1], s[0])
     except:
         pass
@@ -1121,7 +1114,7 @@ def random_perspective(
 
     # Combined rotation matrix
     M = T @ S @ R @ P @ C  # order of operations (right to left) is IMPORTANT
-    if (border[0] != 0) or (border[1] != 0) or (M != np.eye(3)).any():  # image changed
+    if (border[0] != 0) or (border[1] != 0) or (np.eye(3) != M).any():  # image changed
         if perspective:
             img = cv2.warpPerspective(img, M, dsize=(width, height), borderValue=(114, 114, 114))
         else:  # affine

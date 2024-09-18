@@ -6,7 +6,6 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
-
 from ultralytics.models.yolo.detect import DetectionValidator
 from ultralytics.utils import LOGGER, NUM_THREADS, ops
 from ultralytics.utils.checks import check_requirements

@@ -12,7 +12,6 @@ import signal
 import sys
 import time
 import urllib
-from copy import deepcopy
 from datetime import datetime
 from itertools import repeat
 from multiprocessing.pool import ThreadPool
@@ -568,7 +567,7 @@ def check_dataset(data, autodownload=True):
 
 def check_amp(model):
     # Check PyTorch Automatic Mixed Precision (AMP) functionality. Return True on correct operation
-    from models.common import AutoShape, DetectMultiBackend
+    from models.common import AutoShape
 
     def amp_allclose(model, im):
         # All close FP32 vs AMP results

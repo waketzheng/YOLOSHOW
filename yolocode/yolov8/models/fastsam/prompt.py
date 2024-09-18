@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from PIL import Image
-
 from ultralytics.utils import TQDM
 
 

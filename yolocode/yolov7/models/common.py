@@ -8,15 +8,13 @@ import requests
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision.ops import DeformConv2d
 from PIL import Image
 from torch.cuda import amp
 
 from yolocode.yolov7.utils.datasets import letterbox
-from yolocode.yolov7.utils.general import non_max_suppression, make_divisible, scale_coords, increment_path, xyxy2xywh
+from yolocode.yolov7.utils.general import increment_path, make_divisible, non_max_suppression, scale_coords, xyxy2xywh
 from yolocode.yolov7.utils.plots import color_list, plot_one_box
 from yolocode.yolov7.utils.torch_utils import time_synchronized
-
 
 ##### basic ####
 
@@ -598,7 +596,7 @@ class RepConv(nn.Module):
     def fuse_repvgg_block(self):
         if self.deploy:
             return
-        print(f"RepConv.fuse_repvgg_block")
+        print("RepConv.fuse_repvgg_block")
 
         self.rbr_dense = self.fuse_conv_bn(self.rbr_dense[0], self.rbr_dense[1])
 
@@ -1491,7 +1489,7 @@ class RepConv_OREPA(nn.Module):
     def switch_to_deploy(self):
         if hasattr(self, 'rbr_reparam'):
             return
-        print(f"RepConv_OREPA.switch_to_deploy")
+        print("RepConv_OREPA.switch_to_deploy")
         kernel, bias = self.get_equivalent_kernel_bias()
         self.rbr_reparam = nn.Conv2d(
             in_channels=self.rbr_dense.in_channels,

@@ -19,7 +19,6 @@ import numpy as np
 import requests
 import torch
 from matplotlib import font_manager
-
 from ultralytics.utils import (
     ASSETS,
     AUTOINSTALL,
@@ -233,17 +232,7 @@ def check_version(
     for r in required.strip(",").split(","):
         op, version = re.match(r"([^0-9]*)([\d.]+)", r).groups()  # split '>=22.04' -> ('>=', '22.04')
         v = parse_version(version)  # '1.2.3' -> (1, 2, 3)
-        if op == "==" and c != v:
-            result = False
-        elif op == "!=" and c == v:
-            result = False
-        elif op in (">=", "") and not (c >= v):  # if no constraint passed assume '>=required'
-            result = False
-        elif op == "<=" and not (c <= v):
-            result = False
-        elif op == ">" and not (c > v):
-            result = False
-        elif op == "<" and not (c < v):
+        if op == "==" and c != v or op == "!=" and c == v or op in (">=", "") and not (c >= v) or op == "<=" and not (c <= v) or op == ">" and not (c > v) or op == "<" and not (c < v):
             result = False
     if not result:
         warning = f"WARNING ⚠️ {name}{op}{version} is required, but {name}=={current} is currently installed {msg}"
@@ -544,7 +533,6 @@ def check_imshow(warn=False):
 def check_yolo(verbose=True, device=""):
     """Return a human-readable YOLO software and hardware summary."""
     import psutil
-
     from ultralytics.utils.torch_utils import select_device
 
     if is_jupyter():
@@ -574,7 +562,6 @@ def collect_system_info():
     """Collect and print relevant system information including OS, Python, RAM, CPU, and CUDA."""
 
     import psutil
-
     from ultralytics.utils import ENVIRONMENT, is_git_dir
     from ultralytics.utils.torch_utils import get_cpu_info
 

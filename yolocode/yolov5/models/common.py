@@ -5,6 +5,7 @@ import ast
 import contextlib
 import json
 import math
+import os
 import platform
 import warnings
 import zipfile
@@ -12,7 +13,7 @@ from collections import OrderedDict, namedtuple
 from copy import copy
 from pathlib import Path
 from urllib.parse import urlparse
-import os
+
 import cv2
 import numpy as np
 import pandas as pd

@@ -16,7 +16,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
-
 from ultralytics.utils.instance import to_2tuple
 
 
@@ -387,7 +386,7 @@ class TinyViTBlock(nn.Module):
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
         res_x = x
-        if H == self.window_size and W == self.window_size:
+        if self.window_size == H and self.window_size == W:
             x = self.attn(x)
         else:
             x = x.view(B, H, W, C)

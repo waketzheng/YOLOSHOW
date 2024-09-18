@@ -6,20 +6,21 @@ from copy import deepcopy
 sys.path.append('./')  # to run '$ python *.py' files in subdirectories
 logger = logging.getLogger(__name__)
 import torch
+
 from yolocode.yolov7.models.common import *
 from yolocode.yolov7.models.experimental import *
 from yolocode.yolov7.utils.autoanchor import check_anchor_order
-from yolocode.yolov7.utils.general import make_divisible, check_file, set_logging
+from yolocode.yolov7.utils.general import check_file, make_divisible, set_logging
+from yolocode.yolov7.utils.loss import SigmoidBin
 from yolocode.yolov7.utils.torch_utils import (
-    time_synchronized,
+    copy_attr,
     fuse_conv_and_bn,
+    initialize_weights,
     model_info,
     scale_img,
-    initialize_weights,
     select_device,
-    copy_attr,
+    time_synchronized,
 )
-from yolocode.yolov7.utils.loss import SigmoidBin
 
 try:
     import thop  # for FLOPS computation
@@ -878,9 +879,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
                 n = 1
         elif m is nn.BatchNorm2d:
             args = [ch[f]]
-        elif m is Concat:
-            c2 = sum([ch[x] for x in f])
-        elif m is Chuncat:
+        elif m is Concat or m is Chuncat:
             c2 = sum([ch[x] for x in f])
         elif m is Shortcut:
             c2 = ch[f[0]]

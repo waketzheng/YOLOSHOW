@@ -10,7 +10,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torchvision
-
 from ultralytics.utils import LOGGER
 from ultralytics.utils.metrics import batch_probiou
 

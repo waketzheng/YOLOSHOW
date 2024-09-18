@@ -7,7 +7,6 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -21,7 +20,6 @@ from ultralytics.nn.modules import (
     BottleneckCSP,
     C2f,
     C2fAttn,
-    ImagePoolingAttn,
     C3Ghost,
     C3x,
     Classify,
@@ -37,6 +35,7 @@ from ultralytics.nn.modules import (
     GhostConv,
     HGBlock,
     HGStem,
+    ImagePoolingAttn,
     Pose,
     RepC3,
     RepConv,
@@ -718,8 +717,7 @@ def torch_safe_load(weight):
         ):  # for legacy 8.0 Classify and Pose models
             if "yolov10" in file:
                 # 确保正确导入模块
-                from yolocode.yolov10.nn.modules import block
-                from yolocode.yolov10.nn.modules import head
+                from yolocode.yolov10.nn.modules import block, head
 
                 # 在加载模型前映射旧模块到新位置
                 sys.modules['ultralytics.nn.tasks'] = sys.modules[__name__]

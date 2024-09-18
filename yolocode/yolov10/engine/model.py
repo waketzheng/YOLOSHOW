@@ -7,7 +7,6 @@ from typing import Union
 
 import numpy as np
 import torch
-
 from ultralytics.cfg import TASK2DATA, get_cfg, get_save_dir
 from ultralytics.hub.utils import HUB_WEB_ROOT
 from ultralytics.nn.tasks import attempt_load_one_weight, guess_model_task, nn, yaml_model_load
@@ -311,8 +310,9 @@ class Model(nn.Module):
             AssertionError: If the model is not a PyTorch model.
         """
         self._check_is_pytorch_model()
-        from ultralytics import __version__
         from datetime import datetime
+
+        from ultralytics import __version__
 
         updates = {
             "date": datetime.now().isoformat(),

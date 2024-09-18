@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
-from torchvision.utils import draw_segmentation_masks, save_image
+from torchvision.utils import draw_segmentation_masks
 
 from .. import threaded
 from ..general import xywh2xyxy

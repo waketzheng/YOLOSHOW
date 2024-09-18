@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 from yolocode.yolov9.utils.general import xywh2xyxy
 from yolocode.yolov9.utils.metrics import bbox_iou
-from yolocode.yolov9.utils.tal.anchor_generator import dist2bbox, make_anchors, bbox2dist
+from yolocode.yolov9.utils.tal.anchor_generator import bbox2dist, dist2bbox, make_anchors
 from yolocode.yolov9.utils.tal.assigner import TaskAlignedAssigner
 from yolocode.yolov9.utils.torch_utils import de_parallel
 

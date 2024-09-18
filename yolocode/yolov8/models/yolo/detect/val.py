@@ -5,7 +5,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-
 from ultralytics.data import build_dataloader, build_yolo_dataset, converter
 from ultralytics.engine.validator import BaseValidator
 from ultralytics.utils import LOGGER, ops

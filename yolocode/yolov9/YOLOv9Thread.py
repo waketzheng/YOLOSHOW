@@ -1,32 +1,24 @@
 import os.path
 import time
+from pathlib import Path
 
 import cv2
 import numpy as np
 import torch
 from PySide6.QtCore import QThread, Signal
-from pathlib import Path
 
 from models.common import DetectMultiBackend_YOLOv9
 from yolocode.yolov9.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from yolocode.yolov9.utils.general import (
-    LOGGER,
     Profile,
-    check_file,
     check_img_size,
-    check_imshow,
-    check_requirements,
-    colorstr,
     cv2,
     increment_path,
     non_max_suppression,
-    print_args,
     scale_boxes,
-    strip_optimizer,
-    xyxy2xywh,
 )
-from yolocode.yolov9.utils.plots import Annotator, colors, save_one_box
-from yolocode.yolov9.utils.torch_utils import select_device, smart_inference_mode
+from yolocode.yolov9.utils.plots import Annotator, colors
+from yolocode.yolov9.utils.torch_utils import select_device
 
 
 class YOLOv9Thread(QThread):

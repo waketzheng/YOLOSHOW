@@ -6,7 +6,6 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-
 from ultralytics.utils import LOGGER, TQDM
 from ultralytics.utils.files import increment_path
 
@@ -501,11 +500,11 @@ def yolo_bbox2segment(im_dir, save_dir=None, sam_model="sam_b.pt"):
                 ├─ ..
                 └─ NNN.txt
     """
-    from ultralytics.data import YOLODataset
-    from ultralytics.utils.ops import xywh2xyxy
-    from ultralytics.utils import LOGGER
-    from ultralytics import SAM
     from tqdm import tqdm
+    from ultralytics import SAM
+    from ultralytics.data import YOLODataset
+    from ultralytics.utils import LOGGER
+    from ultralytics.utils.ops import xywh2xyxy
 
     # NOTE: add placeholder to pass class index check
     dataset = YOLODataset(im_dir, data=dict(names=list(range(1000))))

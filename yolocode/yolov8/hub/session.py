@@ -6,8 +6,7 @@ from http import HTTPStatus
 from pathlib import Path
 
 import requests
-
-from ultralytics.hub.utils import HUB_WEB_ROOT, HELP_MSG, PREFIX, TQDM
+from ultralytics.hub.utils import HELP_MSG, HUB_WEB_ROOT, PREFIX, TQDM
 from ultralytics.utils import LOGGER, SETTINGS, __version__, checks, emojis, is_colab
 from ultralytics.utils.errors import HUBModelError
 

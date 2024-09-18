@@ -31,7 +31,6 @@ from pathlib import Path
 
 import numpy as np
 import torch.cuda
-
 from ultralytics import YOLO
 from ultralytics.cfg import TASK2DATA, TASK2METRIC
 from ultralytics.engine.exporter import export_formats

@@ -1,12 +1,17 @@
 # coding: utf-8
 import sys
 
-from PySide6.QtWidgets import QHeaderView
 from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidget, QTableWidgetItem, QWidget, QHBoxLayout
-
-from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, setCustomStyleSheet
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QHeaderView,
+    QStyleOptionViewItem,
+    QTableWidgetItem,
+    QWidget,
+)
+from qfluentwidgets import TableItemDelegate, TableWidget, isDarkTheme
 
 
 class TableViewDelegate(TableItemDelegate):

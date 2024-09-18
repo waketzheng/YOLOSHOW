@@ -14,8 +14,9 @@ if platform.system() != 'Windows':
 
 from models.common import *
 from models.experimental import *
-from yolocode.yolov9.utils.general import LOGGER, check_version, check_yaml, make_divisible, print_args
+from yolocode.yolov9.utils.general import LOGGER, check_yaml, make_divisible, print_args
 from yolocode.yolov9.utils.plots import feature_visualization
+from yolocode.yolov9.utils.tal.anchor_generator import dist2bbox, make_anchors
 from yolocode.yolov9.utils.torch_utils import (
     fuse_conv_and_bn,
     initialize_weights,
@@ -25,7 +26,6 @@ from yolocode.yolov9.utils.torch_utils import (
     select_device,
     time_sync,
 )
-from yolocode.yolov9.utils.tal.anchor_generator import make_anchors, dist2bbox
 
 try:
     import thop  # for FLOPs computation

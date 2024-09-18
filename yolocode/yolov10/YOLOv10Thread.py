@@ -1,21 +1,21 @@
 import os.path
 import time
+from collections import defaultdict
+from pathlib import Path
 
 import cv2
 import numpy as np
 import torch
 from PySide6.QtCore import QThread, Signal
-from pathlib import Path
 
+from models.common import AutoBackend
+from yolocode.yolov5.utils.general import increment_path
 from yolocode.yolov10.data import load_inference_source
-from yolocode.yolov10.data.augment import classify_transforms, LetterBox
+from yolocode.yolov10.data.augment import LetterBox, classify_transforms
 from yolocode.yolov10.data.utils import IMG_FORMATS, VID_FORMATS
 from yolocode.yolov10.engine.predictor import STREAM_WARNING
 from yolocode.yolov10.engine.results import Results
-from models.common import AutoBackend
-from yolocode.yolov10.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS
-from collections import defaultdict
-from yolocode.yolov5.utils.general import increment_path
+from yolocode.yolov10.utils import LOGGER, MACOS, WINDOWS, callbacks, ops
 from yolocode.yolov10.utils.checks import check_imgsz
 from yolocode.yolov10.utils.torch_utils import select_device
 

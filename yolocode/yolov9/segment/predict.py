@@ -29,7 +29,6 @@ from utils.general import (
     scale_boxes,
     scale_segments,
     strip_optimizer,
-    xyxy2xywh,
 )
 from utils.plots import Annotator, colors, save_one_box
 from utils.segment.general import masks2segments, process_mask

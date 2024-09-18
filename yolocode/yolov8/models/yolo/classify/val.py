@@ -1,7 +1,6 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 
 import torch
-
 from ultralytics.data import ClassificationDataset, build_dataloader
 from ultralytics.engine.validator import BaseValidator
 from ultralytics.utils import LOGGER

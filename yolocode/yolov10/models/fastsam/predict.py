@@ -1,7 +1,6 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 
 import torch
-
 from ultralytics.engine.results import Results
 from ultralytics.models.fastsam.utils import bbox_iou
 from ultralytics.models.yolo.detect.predict import DetectionPredictor

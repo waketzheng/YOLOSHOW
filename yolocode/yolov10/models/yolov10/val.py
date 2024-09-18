@@ -1,6 +1,6 @@
+import torch
 from ultralytics.models.yolo.detect import DetectionValidator
 from ultralytics.utils import ops
-import torch
 
 
 class YOLOv10DetectionValidator(DetectionValidator):

@@ -23,9 +23,9 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 import panoptic.val as validate  # for end-of-epoch mAP
+
 from models.experimental import attempt_load
 from models.yolo import SegmentationModel
-from utils.autoanchor import check_anchors
 from utils.autobatch import check_train_batch_size
 from utils.callbacks import Callbacks
 from utils.downloads import attempt_download, is_url
@@ -35,10 +35,7 @@ from utils.general import (
     check_amp,
     check_dataset,
     check_file,
-    check_git_info,
-    check_git_status,
     check_img_size,
-    check_requirements,
     check_suffix,
     check_yaml,
     colorstr,
@@ -56,11 +53,11 @@ from utils.general import (
     yaml_save,
 )
 from utils.loggers import GenericLogger
-from utils.plots import plot_evolve, plot_labels
 from utils.panoptic.dataloaders import create_dataloader
 from utils.panoptic.loss_tal import ComputeLoss
 from utils.panoptic.metrics import KEYS, fitness
 from utils.panoptic.plots import plot_images_and_masks, plot_results_with_masks
+from utils.plots import plot_evolve, plot_labels
 from utils.torch_utils import (
     EarlyStopping,
     ModelEMA,

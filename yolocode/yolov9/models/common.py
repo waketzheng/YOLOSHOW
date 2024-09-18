@@ -10,8 +10,6 @@ from copy import copy
 from pathlib import Path
 from urllib.parse import urlparse
 
-from typing import Optional
-
 import cv2
 import numpy as np
 import pandas as pd
@@ -509,7 +507,6 @@ class SPPF(nn.Module):
 
 
 import torch.nn.functional as F
-from torch.nn.modules.utils import _pair
 
 
 class ReOrg(nn.Module):
@@ -976,6 +973,7 @@ class DetectMultiBackend(nn.Module):
         # Return model type from model path, i.e. path='path/to/model.onnx' -> type=onnx
         # types = [pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle]
         from export import export_formats
+
         from utils.downloads import is_url
 
         sf = list(export_formats().Suffix)  # export suffixes

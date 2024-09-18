@@ -1,29 +1,27 @@
 import ast
 import contextlib
-import importlib
 import json
 import math
-import numpy as np
 import os
-import pandas as pd
 import platform
-import requests
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import warnings
 import zipfile
 from collections import OrderedDict, namedtuple
 from copy import copy
 from pathlib import Path
+from urllib.parse import urlparse
+
+import cv2
+import numpy as np
+import pandas as pd
+import requests
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from IPython.display import display
 from PIL import Image
 from torch.cuda import amp
-from torch.nn.modules.utils import _pair
-from torchvision.ops import DeformConv2d
-from urllib.parse import urlparse
-from typing import Optional
-from IPython.display import display
-import cv2
+
 from utils import glo
 
 try:
@@ -291,7 +289,7 @@ class ImplicitM(nn.Module):
 
 ### --- YOLOv5 Code --- ###
 if "yolov5" in yolo_name:
-    from yolocode.yolov8.utils.plotting import Annotator, colors, save_one_box
+    from models.experimental import attempt_download_YOLOV5, attempt_load_YOLOv5  # scoped to avoid circular import
     from yolocode.yolov5.utils import TryExcept
     from yolocode.yolov5.utils.dataloaders import exif_transpose, letterbox
     from yolocode.yolov5.utils.general import (
@@ -312,7 +310,7 @@ if "yolov5" in yolo_name:
         yaml_load,
     )
     from yolocode.yolov5.utils.torch_utils import copy_attr, smart_inference_mode
-    from models.experimental import attempt_download_YOLOV5, attempt_load_YOLOv5  # scoped to avoid circular import
+    from yolocode.yolov8.utils.plotting import Annotator, colors, save_one_box
 
     class CrossConv(nn.Module):
         # Cross Convolution Downsample
@@ -977,10 +975,10 @@ if "yolov5" in yolo_name:
 if "yolov7" in yolo_name:
     from yolocode.yolov7.utils.datasets import letterbox
     from yolocode.yolov7.utils.general import (
-        non_max_suppression,
-        make_divisible,
-        scale_coords,
         increment_path,
+        make_divisible,
+        non_max_suppression,
+        scale_coords,
         xyxy2xywh,
     )
     from yolocode.yolov7.utils.plots import color_list, plot_one_box
@@ -1445,7 +1443,7 @@ if "yolov7" in yolo_name:
         def fuse_repvgg_block(self):
             if self.deploy:
                 return
-            print(f"RepConv.fuse_repvgg_block")
+            print("RepConv.fuse_repvgg_block")
 
             self.rbr_dense = self.fuse_conv_bn(self.rbr_dense[0], self.rbr_dense[1])
 
@@ -2231,7 +2229,7 @@ if "yolov7" in yolo_name:
         def switch_to_deploy(self):
             if hasattr(self, 'rbr_reparam'):
                 return
-            print(f"RepConv_OREPA.switch_to_deploy")
+            print("RepConv_OREPA.switch_to_deploy")
             kernel, bias = self.get_equivalent_kernel_bias()
             self.rbr_reparam = nn.Conv2d(
                 in_channels=self.rbr_dense.in_channels,
@@ -3204,7 +3202,6 @@ if "yolov8" in yolo_name or "rtdetr" in yolo_name or "yolov10" in yolo_name:
             elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
                 LOGGER.info(f"Loading {w} for TensorFlow GraphDef inference...")
                 import tensorflow as tf
-
                 from ultralytics.engine.exporter import gd_outputs
 
                 def wrap_frozen_graph(gd, inputs, outputs):

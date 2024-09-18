@@ -4,14 +4,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torchvision.ops import sigmoid_focal_loss
-
 from utils.general import xywh2xyxy, xyxy2xywh
 from utils.metrics import bbox_iou
-from utils.segment.tal.anchor_generator import dist2bbox, make_anchors, bbox2dist
+from utils.segment.general import crop_mask
+from utils.segment.tal.anchor_generator import bbox2dist, dist2bbox, make_anchors
 from utils.segment.tal.assigner import TaskAlignedAssigner
 from utils.torch_utils import de_parallel
-from utils.segment.general import crop_mask
 
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441

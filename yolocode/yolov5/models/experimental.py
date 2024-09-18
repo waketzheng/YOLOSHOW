@@ -97,7 +97,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
             m.inplace = inplace
             if t is Detect_YOLOv5 and not isinstance(m.anchor_grid, list):
                 delattr(m, "anchor_grid")
-                setattr(m, "anchor_grid", [torch.zeros(1)] * m.nl)
+                m.anchor_grid = [torch.zeros(1)] * m.nl
         elif t is nn.Upsample and not hasattr(m, "recompute_scale_factor"):
             m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 

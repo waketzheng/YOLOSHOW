@@ -8,13 +8,13 @@ import cv2
 import numpy as np
 import torch
 import torchvision.transforms as T
-
 from ultralytics.utils import LOGGER, colorstr
 from ultralytics.utils.checks import check_version
 from ultralytics.utils.instance import Instances
 from ultralytics.utils.metrics import bbox_ioa
 from ultralytics.utils.ops import segment2box, xyxyxyxy2xywhr
 from ultralytics.utils.torch_utils import TORCHVISION_0_10, TORCHVISION_0_11, TORCHVISION_0_13
+
 from .utils import polygons2masks, polygons2masks_overlap
 
 DEFAULT_MEAN = (0.0, 0.0, 0.0)
@@ -427,7 +427,7 @@ class RandomPerspective:
         # Combined rotation matrix
         M = T @ S @ R @ P @ C  # order of operations (right to left) is IMPORTANT
         # Affine image
-        if (border[0] != 0) or (border[1] != 0) or (M != np.eye(3)).any():  # image changed
+        if (border[0] != 0) or (border[1] != 0) or (np.eye(3) != M).any():  # image changed
             if self.perspective:
                 img = cv2.warpPerspective(img, M, dsize=self.size, borderValue=(114, 114, 114))
             else:  # affine

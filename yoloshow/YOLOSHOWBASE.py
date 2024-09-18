@@ -1,30 +1,31 @@
-from ui.utils.AcrylicFlyout import AcrylicFlyoutView, AcrylicFlyout
-from ui.utils.TableView import TableViewQWidget
+from ui.utils.AcrylicFlyout import AcrylicFlyout, AcrylicFlyoutView
 from ui.utils.drawFigure import PlottingThread
+from ui.utils.TableView import TableViewQWidget
 from utils import glo
 
 glo._init()
 glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
-from utils.logger import LoggerUtils
-import re
-import socket
-from urllib.parse import urlparse
-import torch
+import importlib
 import json
 import os
+import re
 import shutil
+import socket
+from urllib.parse import urlparse
+
 import cv2
 import numpy as np
-from PySide6.QtGui import QPixmap, QImage
-from PySide6.QtWidgets import QFileDialog, QGraphicsDropShadowEffect, QFrame, QPushButton, QApplication
-from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QPoint
-from qfluentwidgets import RoundMenu, MenuAnimationType, Action
-import importlib
-from ui.utils.rtspDialog import CustomMessageBox
+import torch
+from PySide6.QtCore import QEasingCurve, QParallelAnimationGroup, QPoint, QPropertyAnimation, Qt
+from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtWidgets import QFileDialog, QFrame, QGraphicsDropShadowEffect, QPushButton
+from qfluentwidgets import Action, MenuAnimationType, RoundMenu
 
-from models import common, yolo, experimental
+from models import common, experimental, yolo
+from ui.utils.rtspDialog import CustomMessageBox
 from ui.utils.webCamera import Camera, WebcamThread
+from utils.logger import LoggerUtils
 
 GLOBAL_WINDOW_STATE = True
 
@@ -356,7 +357,7 @@ class YOLOSHOWBASE:
             # 关闭socket
             sock.close()
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     # 检测Http网络摄像头 是否连通
@@ -377,7 +378,7 @@ class YOLOSHOWBASE:
             # 关闭socket
             sock.close()
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     # 显示Label图片

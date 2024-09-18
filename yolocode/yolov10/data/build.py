@@ -8,7 +8,6 @@ import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data import dataloader, distributed
-
 from ultralytics.data.loaders import (
     LOADERS,
     LoadImagesAndVideos,
@@ -22,6 +21,7 @@ from ultralytics.data.loaders import (
 from ultralytics.data.utils import IMG_FORMATS, VID_FORMATS
 from ultralytics.utils import RANK, colorstr
 from ultralytics.utils.checks import check_file
+
 from .dataset import YOLODataset
 from .utils import PIN_MEMORY
 
@@ -181,6 +181,6 @@ def load_inference_source(source=None, batch=1, vid_stride=1, buffer=False):
         dataset = LoadImagesAndVideos(source, batch=batch, vid_stride=vid_stride)
 
     # Attach source types to the dataset
-    setattr(dataset, "source_type", source_type)
+    dataset.source_type = source_type
 
     return dataset

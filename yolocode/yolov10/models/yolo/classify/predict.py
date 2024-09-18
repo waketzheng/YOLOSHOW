@@ -3,7 +3,6 @@
 import cv2
 import torch
 from PIL import Image
-
 from ultralytics.engine.predictor import BasePredictor
 from ultralytics.engine.results import Results
 from ultralytics.utils import DEFAULT_CFG, ops

@@ -18,7 +18,7 @@ class Lion(Optimizer):
           weight_decay (float, optional): weight decay coefficient (default: 0)
         """
 
-        if not 0.0 <= lr:
+        if not lr >= 0.0:
             raise ValueError('Invalid learning rate: {}'.format(lr))
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError('Invalid beta parameter at index 0: {}'.format(betas[0]))

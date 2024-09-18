@@ -1,33 +1,30 @@
 # coding:utf-8
 from typing import Union
+
 from PySide6.QtCore import (
+    QMargins,
     QPoint,
-    Qt,
+    QPropertyAnimation,
     QRect,
     QRectF,
-    Signal,
     QSize,
-    QMargins,
-    QPropertyAnimation,
-    QObject,
-    QParallelAnimationGroup,
-    QEasingCurve,
+    Qt,
+    Signal,
 )
-from PySide6.QtGui import QPixmap, QPainter, QColor, QPainterPath, QIcon, QImage, QCursor, QFont
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QApplication, QGraphicsDropShadowEffect, QFrame
+from PySide6.QtGui import QColor, QCursor, QIcon, QImage, QPainter, QPainterPath, QPixmap
+from PySide6.QtWidgets import QApplication, QFrame, QGraphicsDropShadowEffect, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import (
+    FluentIcon,
     FluentIconBase,
-    FlyoutAnimationType,
+    FluentStyleSheet,
     FlyoutAnimationManager,
+    FlyoutAnimationType,
+    ImageLabel,
+    TextWrap,
+    TransparentToolButton,
     drawIcon,
     isDarkTheme,
-    ImageLabel,
-    TransparentToolButton,
-    FluentIcon,
-    FluentStyleSheet,
-    TextWrap,
 )
-from qfluentwidgets.common.screen import getCurrentScreenGeometry
 from qfluentwidgets.components.material import AcrylicWidget
 
 

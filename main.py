@@ -1,6 +1,6 @@
-import sys
-import os
 import logging
+import os
+import sys
 
 # 将ui目录添加到系统路径中
 sys.path.append(os.path.join(os.getcwd(), "ui"))
@@ -9,10 +9,11 @@ sys.stdout = open(os.devnull, 'w')
 logging.disable(logging.CRITICAL)  # 禁用所有级别的日志
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
+
 from utils import glo
-from yoloshow.Window import YOLOSHOWWindow as yoloshowWindow
+from yoloshow.ChangeWindow import vs2yoloshow, yoloshow2vs
 from yoloshow.Window import YOLOSHOWVSWindow as yoloshowVSWindow
-from yoloshow.ChangeWindow import yoloshow2vs, vs2yoloshow
+from yoloshow.Window import YOLOSHOWWindow as yoloshowWindow
 
 if __name__ == '__main__':
     app = QApplication([])  # 创建应用程序实例

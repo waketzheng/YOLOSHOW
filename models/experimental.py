@@ -1,10 +1,10 @@
-import math
-import numpy as np
 import random
+
+import numpy as np
 import torch
 import torch.nn as nn
-from utils import glo
 
+from utils import glo
 
 yoloname = glo.get_value('yoloname')
 yoloname1 = glo.get_value('yoloname1')
@@ -109,7 +109,7 @@ if 'yolov5' in yolo_name:
                 m.inplace = inplace
                 if t is Detect_YOLOV5 and not isinstance(m.anchor_grid, list):
                     delattr(m, "anchor_grid")
-                    setattr(m, "anchor_grid", [torch.zeros(1)] * m.nl)
+                    m.anchor_grid = [torch.zeros(1)] * m.nl
             elif t is nn.Upsample and not hasattr(m, "recompute_scale_factor"):
                 m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 
@@ -129,7 +129,7 @@ if 'yolov5' in yolo_name:
 
 ### --- YOLOv7 Code --- ###
 if 'yolov7' in yolo_name:
-    from yolocode.yolov7.models.common import Conv, DWConv_YOLOV7
+    from yolocode.yolov7.models.common import Conv
     from yolocode.yolov7.utils.google_utils import attempt_download
 
     class CrossConv(nn.Module):

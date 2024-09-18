@@ -1,7 +1,6 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 
 import torch
-
 from ultralytics.data import YOLODataset
 from ultralytics.data.augment import Compose, Format, v8_transforms
 from ultralytics.models.yolo.detect import DetectionValidator

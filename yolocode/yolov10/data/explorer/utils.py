@@ -6,7 +6,6 @@ from typing import List
 import cv2
 import numpy as np
 import pandas as pd
-
 from ultralytics.data.augment import LetterBox
 from ultralytics.utils import LOGGER as logger
 from ultralytics.utils import SETTINGS

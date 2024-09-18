@@ -22,7 +22,6 @@ import numpy as np
 import torch
 import yaml
 from tqdm import tqdm as tqdm_original
-
 from ultralytics import __version__
 
 # PyTorch Multi-GPU DDP Constants

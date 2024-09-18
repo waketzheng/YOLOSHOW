@@ -6,7 +6,6 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -15,14 +14,17 @@ from ultralytics.nn.modules import (
     C3TR,
     OBB,
     SPP,
+    SPPELAN,
     SPPF,
+    ADown,
     Bottleneck,
     BottleneckCSP,
     C2f,
     C2fAttn,
-    ImagePoolingAttn,
     C3Ghost,
     C3x,
+    CBFuse,
+    CBLinear,
     Classify,
     Concat,
     Conv,
@@ -36,19 +38,15 @@ from ultralytics.nn.modules import (
     GhostConv,
     HGBlock,
     HGStem,
+    ImagePoolingAttn,
     Pose,
     RepC3,
     RepConv,
+    RepNCSPELAN4,
     ResNetLayer,
     RTDETRDecoder,
     Segment,
     WorldDetect,
-    RepNCSPELAN4,
-    ADown,
-    SPPELAN,
-    CBFuse,
-    CBLinear,
-    Silence,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml

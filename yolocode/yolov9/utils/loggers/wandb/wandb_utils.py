@@ -507,7 +507,7 @@ class WandbLogger:
                 else:
                     pred_class_count[cls] = 1
 
-        for pred_class in pred_class_count.keys():
+        for pred_class in pred_class_count:
             avg_conf_per_class[pred_class] = avg_conf_per_class[pred_class] / pred_class_count[pred_class]
 
         boxes = {"predictions": {"box_data": box_data, "class_labels": names}}  # inference-space
