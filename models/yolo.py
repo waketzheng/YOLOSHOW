@@ -17,16 +17,16 @@ try:
 except ImportError:
     thop = None
 
-sys.path.append('./')  # to run '$ python *.py' files in subdirectories
+sys.path.append("./")  # to run '$ python *.py' files in subdirectories
 logger = logging.getLogger(__name__)
 
 
-yoloname = glo.get_value('yoloname')
-yoloname1 = glo.get_value('yoloname1')
-yoloname2 = glo.get_value('yoloname2')
+yoloname = glo.get_value("yoloname")
+yoloname1 = glo.get_value("yoloname1")
+yoloname2 = glo.get_value("yoloname2")
 
 yolo_name = (
-    ((str(yoloname1) if yoloname1 else '') + (str(yoloname2) if str(yoloname2) else ''))
+    ((str(yoloname1) if yoloname1 else "") + (str(yoloname2) if str(yoloname2) else ""))
     if yoloname1 or yoloname2
     else yoloname
 )
@@ -522,8 +522,8 @@ if "yolov7" in yolo_name:
             self.na = len(anchors[0]) // 2  # number of anchors
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
 
         def forward(self, x):
@@ -595,8 +595,8 @@ if "yolov7" in yolo_name:
             self.na = len(anchors[0]) // 2  # number of anchors
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
 
         def forward(self, x):
@@ -668,8 +668,8 @@ if "yolov7" in yolo_name:
             self.na = len(anchors[0]) // 2  # number of anchors
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
 
             self.ia = nn.ModuleList(ImplicitA(x) for x in ch)
@@ -784,8 +784,8 @@ if "yolov7" in yolo_name:
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             self.flip_test = False
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no_det * self.na, 1) for x in ch)  # output conv
 
             self.ia = nn.ModuleList(ImplicitA(x) for x in ch)
@@ -898,8 +898,8 @@ if "yolov7" in yolo_name:
             self.na = len(anchors[0]) // 2  # number of anchors
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch[: self.nl])  # output conv
             self.m2 = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch[self.nl :])  # output conv
 
@@ -1025,8 +1025,8 @@ if "yolov7" in yolo_name:
             self.na = len(anchors[0]) // 2  # number of anchors
             self.grid = [torch.zeros(1)] * self.nl  # init grid
             a = torch.tensor(anchors).float().view(self.nl, -1, 2)
-            self.register_buffer('anchors', a)  # shape(nl,na,2)
-            self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
+            self.register_buffer("anchors", a)  # shape(nl,na,2)
+            self.register_buffer("anchor_grid", a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)
             self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
 
             self.ia = nn.ModuleList(ImplicitA(x) for x in ch)
@@ -1079,7 +1079,7 @@ if "yolov7" in yolo_name:
 
     class Model(nn.Module):
         def __init__(
-            self, cfg='yolor-csp-c.yaml', ch=3, nc=None, anchors=None
+            self, cfg="yolor-csp-c.yaml", ch=3, nc=None, anchors=None
         ):  # model, input channels, number of classes
             super(Model, self).__init__()
             self.traced = False
@@ -1093,15 +1093,15 @@ if "yolov7" in yolo_name:
                     self.yaml = yaml.load(f, Loader=yaml.SafeLoader)  # model dict
 
             # Define model
-            ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
-            if nc and nc != self.yaml['nc']:
+            ch = self.yaml["ch"] = self.yaml.get("ch", ch)  # input channels
+            if nc and nc != self.yaml["nc"]:
                 logger.info(f"Overriding model.yaml nc={self.yaml['nc']} with nc={nc}")
-                self.yaml['nc'] = nc  # override yaml value
+                self.yaml["nc"] = nc  # override yaml value
             if anchors:
-                logger.info(f'Overriding model.yaml anchors with anchors={anchors}')
-                self.yaml['anchors'] = round(anchors)  # override yaml value
+                logger.info(f"Overriding model.yaml anchors with anchors={anchors}")
+                self.yaml["anchors"] = round(anchors)  # override yaml value
             self.model, self.save = parse_model_YOLOV7(deepcopy(self.yaml), ch=[ch])  # model, savelist
-            self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
+            self.names = [str(i) for i in range(self.yaml["nc"])]  # default names
             # print([x.shape for x in self.forward(torch.zeros(1, ch, 64, 64))])
 
             # Build strides, anchors
@@ -1153,7 +1153,7 @@ if "yolov7" in yolo_name:
             # Init weights, biases
             initialize_weights(self)
             self.info()
-            logger.info('')
+            logger.info("")
 
         def forward(self, x, augment=False, profile=False):
             if augment:
@@ -1181,7 +1181,7 @@ if "yolov7" in yolo_name:
                 if m.f != -1:  # if not from previous layer
                     x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
 
-                if not hasattr(self, 'traced'):
+                if not hasattr(self, "traced"):
                     self.traced = False
 
                 if self.traced:
@@ -1204,14 +1204,14 @@ if "yolov7" in yolo_name:
                     for _ in range(10):
                         m(x.copy() if c else x)
                     dt.append((time_synchronized() - t) * 100)
-                    print('%10.1f%10.0f%10.1fms %-40s' % (o, m.np, dt[-1], m.type))
+                    print("%10.1f%10.0f%10.1fms %-40s" % (o, m.np, dt[-1], m.type))
 
                 x = m(x)  # run
 
                 y.append(x if m.i in self.save else None)  # save output
 
             if profile:
-                print('%.1fms total' % sum(dt))
+                print("%.1fms total" % sum(dt))
             return x
 
         def _initialize_biases(self, cf=None):  # initialize biases into Detect(), cf is class frequency
@@ -1269,7 +1269,7 @@ if "yolov7" in yolo_name:
             m = self.model[-1]  # Detect() module
             for mi in m.m:  # from
                 b = mi.bias.detach().view(m.na, -1).T  # conv.bias(255) to (3,85)
-                print(('%6g Conv2d.bias:' + '%10.3g' * 6) % (mi.weight.shape[1], *b[:5].mean(1).tolist(), b[5:].mean()))
+                print(("%6g Conv2d.bias:" + "%10.3g" * 6) % (mi.weight.shape[1], *b[:5].mean(1).tolist(), b[5:].mean()))
 
         # def _print_weights(self):
         #     for m in self.model.modules():
@@ -1277,7 +1277,7 @@ if "yolov7" in yolo_name:
         #             print('%10.3g' % (m.w.detach().sigmoid() * 2))  # shortcut weights
 
         def fuse(self):  # fuse model Conv2d() + BatchNorm2d() layers
-            print('Fusing layers... ')
+            print("Fusing layers... ")
             for m in self.model.modules():
                 if isinstance(m, RepConv):
                     # print(f" fuse_repvgg_block")
@@ -1285,9 +1285,9 @@ if "yolov7" in yolo_name:
                 elif isinstance(m, RepConv_OREPA):
                     # print(f" switch_to_deploy")
                     m.switch_to_deploy()
-                elif type(m) is Conv and hasattr(m, 'bn'):
+                elif type(m) is Conv and hasattr(m, "bn"):
                     m.conv = fuse_conv_and_bn(m.conv, m.bn)  # update conv
-                    delattr(m, 'bn')  # remove batchnorm
+                    delattr(m, "bn")  # remove batchnorm
                     m.forward = m.fuseforward  # update forward
                 elif isinstance(m, (IDetect, IAuxDetect)):
                     m.fuse()
@@ -1298,34 +1298,34 @@ if "yolov7" in yolo_name:
         def nms(self, mode=True):  # add or remove NMS module
             present = type(self.model[-1]) is NMS  # last layer is NMS
             if mode and not present:
-                print('Adding NMS... ')
+                print("Adding NMS... ")
                 m = NMS()  # module
                 m.f = -1  # from
                 m.i = self.model[-1].i + 1  # index
-                self.model.add_module(name='%s' % m.i, module=m)  # add
+                self.model.add_module(name="%s" % m.i, module=m)  # add
                 self.eval()
             elif not mode and present:
-                print('Removing NMS... ')
+                print("Removing NMS... ")
                 self.model = self.model[:-1]  # remove
             return self
 
         def autoshape(self):  # add autoShape module
-            print('Adding autoShape... ')
+            print("Adding autoShape... ")
             m = autoShape(self)  # wrap model
-            copy_attr(m, self, include=('yaml', 'nc', 'hyp', 'names', 'stride'), exclude=())  # copy attributes
+            copy_attr(m, self, include=("yaml", "nc", "hyp", "names", "stride"), exclude=())  # copy attributes
             return m
 
         def info(self, verbose=False, img_size=640):  # print model information
             model_info(self, verbose, img_size)
 
     def parse_model_YOLOV7(d, ch):  # model_dict, input_channels(3)
-        logger.info('\n%3s%18s%3s%10s  %-40s%-30s' % ('', 'from', 'n', 'params', 'module', 'arguments'))
-        anchors, nc, gd, gw = d['anchors'], d['nc'], d['depth_multiple'], d['width_multiple']
+        logger.info("\n%3s%18s%3s%10s  %-40s%-30s" % ("", "from", "n", "params", "module", "arguments"))
+        anchors, nc, gd, gw = d["anchors"], d["nc"], d["depth_multiple"], d["width_multiple"]
         na = (len(anchors[0]) // 2) if isinstance(anchors, list) else anchors  # number of anchors
         no = na * (nc + 5)  # number of outputs = anchors * (classes + 5)
 
         layers, save, c2 = [], [], ch[-1]  # layers, savelist, ch out
-        for i, (f, n, m, args) in enumerate(d['backbone'] + d['head']):  # from, number, module, args
+        for i, (f, n, m, args) in enumerate(d["backbone"] + d["head"]):  # from, number, module, args
             m = eval(m) if isinstance(m, str) else m  # eval strings
             for j, a in enumerate(args):
                 try:
@@ -1451,10 +1451,10 @@ if "yolov7" in yolo_name:
                 c2 = ch[f]
 
             m_ = nn.Sequential(*[m(*args) for _ in range(n)]) if n > 1 else m(*args)  # module
-            t = str(m)[8:-2].replace('__main__.', '')  # module type
+            t = str(m)[8:-2].replace("__main__.", "")  # module type
             np = sum([x.numel() for x in m_.parameters()])  # number params
             m_.i, m_.f, m_.type, m_.np = i, f, t, np  # attach index, 'from' index, type, number params
-            logger.info('%3s%18s%3s%10.0f  %-40s%-30s' % (i, f, n, np, t, args))  # print
+            logger.info("%3s%18s%3s%10.0f  %-40s%-30s" % (i, f, n, np, t, args))  # print
             save.extend(x % i for x in ([f] if isinstance(f, int) else f) if x != -1)  # append to savelist
             layers.append(m_)
             if i == 0:
@@ -1468,7 +1468,7 @@ if "yolov9" in yolo_name:
     ROOT = FILE.parents[1]  # YOLO root directory
     if str(ROOT) not in sys.path:
         sys.path.append(str(ROOT))  # add ROOT to PATH
-    if platform.system() != 'Windows':
+    if platform.system() != "Windows":
         ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
     from yolocode.yolov9.models.common import *
@@ -2098,16 +2098,16 @@ if "yolov9" in yolo_name:
             dt.append((time_sync() - t) * 100)
             if m == self.model[0]:
                 LOGGER.info(f"{'time (ms)':>10s} {'GFLOPs':>10s} {'params':>10s}  module")
-            LOGGER.info(f'{dt[-1]:10.2f} {o:10.2f} {m.np:10.0f}  {m.type}')
+            LOGGER.info(f"{dt[-1]:10.2f} {o:10.2f} {m.np:10.0f}  {m.type}")
             if c:
                 LOGGER.info(f"{sum(dt):10.2f} {'-':>10s} {'-':>10s}  Total")
 
         def fuse(self):  # fuse model Conv2d() + BatchNorm2d() layers
-            LOGGER.info('Fusing layers... ')
+            LOGGER.info("Fusing layers... ")
             for m in self.model.modules():
-                if isinstance(m, (Conv, DWConv)) and hasattr(m, 'bn'):
+                if isinstance(m, (Conv, DWConv)) and hasattr(m, "bn"):
                     m.conv = fuse_conv_and_bn(m.conv, m.bn)  # update conv
-                    delattr(m, 'bn')  # remove batchnorm
+                    delattr(m, "bn")  # remove batchnorm
                     m.forward = m.forward_fuse  # update forward
             self.info()
             return self
@@ -2128,7 +2128,7 @@ if "yolov9" in yolo_name:
 
     class DetectionModel(BaseModel):
         # YOLO detection model
-        def __init__(self, cfg='yolo.yaml', ch=3, nc=None, anchors=None):  # model, input channels, number of classes
+        def __init__(self, cfg="yolo.yaml", ch=3, nc=None, anchors=None):  # model, input channels, number of classes
             super().__init__()
             if isinstance(cfg, dict):
                 self.yaml = cfg  # model dict
@@ -2136,20 +2136,20 @@ if "yolov9" in yolo_name:
                 import yaml  # for torch hub
 
                 self.yaml_file = Path(cfg).name
-                with open(cfg, encoding='ascii', errors='ignore') as f:
+                with open(cfg, encoding="ascii", errors="ignore") as f:
                     self.yaml = yaml.safe_load(f)  # model dict
 
             # Define model
-            ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
-            if nc and nc != self.yaml['nc']:
+            ch = self.yaml["ch"] = self.yaml.get("ch", ch)  # input channels
+            if nc and nc != self.yaml["nc"]:
                 LOGGER.info(f"Overriding model.yaml nc={self.yaml['nc']} with nc={nc}")
-                self.yaml['nc'] = nc  # override yaml value
+                self.yaml["nc"] = nc  # override yaml value
             if anchors:
-                LOGGER.info(f'Overriding model.yaml anchors with anchors={anchors}')
-                self.yaml['anchors'] = round(anchors)  # override yaml value
+                LOGGER.info(f"Overriding model.yaml anchors with anchors={anchors}")
+                self.yaml["anchors"] = round(anchors)  # override yaml value
             self.model, self.save = parse_model(deepcopy(self.yaml), ch=[ch])  # model, savelist
-            self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
-            self.inplace = self.yaml.get('inplace', True)
+            self.names = [str(i) for i in range(self.yaml["nc"])]  # default names
+            self.inplace = self.yaml.get("inplace", True)
 
             # Build strides, anchors
             m = self.model[-1]  # Detect()
@@ -2176,7 +2176,7 @@ if "yolov9" in yolo_name:
             # Init weights, biases
             initialize_weights(self)
             self.info()
-            LOGGER.info('')
+            LOGGER.info("")
 
         def forward(self, x, augment=False, profile=False, visualize=False):
             if augment:
@@ -2229,7 +2229,7 @@ if "yolov9" in yolo_name:
 
     class SegmentationModel(DetectionModel):
         # YOLO segmentation model
-        def __init__(self, cfg='yolo-seg.yaml', ch=3, nc=None, anchors=None):
+        def __init__(self, cfg="yolo-seg.yaml", ch=3, nc=None, anchors=None):
             super().__init__(cfg, ch, nc, anchors)
 
     class ClassificationModel(BaseModel):
@@ -2244,9 +2244,9 @@ if "yolov9" in yolo_name:
                 model = model.model  # unwrap DetectMultiBackend
             model.model = model.model[:cutoff]  # backbone
             m = model.model[-1]  # last layer
-            ch = m.conv.in_channels if hasattr(m, 'conv') else m.cv1.conv.in_channels  # ch into module
+            ch = m.conv.in_channels if hasattr(m, "conv") else m.cv1.conv.in_channels  # ch into module
             c = Classify(ch, nc)  # Classify()
-            c.i, c.f, c.type = m.i, m.f, 'models.common.Classify'  # index, from, type
+            c.i, c.f, c.type = m.i, m.f, "models.common.Classify"  # index, from, type
             model.model[-1] = c  # replace
             self.model = model.model
             self.stride = model.stride
@@ -2260,7 +2260,7 @@ if "yolov9" in yolo_name:
     def parse_model(d, ch):  # model_dict, input_channels(3)
         # Parse a YOLO model.yaml dictionary
         LOGGER.info(f"\n{'':>3}{'from':>18}{'n':>3}{'params':>10}  {'module':<40}{'arguments':<30}")
-        anchors, nc, gd, gw, act = d['anchors'], d['nc'], d['depth_multiple'], d['width_multiple'], d.get('activation')
+        anchors, nc, gd, gw, act = d["anchors"], d["nc"], d["depth_multiple"], d["width_multiple"], d.get("activation")
         if act:
             Conv.default_act = eval(act)  # redefine default activation, i.e. Conv.default_act = nn.SiLU()
             LOGGER.info(f"{colorstr('activation:')} {act}")  # print
@@ -2268,7 +2268,7 @@ if "yolov9" in yolo_name:
         no = na * (nc + 5)  # number of outputs = anchors * (classes + 5)
 
         layers, save, c2 = [], [], ch[-1]  # layers, savelist, ch out
-        for i, (f, n, m, args) in enumerate(d['backbone'] + d['head']):  # from, number, module, args
+        for i, (f, n, m, args) in enumerate(d["backbone"] + d["head"]):  # from, number, module, args
             m = eval(m) if isinstance(m, str) else m  # eval strings
             for j, a in enumerate(args):
                 with contextlib.suppress(NameError):
@@ -2328,10 +2328,10 @@ if "yolov9" in yolo_name:
                 c2 = ch[f]
 
             m_ = nn.Sequential(*(m(*args) for _ in range(n))) if n > 1 else m(*args)  # module
-            t = str(m)[8:-2].replace('__main__.', '')  # module type
+            t = str(m)[8:-2].replace("__main__.", "")  # module type
             np = sum(x.numel() for x in m_.parameters())  # number params
             m_.i, m_.f, m_.type, m_.np = i, f, t, np  # attach index, 'from' index, type, number params
-            LOGGER.info(f'{i:>3}{str(f):>18}{n_:>3}{np:10.0f}  {t:<40}{str(args):<30}')  # print
+            LOGGER.info(f"{i:>3}{str(f):>18}{n_:>3}{np:10.0f}  {t:<40}{str(args):<30}")  # print
             save.extend(x % i for x in ([f] if isinstance(f, int) else f) if x != -1)  # append to savelist
             layers.append(m_)
             if i == 0:

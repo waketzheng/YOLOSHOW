@@ -14,7 +14,7 @@ from ..plots import Annotator, colors
 
 
 @threaded
-def plot_images_and_masks(images, targets, masks, paths=None, fname='images.jpg', names=None):
+def plot_images_and_masks(images, targets, masks, paths=None, fname="images.jpg", names=None):
     # Plot image grid with labels
     if isinstance(images, torch.Tensor):
         images = images.cpu().float().numpy()
@@ -60,7 +60,7 @@ def plot_images_and_masks(images, targets, masks, paths=None, fname='images.jpg'
             ti = targets[idx]  # image targets
 
             boxes = xywh2xyxy(ti[:, 2:6]).T
-            classes = ti[:, 1].astype('int')
+            classes = ti[:, 1].astype("int")
             labels = ti.shape[1] == 6  # labels if no conf column
             conf = None if labels else ti[:, 6]  # check for confidence presence (label vs pred)
 
@@ -77,7 +77,7 @@ def plot_images_and_masks(images, targets, masks, paths=None, fname='images.jpg'
                 color = colors(cls)
                 cls = names[cls] if names else cls
                 if labels or conf[j] > 0.25:  # 0.25 conf thresh
-                    label = f'{cls}' if labels else f'{cls} {conf[j]:.1f}'
+                    label = f"{cls}" if labels else f"{cls} {conf[j]:.1f}"
                     annotator.box_label(box, label, color=color)
 
             # Plot masks

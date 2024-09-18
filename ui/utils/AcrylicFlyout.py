@@ -136,8 +136,8 @@ class FlyoutView(FlyoutViewBase):
 
         self.closeButton.clicked.connect(self.closed)
 
-        self.titleLabel.setObjectName('titleLabel')
-        self.contentLabel.setObjectName('contentLabel')
+        self.titleLabel.setObjectName("titleLabel")
+        self.contentLabel.setObjectName("contentLabel")
         FluentStyleSheet.TEACHING_TIP.apply(self)
 
         self.__initLayout()
@@ -347,7 +347,7 @@ class Flyout(QWidget):
         return w
 
     def fadeOut(self):
-        self.fadeOutAni = QPropertyAnimation(self, b'windowOpacity', self)
+        self.fadeOutAni = QPropertyAnimation(self, b"windowOpacity", self)
         self.fadeOutAni.finished.connect(self.close)
         self.fadeOutAni.setStartValue(1)
         self.fadeOutAni.setEndValue(0)

@@ -83,7 +83,7 @@ class Ensemble(nn.ModuleList):
 
 
 class ORT_NMS(torch.autograd.Function):
-    '''ONNX-Runtime NMS operation'''
+    """ONNX-Runtime NMS operation"""
 
     @staticmethod
     def forward(
@@ -110,7 +110,7 @@ class ORT_NMS(torch.autograd.Function):
 
 
 class TRT_NMS(torch.autograd.Function):
-    '''TensorRT NMS operation'''
+    """TensorRT NMS operation"""
 
     @staticmethod
     def forward(
@@ -163,7 +163,7 @@ class TRT_NMS(torch.autograd.Function):
 
 
 class ONNX_ORT(nn.Module):
-    '''onnx module with ONNX-Runtime NMS operation.'''
+    """onnx module with ONNX-Runtime NMS operation."""
 
     def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=640, device=None, n_classes=80):
         super().__init__()
@@ -201,17 +201,17 @@ class ONNX_ORT(nn.Module):
 
 
 class ONNX_TRT(nn.Module):
-    '''onnx module with TensorRT NMS operation.'''
+    """onnx module with TensorRT NMS operation."""
 
     def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None, device=None, n_classes=80):
         super().__init__()
         assert max_wh is None
-        self.device = device if device else torch.device('cpu')
+        self.device = device if device else torch.device("cpu")
         self.background_class = (-1,)
         self.box_coding = (1,)
         self.iou_threshold = iou_thres
         self.max_obj = max_obj
-        self.plugin_version = '1'
+        self.plugin_version = "1"
         self.score_activation = 0
         self.score_threshold = score_thres
         self.n_classes = n_classes
@@ -240,11 +240,11 @@ class ONNX_TRT(nn.Module):
 
 
 class End2End(nn.Module):
-    '''export onnx or tensorrt model with NMS operation.'''
+    """export onnx or tensorrt model with NMS operation."""
 
     def __init__(self, model, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None, device=None, n_classes=80):
         super().__init__()
-        device = device if device else torch.device('cpu')
+        device = device if device else torch.device("cpu")
         assert isinstance(max_wh, (int)) or max_wh is None
         self.model = model.to(device)
         self.model.model[-1].end2end = True
@@ -264,7 +264,7 @@ def attempt_load(weights, map_location=None):
     for w in weights if isinstance(weights, list) else [weights]:
         attempt_download(w)
         ckpt = torch.load(w, map_location=map_location)  # load
-        model.append(ckpt['ema' if ckpt.get('ema') else 'model'].float().fuse().eval())  # FP32 model
+        model.append(ckpt["ema" if ckpt.get("ema") else "model"].float().fuse().eval())  # FP32 model
 
     # Compatibility updates
     for m in model.modules():
@@ -278,7 +278,7 @@ def attempt_load(weights, map_location=None):
     if len(model) == 1:
         return model[-1]  # return model
     else:
-        print('Ensemble created with %s\n' % weights)
-        for k in ['names', 'stride']:
+        print("Ensemble created with %s\n" % weights)
+        for k in ["names", "stride"]:
             setattr(model, k, getattr(model[-1], k))
         return model  # return ensemble

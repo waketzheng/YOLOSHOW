@@ -178,7 +178,7 @@ class Ui_MainWindow(object):
             "QLabel#title{\n"
             "    background-color: none;\n"
             "	font-size: 22px;\n"
-            "	font-family: \"Shojumaru\";\n"
+            '	font-family: "Shojumaru";\n'
             "	color: black;\n"
             "}\n"
             "Spacer{\n"
@@ -290,7 +290,7 @@ class Ui_MainWindow(object):
         self.top_intro.setStyleSheet(
             "QLabel{\n"
             "	color: black;\n"
-            "	font: 600 italic 9pt \"Segoe UI\";\n"
+            '	font: 600 italic 9pt "Segoe UI";\n'
             "	font-weight: bold;\n"
             "}\n"
             "QFrame{\n"
@@ -363,7 +363,7 @@ class Ui_MainWindow(object):
             "nter;\n"
             "	border-left: 23px solid transparent;\n"
             "	color: rgba(0, 0, 0, 199);\n"
-            "	font: 12pt \"Times New Roman\";\n"
+            '	font: 12pt "Times New Roman";\n'
             "	font-weight: bold;\n"
             "	padding-left: 15px;\n"
             "}\n"
@@ -777,7 +777,7 @@ class Ui_MainWindow(object):
         font.setItalic(True)
         self.label_5.setFont(font)
         self.label_5.setStyleSheet(
-            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" "font: 700 italic 16pt \"Segoe UI\";"
+            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" 'font: 700 italic 16pt "Segoe UI";'
         )
         self.label_5.setAlignment(Qt.AlignCenter)
         self.label_5.setIndent(0)
@@ -815,7 +815,7 @@ class Ui_MainWindow(object):
         font1.setItalic(False)
         font1.setUnderline(False)
         self.Class_num.setFont(font1)
-        self.Class_num.setStyleSheet("color: rgb(255, 255, 255);\n" "font: 17pt \"Microsoft YaHei UI\";")
+        self.Class_num.setStyleSheet("color: rgb(255, 255, 255);\n" 'font: 17pt "Microsoft YaHei UI";')
         self.Class_num.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_8.addWidget(self.Class_num, 0, Qt.AlignTop)
@@ -879,7 +879,7 @@ class Ui_MainWindow(object):
         self.label_6.setMaximumSize(QSize(16777215, 30))
         self.label_6.setFont(font)
         self.label_6.setStyleSheet(
-            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" "font: 700 italic 16pt \"Segoe UI\";"
+            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" 'font: 700 italic 16pt "Segoe UI";'
         )
         self.label_6.setAlignment(Qt.AlignCenter)
         self.label_6.setIndent(0)
@@ -911,7 +911,7 @@ class Ui_MainWindow(object):
         self.Target_num.setMinimumSize(QSize(0, 30))
         self.Target_num.setMaximumSize(QSize(16777215, 30))
         self.Target_num.setFont(font1)
-        self.Target_num.setStyleSheet("color: rgb(255, 255, 255);\n" "font: 17pt \"Microsoft YaHei UI\";")
+        self.Target_num.setStyleSheet("color: rgb(255, 255, 255);\n" 'font: 17pt "Microsoft YaHei UI";')
         self.Target_num.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_10.addWidget(self.Target_num, 0, Qt.AlignTop)
@@ -975,7 +975,7 @@ class Ui_MainWindow(object):
         self.label_7.setMaximumSize(QSize(16777215, 30))
         self.label_7.setFont(font)
         self.label_7.setStyleSheet(
-            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" "font: 700 italic 16pt \"Segoe UI\";"
+            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" 'font: 700 italic 16pt "Segoe UI";'
         )
         self.label_7.setMidLineWidth(-1)
         self.label_7.setAlignment(Qt.AlignCenter)
@@ -1009,7 +1009,7 @@ class Ui_MainWindow(object):
         self.fps_label.setMinimumSize(QSize(0, 30))
         self.fps_label.setMaximumSize(QSize(16777215, 30))
         self.fps_label.setFont(font1)
-        self.fps_label.setStyleSheet("color: rgb(255, 255, 255);\n" "font: 17pt \"Microsoft YaHei UI\";")
+        self.fps_label.setStyleSheet("color: rgb(255, 255, 255);\n" 'font: 17pt "Microsoft YaHei UI";')
         self.fps_label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_12.addWidget(self.fps_label, 0, Qt.AlignTop)
@@ -1073,7 +1073,7 @@ class Ui_MainWindow(object):
         self.label_8.setMaximumSize(QSize(16777215, 30))
         self.label_8.setFont(font)
         self.label_8.setStyleSheet(
-            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" "font: 700 italic 16pt \"Segoe UI\";"
+            "color: rgba(255, 255,255, 210);\n" "text-align:center;\n" 'font: 700 italic 16pt "Segoe UI";'
         )
         self.label_8.setMidLineWidth(-1)
         self.label_8.setAlignment(Qt.AlignCenter)
@@ -1113,7 +1113,7 @@ class Ui_MainWindow(object):
         font2.setItalic(False)
         font2.setUnderline(False)
         self.Model_label.setFont(font2)
-        self.Model_label.setStyleSheet("color: rgb(255, 255, 255);\n" "font: 15pt \"Microsoft YaHei UI\";\n" "")
+        self.Model_label.setStyleSheet("color: rgb(255, 255, 255);\n" 'font: 15pt "Microsoft YaHei UI";\n' "")
         self.Model_label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.Model_label, 0, Qt.AlignTop)
@@ -1192,7 +1192,7 @@ class Ui_MainWindow(object):
         self.progress_bar.setMaximumSize(QSize(16777215, 20))
         self.progress_bar.setStyleSheet(
             "QProgressBar{ \n"
-            "font: 700 10pt \"Nirmala UI\";\n"
+            'font: 700 10pt "Nirmala UI";\n'
             "color: #8EC5FC; \n"
             "text-align:center; \n"
             "border:3px solid rgb(255, 255, 255);\n"
@@ -1244,7 +1244,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.setContentsMargins(9, 0, 0, 0)
         self.message_bar = QLabel(self.rightbox_bottom)
         self.message_bar.setObjectName("message_bar")
-        self.message_bar.setStyleSheet("font: 700 11pt \"Segoe UI\";\n" "color: rgba(0, 0, 0, 140);")
+        self.message_bar.setStyleSheet('font: 700 11pt "Segoe UI";\n' "color: rgba(0, 0, 0, 140);")
 
         self.horizontalLayout_15.addWidget(self.message_bar)
 
@@ -1303,7 +1303,7 @@ class Ui_MainWindow(object):
         self.label_2 = QLabel(self.setting_page)
         self.label_2.setObjectName("label_2")
         self.label_2.setStyleSheet(
-            "padding-left: 0px;\n" "padding-bottom: 2px;\n" "color: white;\n" "font: 700 italic 16pt \"Segoe UI\";"
+            "padding-left: 0px;\n" "padding-bottom: 2px;\n" "color: white;\n" 'font: 700 italic 16pt "Segoe UI";'
         )
         self.label_2.setAlignment(Qt.AlignCenter)
 
@@ -1352,7 +1352,7 @@ class Ui_MainWindow(object):
             "padding-left: 40px;\n"
             "padding-bottom: 2px;\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "}"
         )
         self.ToggleBotton_6.setAutoDefault(False)
@@ -1372,7 +1372,7 @@ class Ui_MainWindow(object):
             "            border-radius: 10px;\n"
             "			padding: 2px;\n"
             "			text-align: left;\n"
-            "			font: 600 9pt \"Segoe UI\";\n"
+            '			font: 600 9pt "Segoe UI";\n'
             "			padding-left: 15px;\n"
             "}      \n"
             "ComboBox:on {\n"
@@ -1440,7 +1440,7 @@ class Ui_MainWindow(object):
             "padding-left: 40px;\n"
             "padding-bottom: 4px;\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "}"
         )
         self.ToggleBotton_2.setAutoDefault(False)
@@ -1466,7 +1466,7 @@ class Ui_MainWindow(object):
             "border: 0px solid lightgray;\n"
             "border-radius: 2px;\n"
             "background-color: rgba(255,255,255,90);\n"
-            "font: 600 9pt \"Segoe UI\";\n"
+            'font: 600 9pt "Segoe UI";\n'
             "}\n"
             "        \n"
             "QDoubleSpinBox::up-button {\n"
@@ -1567,7 +1567,7 @@ class Ui_MainWindow(object):
             "padding-left: 40px;\n"
             "padding-bottom: 4px;\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "}"
         )
         self.ToggleBotton_3.setAutoDefault(False)
@@ -1593,7 +1593,7 @@ class Ui_MainWindow(object):
             "border: 0px solid lightgray;\n"
             "border-radius: 2px;\n"
             "background-color: rgba(255,255,255,90);\n"
-            "font: 600 9pt \"Segoe UI\";\n"
+            'font: 600 9pt "Segoe UI";\n'
             "}\n"
             "        \n"
             "QDoubleSpinBox::up-button {\n"
@@ -1694,7 +1694,7 @@ class Ui_MainWindow(object):
             "padding-left: 40px;\n"
             "padding-bottom: 2px;\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "}"
         )
         self.ToggleBotton_4.setAutoDefault(False)
@@ -1719,7 +1719,7 @@ class Ui_MainWindow(object):
             "border: 0px solid lightgray;\n"
             "border-radius: 2px;\n"
             "background-color: rgba(255,255,255,90);\n"
-            "font: 600 9pt \"Segoe UI\";\n"
+            'font: 600 9pt "Segoe UI";\n'
             "}\n"
             "        \n"
             "QSpinBox::up-button {\n"
@@ -1818,7 +1818,7 @@ class Ui_MainWindow(object):
             "padding-left: 40px;\n"
             "padding-bottom: 4px;\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "}"
         )
         self.ToggleBotton_5.setAutoDefault(False)
@@ -1844,7 +1844,7 @@ class Ui_MainWindow(object):
             "border: 0px solid lightgray;\n"
             "border-radius: 2px;\n"
             "background-color: rgba(255,255,255,90);\n"
-            "font: 600 9pt \"Segoe UI\";\n"
+            'font: 600 9pt "Segoe UI";\n'
             "}\n"
             "        \n"
             "QDoubleSpinBox::up-button {\n"
@@ -1946,7 +1946,7 @@ class Ui_MainWindow(object):
             "	padding-left: 40px;\n"
             "	padding-bottom: 4px;\n"
             "	color: white;\n"
-            "	font: 700 13pt \"Nirmala UI\";\n"
+            '	font: 700 13pt "Nirmala UI";\n'
             "}\n"
             "QPushButton:hover{\n"
             "	background-color: rgba(114, 129, 214, 59);\n"
@@ -1961,7 +1961,7 @@ class Ui_MainWindow(object):
         self.save_status_button.setStyleSheet(
             "QCheckBox {\n"
             "color: white;\n"
-            "font: 700 13pt \"Nirmala UI\";\n"
+            'font: 700 13pt "Nirmala UI";\n'
             "        }\n"
             "QCheckBox::indicator {\n"
             "           padding-top: 1px;\n"
@@ -1996,7 +1996,7 @@ class Ui_MainWindow(object):
             "	padding-left: 40px;\n"
             "	padding-bottom: 4px;\n"
             "	color: white;\n"
-            "	font: 700 13pt \"Nirmala UI\";\n"
+            '	font: 700 13pt "Nirmala UI";\n'
             "}\n"
             "QPushButton:hover{\n"
             "	background-color: rgba(114, 129, 214, 59);\n"

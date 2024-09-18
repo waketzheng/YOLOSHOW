@@ -120,7 +120,7 @@ class ComputeLoss:
         h = model.hyp  # hyperparameters
 
         # Define criteria
-        BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h["cls_pw"]], device=device), reduction='none')
+        BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h["cls_pw"]], device=device), reduction="none")
 
         # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
         self.cp, self.cn = smooth_BCE(eps=h.get("label_smoothing", 0.0))  # positive, negative BCE targets
@@ -144,10 +144,10 @@ class ComputeLoss:
         self.device = device
 
         self.assigner = TaskAlignedAssigner(
-            topk=int(os.getenv('YOLOM', 10)),
+            topk=int(os.getenv("YOLOM", 10)),
             num_classes=self.nc,
-            alpha=float(os.getenv('YOLOA', 0.5)),
-            beta=float(os.getenv('YOLOB', 6.0)),
+            alpha=float(os.getenv("YOLOA", 0.5)),
+            beta=float(os.getenv("YOLOB", 6.0)),
         )
         self.bbox_loss = BboxLoss(m.reg_max - 1, use_dfl=use_dfl).to(device)
         self.proj = torch.arange(m.reg_max).float().to(device)  # / 120.0
@@ -199,7 +199,7 @@ class ComputeLoss:
             gt_labels, gt_bboxes = targets.split((1, 4), 2)  # cls, xyxy
             mask_gt = gt_bboxes.sum(2, keepdim=True).gt_(0)
         except RuntimeError as e:
-            raise TypeError('ERROR.') from e
+            raise TypeError("ERROR.") from e
 
         # pboxes
         pred_bboxes = self.bbox_decode(anchor_points, pred_distri)  # xyxy, (b, h*w, 4)
@@ -233,7 +233,7 @@ class ComputeLoss:
 
             # masks loss
             if tuple(masks.shape[-2:]) != (mask_h, mask_w):  # downsample
-                masks = F.interpolate(masks[None], (mask_h, mask_w), mode='nearest')[0]
+                masks = F.interpolate(masks[None], (mask_h, mask_w), mode="nearest")[0]
 
             for i in range(batch_size):
                 if fg_mask[i].sum():
@@ -259,7 +259,7 @@ class ComputeLoss:
     def single_mask_loss(self, gt_mask, pred, proto, xyxy, area):
         # Mask loss for one image
         pred_mask = (pred @ proto.view(self.nm, -1)).view(-1, *proto.shape[1:])  # (n, 32) @ (32,80,80) -> (n,80,80)
-        loss = F.binary_cross_entropy_with_logits(pred_mask, gt_mask, reduction='none')
+        loss = F.binary_cross_entropy_with_logits(pred_mask, gt_mask, reduction="none")
         # loss = sigmoid_focal_loss(pred_mask, gt_mask, alpha = .25, gamma = 2., reduction = 'none')
 
         return (crop_mask(loss, xyxy).mean(dim=(1, 2)) / area).mean()

@@ -62,7 +62,7 @@ class TableViewQWidget(QWidget):
                 self.tableView.setItem(i, j, QTableWidgetItem(info[j - 1]))
 
         self.tableView.verticalHeader().hide()
-        self.tableView.setHorizontalHeaderLabels(['Index', 'Class', 'Frequency'])
+        self.tableView.setHorizontalHeaderLabels(["Index", "Class", "Frequency"])
         self.tableView.resizeColumnsToContents()
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.setSortingEnabled(True)

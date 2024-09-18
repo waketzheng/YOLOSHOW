@@ -4,7 +4,7 @@ from ui.utils.TableView import TableViewQWidget
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
 import importlib
 import json
@@ -34,7 +34,7 @@ WIDTH_LEFT_BOX_EXTENDED = 200
 WIDTH_SETTING_BAR = 300
 WIDTH_LOGO = 60
 WINDOW_SPLIT_BODY = 20
-KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
+KEYS_LEFT_BOX_MENU = ["src_menu", "src_setting", "src_webcam", "src_folder", "src_camera", "src_vsmode", "src_setting"]
 ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
 
 loggertool = LoggerUtils()
@@ -67,10 +67,10 @@ class YOLOSHOWBASE:
 
     # 加载模型
     def initModel(self, model_thread, yoloname=None):
-        model_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
+        model_thread.new_model_name = f"{self.current_workpath}/ptfiles/" + self.ui.model_box.currentText()
         model_thread.progress_value = self.ui.progress_bar.maximum()
-        model_thread.send_input.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
-        model_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_rightbox, 'img'))
+        model_thread.send_input.connect(lambda x: self.showImg(x, self.ui.main_leftbox, "img"))
+        model_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_rightbox, "img"))
         model_thread.send_msg.connect(lambda x: self.showStatus(x))
         model_thread.send_progress.connect(lambda x: self.ui.progress_bar.setValue(x))
         model_thread.send_fps.connect(lambda x: self.ui.fps_label.setText(str(x)))
@@ -84,9 +84,9 @@ class YOLOSHOWBASE:
     # 阴影效果
     def shadowStyle(self, widget, Color, top_bottom=None):
         shadow = QGraphicsDropShadowEffect(self)
-        if 'top' in top_bottom and 'bottom' not in top_bottom:
+        if "top" in top_bottom and "bottom" not in top_bottom:
             shadow.setOffset(0, -5)
-        elif 'bottom' in top_bottom and 'top' not in top_bottom:
+        elif "bottom" in top_bottom and "top" not in top_bottom:
             shadow.setOffset(0, 5)
         else:
             shadow.setOffset(5, 5)
@@ -215,9 +215,9 @@ class YOLOSHOWBASE:
     # 选择照片/视频 并展示
     def selectFile(self):
         # 获取上次选择文件的路径
-        config_file = f'{self.current_workpath}/config/file.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        file_path = config['file_path']
+        config_file = f"{self.current_workpath}/config/file.json"
+        config = json.load(open(config_file, "r", encoding="utf-8"))
+        file_path = config["file_path"]
         if not os.path.exists(file_path):
             file_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
@@ -228,7 +228,7 @@ class YOLOSHOWBASE:
         )
         if file:
             self.inputPath = file
-            glo.set_value('inputPath', self.inputPath)
+            glo.set_value("inputPath", self.inputPath)
             # 如果是视频， 显示第一帧
             if ".avi" in self.inputPath or ".mp4" in self.inputPath:
                 # 显示第一帧
@@ -236,14 +236,14 @@ class YOLOSHOWBASE:
                 ret, frame = self.cap.read()
                 if ret:
                     # rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    self.showImg(frame, self.ui.main_leftbox, 'img')
+                    self.showImg(frame, self.ui.main_leftbox, "img")
             # 如果是图片 正常显示
             else:
-                self.showImg(self.inputPath, self.ui.main_leftbox, 'path')
-            self.showStatus('Loaded File：{}'.format(os.path.basename(self.inputPath)))
-            config['file_path'] = os.path.dirname(self.inputPath)
+                self.showImg(self.inputPath, self.ui.main_leftbox, "path")
+            self.showStatus("Loaded File：{}".format(os.path.basename(self.inputPath)))
+            config["file_path"] = os.path.dirname(self.inputPath)
             config_json = json.dumps(config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(config_file, "w", encoding="utf-8") as f:
                 f.write(config_json)
 
     # 选择摄像头
@@ -257,7 +257,7 @@ class YOLOSHOWBASE:
                 actions = []
 
                 for cam in cams:
-                    cam_name = f'Camera_{cam}'
+                    cam_name = f"Camera_{cam}"
                     actions.append(Action(cam_name))
                     popMenu.addAction(actions[-1])
                     actions[-1].triggered.connect(lambda: self.actionWebcam(cam))
@@ -268,23 +268,23 @@ class YOLOSHOWBASE:
                 pos = QPoint(x, y)
                 popMenu.exec(pos, aniType=MenuAnimationType.DROP_DOWN)
             else:
-                self.showStatus('No camera found !!!')
+                self.showStatus("No camera found !!!")
         except Exception as e:
-            self.showStatus('%s' % e)
+            self.showStatus("%s" % e)
 
     # 调用网络摄像头
     def actionWebcam(self, cam):
-        self.showStatus(f'Loading camera：Camera_{cam}')
+        self.showStatus(f"Loading camera：Camera_{cam}")
         self.thread = WebcamThread(cam)
-        self.thread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+        self.thread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, "img"))
         self.thread.start()
         self.inputPath = int(cam)
 
     # 选择文件夹
     def selectFolder(self):
-        config_file = f'{self.current_workpath}/config/folder.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        folder_path = config['folder_path']
+        config_file = f"{self.current_workpath}/config/folder.json"
+        config = json.load(open(config_file, "r", encoding="utf-8"))
+        folder_path = config["folder_path"]
         if not os.path.exists(folder_path):
             folder_path = os.getcwd()
         FolderPath = QFileDialog.getExistingDirectory(
@@ -302,10 +302,10 @@ class YOLOSHOWBASE:
             ]
             # self.yolov5_thread.source = Foldername
             self.inputPath = Foldername
-            self.showStatus('Loaded Folder：{}'.format(os.path.basename(FolderPath)))
-            config['folder_path'] = FolderPath
+            self.showStatus("Loaded Folder：{}".format(os.path.basename(FolderPath)))
+            config["folder_path"] = FolderPath
             config_json = json.dumps(config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(config_file, "w", encoding="utf-8") as f:
                 f.write(config_json)
 
     # 选择网络摄像头 Rtsp
@@ -317,26 +317,26 @@ class YOLOSHOWBASE:
             self.rtspUrl = rtspDialog.urlLineEdit.text()
         if self.rtspUrl:
             parsed_url = urlparse(self.rtspUrl)
-            if parsed_url.scheme == 'rtsp':
+            if parsed_url.scheme == "rtsp":
                 if not self.checkRtspUrl(self.rtspUrl):
-                    self.showStatus('Rtsp stream is not available')
+                    self.showStatus("Rtsp stream is not available")
                     return False
-                self.showStatus(f'Loading Rtsp：{self.rtspUrl}')
+                self.showStatus(f"Loading Rtsp：{self.rtspUrl}")
                 self.rtspThread = WebcamThread(self.rtspUrl)
-                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, "img"))
                 self.rtspThread.start()
                 self.inputPath = self.rtspUrl
-            elif parsed_url.scheme in ['http', 'https']:
+            elif parsed_url.scheme in ["http", "https"]:
                 if not self.checkHttpUrl(self.rtspUrl):
-                    self.showStatus('Http stream is not available')
+                    self.showStatus("Http stream is not available")
                     return False
-                self.showStatus(f'Loading Http：{self.rtspUrl}')
+                self.showStatus(f"Loading Http：{self.rtspUrl}")
                 self.rtspThread = WebcamThread(self.rtspUrl)
-                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, "img"))
                 self.rtspThread.start()
                 self.inputPath = self.rtspUrl
             else:
-                self.showStatus('URL is not an rtsp stream')
+                self.showStatus("URL is not an rtsp stream")
                 return False
 
     # 检测网络摄像头 Rtsp 是否连通
@@ -422,9 +422,9 @@ class YOLOSHOWBASE:
     # 导入模块
     def importModel(self):
         # 获取上次选择文件的路径
-        config_file = f'{self.current_workpath}/config/model.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        self.model_path = config['model_path']
+        config_file = f"{self.current_workpath}/config/model.json"
+        config = json.load(open(config_file, "r", encoding="utf-8"))
+        self.model_path = config["model_path"]
         if not os.path.exists(self.model_path):
             self.model_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
@@ -437,52 +437,52 @@ class YOLOSHOWBASE:
             fileptPath = os.path.join(self.pt_Path, os.path.basename(file))
             if not os.path.exists(fileptPath):
                 shutil.copy(file, self.pt_Path)
-                self.showStatus('Loaded Model：{}'.format(os.path.basename(file)))
-                config['model_path'] = os.path.dirname(file)
+                self.showStatus("Loaded Model：{}".format(os.path.basename(file)))
+                config["model_path"] = os.path.dirname(file)
                 config_json = json.dumps(config, ensure_ascii=False, indent=2)
-                with open(config_file, 'w', encoding='utf-8') as f:
+                with open(config_file, "w", encoding="utf-8") as f:
                     f.write(config_json)
             else:
-                self.showStatus('Model already exists')
+                self.showStatus("Model already exists")
 
     # 解决 Modelname 当中的 seg命名问题
     def checkSegName(self, modelname):
         if "yolov5" in modelname:
-            return bool(re.match(r'yolov5.?-seg.*\.pt$', modelname))
+            return bool(re.match(r"yolov5.?-seg.*\.pt$", modelname))
         elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-seg.*\.pt$', modelname))
+            return bool(re.match(r"yolov7.?-seg.*\.pt$", modelname))
         elif "yolov8" in modelname:
-            return bool(re.match(r'yolov8.?-seg.*\.pt$', modelname))
+            return bool(re.match(r"yolov8.?-seg.*\.pt$", modelname))
         elif "yolov9" in modelname:
-            return bool(re.match(r'yolov9.?-seg.*\.pt$', modelname))
+            return bool(re.match(r"yolov9.?-seg.*\.pt$", modelname))
         elif "yolov10" in modelname:
-            return bool(re.match(r'yolov10.?-seg.*\.pt$', modelname))
+            return bool(re.match(r"yolov10.?-seg.*\.pt$", modelname))
 
     # 解决  Modelname 当中的 pose命名问题
     def checkPoseName(self, modelname):
         if "yolov5" in modelname:
-            return bool(re.match(r'yolov5.?-pose.*\.pt$', modelname))
+            return bool(re.match(r"yolov5.?-pose.*\.pt$", modelname))
         elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-pose.*\.pt$', modelname))
+            return bool(re.match(r"yolov7.?-pose.*\.pt$", modelname))
         elif "yolov8" in modelname:
-            return bool(re.match(r'yolov8.?-pose.*\.pt$', modelname))
+            return bool(re.match(r"yolov8.?-pose.*\.pt$", modelname))
         elif "yolov9" in modelname:
-            return bool(re.match(r'yolov9.?-pose.*\.pt$', modelname))
+            return bool(re.match(r"yolov9.?-pose.*\.pt$", modelname))
         elif "yolov10" in modelname:
-            return bool(re.match(r'yolov10.?-pose.*\.pt$', modelname))
+            return bool(re.match(r"yolov10.?-pose.*\.pt$", modelname))
 
     # 解决  Modelname 当中的 pose命名问题
     def checkObbName(self, modelname):
         if "yolov5" in modelname:
-            return bool(re.match(r'yolov5.?-obb.*\.pt$', modelname))
+            return bool(re.match(r"yolov5.?-obb.*\.pt$", modelname))
         elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-obb.*\.pt$', modelname))
+            return bool(re.match(r"yolov7.?-obb.*\.pt$", modelname))
         elif "yolov8" in modelname:
-            return bool(re.match(r'yolov8.?-obb.*\.pt$', modelname))
+            return bool(re.match(r"yolov8.?-obb.*\.pt$", modelname))
         elif "yolov9" in modelname:
-            return bool(re.match(r'yolov9.?-obb.*\.pt$', modelname))
+            return bool(re.match(r"yolov9.?-obb.*\.pt$", modelname))
         elif "yolov10" in modelname:
-            return bool(re.match(r'yolov10.?-obb.*\.pt$', modelname))
+            return bool(re.match(r"yolov10.?-obb.*\.pt$", modelname))
 
     # 停止运行中的模型
     def quitRunningModel(self, stop_status=False):
@@ -500,31 +500,31 @@ class YOLOSHOWBASE:
     # 在MessageBar显示消息
     def showStatus(self, msg):
         self.ui.message_bar.setText(msg)
-        if msg == 'Finish Detection':
+        if msg == "Finish Detection":
             self.quitRunningModel()
             self.ui.run_button.setChecked(False)
             self.ui.progress_bar.setValue(0)
             self.ui.save_status_button.setEnabled(True)
-        elif msg == 'Stop Detection':
+        elif msg == "Stop Detection":
             self.quitRunningModel()
             self.ui.run_button.setChecked(False)
             self.ui.save_status_button.setEnabled(True)
             self.ui.progress_bar.setValue(0)
             self.ui.main_leftbox.clear()  # clear image display
             self.ui.main_rightbox.clear()
-            self.ui.Class_num.setText('--')
-            self.ui.Target_num.setText('--')
-            self.ui.fps_label.setText('--')
+            self.ui.Class_num.setText("--")
+            self.ui.Target_num.setText("--")
+            self.ui.fps_label.setText("--")
 
     # 导出结果状态判断
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:
-            self.showStatus('NOTE: Run image results are not saved.')
+            self.showStatus("NOTE: Run image results are not saved.")
             for yolo_thread in self.yolo_threads:
                 yolo_thread.save_res = False
             self.ui.save_button.setEnabled(False)
         elif self.ui.save_status_button.checkState() == Qt.CheckState.Checked:
-            self.showStatus('NOTE: Run image results will be saved.')
+            self.showStatus("NOTE: Run image results will be saved.")
             for yolo_thread in self.yolo_threads:
                 yolo_thread.save_res = True
             self.ui.save_button.setEnabled(True)
@@ -543,9 +543,9 @@ class YOLOSHOWBASE:
         ):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
-        config_file = f'{self.current_workpath}/config/save.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        save_path = config['save_path']
+        config_file = f"{self.current_workpath}/config/save.json"
+        config = json.load(open(config_file, "r", encoding="utf-8"))
+        save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
         is_folder = isinstance(self.inputPath, list)
@@ -602,9 +602,9 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=False)
-        config['save_path'] = self.OutputDir
+        config["save_path"] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
-        with open(config_file, 'w', encoding='utf-8') as f:
+        with open(config_file, "w", encoding="utf-8") as f:
             f.write(config_json)
 
     # 导出检测结果 --- 过程代码
@@ -618,24 +618,24 @@ class YOLOSHOWBASE:
                         destination_path = os.path.join(outdir, filename)
                         if os.path.isfile(source_path):
                             shutil.copy(source_path, destination_path)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
+                    self.showStatus("Saved Successfully in {}".format(outdir))
                 else:
-                    self.showStatus('Please wait for the result to be generated')
+                    self.showStatus("Please wait for the result to be generated")
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
         else:
             try:
                 if os.path.exists(yolo_thread.res_path):
                     shutil.copy(yolo_thread.res_path, outdir)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
+                    self.showStatus("Saved Successfully in {}".format(outdir))
                 else:
-                    self.showStatus('Please wait for the result to be generated')
+                    self.showStatus("Please wait for the result to be generated")
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
 
     # 加载 Setting 栏
     def loadConfig(self):
-        config_file = self.current_workpath + '/config/setting.json'
+        config_file = self.current_workpath + "/config/setting.json"
         iou = 0.45
         conf = 0.25
         delay = 10
@@ -652,20 +652,20 @@ class YOLOSHOWBASE:
                 "line_thickness": line_thickness,
             }
             new_json = json.dumps(new_config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(config_file, "w", encoding="utf-8") as f:
                 f.write(new_json)
         else:
-            config = json.load(open(config_file, 'r', encoding='utf-8'))
+            config = json.load(open(config_file, "r", encoding="utf-8"))
             if len(config) != 4:
                 iou = 0.45
                 conf = 0.25
                 delay = 10
                 line_thickness = 3
             else:
-                iou = config['iou']
-                conf = config['conf']
-                delay = config['delay']
-                line_thickness = config['line_thickness']
+                iou = config["iou"]
+                conf = config["conf"]
+                delay = config["delay"]
+                line_thickness = config["line_thickness"]
         self.ui.iou_spinbox.setValue(iou)
         self.ui.iou_slider.setValue(int(iou * 100))
         self.ui.conf_spinbox.setValue(conf)
@@ -677,9 +677,9 @@ class YOLOSHOWBASE:
 
     # 加载 pt 模型到 model_box
     def loadModels(self):
-        pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
-        pt_list = [file for file in pt_list if file.endswith('.pt')]
-        pt_list.sort(key=lambda x: os.path.getsize(f'{self.current_workpath}/ptfiles/' + x))
+        pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
+        pt_list = [file for file in pt_list if file.endswith(".pt")]
+        pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
 
         if pt_list != self.pt_list:
             self.pt_list = pt_list
@@ -694,11 +694,11 @@ class YOLOSHOWBASE:
 
     # 调整超参数
     def changeValue(self, x, flag):
-        if flag == 'iou_spinbox':
+        if flag == "iou_spinbox":
             self.ui.iou_slider.setValue(int(x * 100))  # The box value changes, changing the slider
-        elif flag == 'iou_slider':
+        elif flag == "iou_slider":
             self.ui.iou_spinbox.setValue(x / 100)  # The slider value changes, changing the box
-            self.showStatus('IOU Threshold: %s' % str(x / 100))
+            self.showStatus("IOU Threshold: %s" % str(x / 100))
             for yolo_thread in self.yolo_threads:
                 yolo_thread.iou_thres = x / 100
             # self.yolov5_thread.iou_thres = x / 100
@@ -709,11 +709,11 @@ class YOLOSHOWBASE:
             # self.yolov8seg_thread.iou_thres = x / 100
             # self.rtdetr_thread.iou_thres = x / 100
             # self.yolov8pose_thread.iou_thres = x / 100
-        elif flag == 'conf_spinbox':
+        elif flag == "conf_spinbox":
             self.ui.conf_slider.setValue(int(x * 100))
-        elif flag == 'conf_slider':
+        elif flag == "conf_slider":
             self.ui.conf_spinbox.setValue(x / 100)
-            self.showStatus('Conf Threshold: %s' % str(x / 100))
+            self.showStatus("Conf Threshold: %s" % str(x / 100))
             for yolo_thread in self.yolo_threads:
                 yolo_thread.conf_thres = x / 100
             # self.yolov5_thread.conf_thres = x / 100
@@ -724,11 +724,11 @@ class YOLOSHOWBASE:
             # self.yolov8seg_thread.conf_thres = x / 100
             # self.rtdetr_thread.conf_thres = x / 100
             # self.yolov8pose_thread.conf_thres = x / 100
-        elif flag == 'speed_spinbox':
+        elif flag == "speed_spinbox":
             self.ui.speed_slider.setValue(x)
-        elif flag == 'speed_slider':
+        elif flag == "speed_slider":
             self.ui.speed_spinbox.setValue(x)
-            self.showStatus('Delay: %s ms' % str(x))
+            self.showStatus("Delay: %s ms" % str(x))
             for yolo_thread in self.yolo_threads:
                 yolo_thread.speed_thres = x  # ms
             # self.yolov5_thread.speed_thres = x  # ms
@@ -739,11 +739,11 @@ class YOLOSHOWBASE:
             # self.yolov8seg_thread.speed_thres = x  # ms
             # self.rtdetr_thread.speed_thres = x  # ms
             # self.yolov8pose_thread.speed_thres = x  # ms
-        elif flag == 'line_spinbox':
+        elif flag == "line_spinbox":
             self.ui.line_slider.setValue(x)
-        elif flag == 'line_slider':
+        elif flag == "line_slider":
             self.ui.line_spinbox.setValue(x)
-            self.showStatus('Line Width: %s' % str(x))
+            self.showStatus("Line Width: %s" % str(x))
             for yolo_thread in self.yolo_threads:
                 yolo_thread.line_thickness = x
             # self.yolov5_thread.line_thickness = x
@@ -760,16 +760,16 @@ class YOLOSHOWBASE:
         for ptname in ptnamelst:
             ptbaseName = os.path.basename(ptname)
             if "yolov5" in ptbaseName and not self.checkSegName(ptbaseName):
-                glo.set_value('yoloname', "yolov5")
+                glo.set_value("yoloname", "yolov5")
                 self.reloadModel()
                 from models.yolo import Detect_YOLOV5
 
                 net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
+                for _module_index in range(len(net["model"].model)):
+                    _module = net["model"].model[_module_index]
                     _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
+                    if _module_name == "Detect":
+                        _yaml_lst = net["model"].yaml["backbone"] + net["model"].yaml["head"]
                         _ch = []
                         _yaml_detect_layers = _yaml_lst[-1][0]
                         for layer in _yaml_detect_layers:
@@ -780,19 +780,19 @@ class YOLOSHOWBASE:
                         yolov5_detect.__dict__.update(_module.__dict__)
                         for _new_param, _old_param in zip(yolov5_detect.parameters(), _module.parameters()):
                             _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov5_detect
+                        net["model"].model[_module_index] = yolov5_detect
                 torch.save(net, ptname)
             elif "yolov5" in ptbaseName and self.checkSegName(ptbaseName):
-                glo.set_value('yoloname', "yolov5-seg")
+                glo.set_value("yoloname", "yolov5-seg")
                 self.reloadModel()
                 from models.yolo import Segment_YOLOV5
 
                 net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
+                for _module_index in range(len(net["model"].model)):
+                    _module = net["model"].model[_module_index]
                     _module_name = _module.__class__.__name__
-                    if _module_name == 'Segment':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
+                    if _module_name == "Segment":
+                        _yaml_lst = net["model"].yaml["backbone"] + net["model"].yaml["head"]
                         _ch = []
                         _yaml_seg_layers = _yaml_lst[-1][0]
                         for layer in _yaml_seg_layers:
@@ -804,19 +804,19 @@ class YOLOSHOWBASE:
                         yolov5_seg.__dict__.update(_module.__dict__)
                         for _new_param, _old_param in zip(yolov5_seg.parameters(), _module.parameters()):
                             _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov5_seg
+                        net["model"].model[_module_index] = yolov5_seg
                 torch.save(net, ptname)
             elif "yolov7" in ptbaseName:
-                glo.set_value('yoloname', "yolov7")
+                glo.set_value("yoloname", "yolov7")
                 self.reloadModel()
                 from models.yolo import Detect_YOLOV7
 
                 net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
+                for _module_index in range(len(net["model"].model)):
+                    _module = net["model"].model[_module_index]
                     _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
+                    if _module_name == "Detect":
+                        _yaml_lst = net["model"].yaml["backbone"] + net["model"].yaml["head"]
                         _ch = []
                         _yaml_detect_layers = _yaml_lst[-1][0]
                         for layer in _yaml_detect_layers:
@@ -827,19 +827,19 @@ class YOLOSHOWBASE:
                         yolov7_detect.__dict__.update(_module.__dict__)
                         for _new_param, _old_param in zip(yolov7_detect.parameters(), _module.parameters()):
                             _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov7_detect
+                        net["model"].model[_module_index] = yolov7_detect
                 torch.save(net, ptname)
             elif "yolov9" in ptbaseName:
-                glo.set_value('yoloname', "yolov9")
+                glo.set_value("yoloname", "yolov9")
                 self.reloadModel()
                 from models.yolo import Detect_YOLOV9
 
                 net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
+                for _module_index in range(len(net["model"].model)):
+                    _module = net["model"].model[_module_index]
                     _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
+                    if _module_name == "Detect":
+                        _yaml_lst = net["model"].yaml["backbone"] + net["model"].yaml["head"]
                         _ch = []
                         _yaml_detect_layers = _yaml_lst[-1][0]
                         for layer in _yaml_detect_layers:
@@ -848,7 +848,7 @@ class YOLOSHOWBASE:
                         yolov9_detect = Detect_YOLOV9(nc=_nc, ch=_ch)
                         for _new_param, _old_param in zip(yolov9_detect.parameters(), _module.parameters()):
                             _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov9_detect
+                        net["model"].model[_module_index] = yolov9_detect
                 torch.save(net, ptname)
         glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov5-seg yolov8-seg rtdetr yolov8-pose")
         self.reloadModel()
@@ -856,7 +856,7 @@ class YOLOSHOWBASE:
     # 接受统计结果，然后写入json中
     def setResultStatistic(self, value):
         # 写入 JSON 文件
-        with open('config/result.json', 'w', encoding='utf-8') as file:
+        with open("config/result.json", "w", encoding="utf-8") as file:
             json.dump(value, file, ensure_ascii=False, indent=4)
         # --- 获取统计结果 + 绘制柱状图 --- #
         self.result_statistic = value
@@ -868,7 +868,7 @@ class YOLOSHOWBASE:
     def showResultStatics(self):
         self.resutl_statistic = dict()
         # 读取 JSON 文件
-        with open(self.current_workpath + r'\config\result.json', 'r', encoding='utf-8') as file:
+        with open(self.current_workpath + r"\config\result.json", "r", encoding="utf-8") as file:
             self.result_statistic = json.load(file)
         if self.result_statistic:
             # 创建新字典，使用中文键
@@ -879,15 +879,15 @@ class YOLOSHOWBASE:
                     result_str += "\n"
 
             view = AcrylicFlyoutView(
-                title='Detected Target Category Distribution (Percentage)',
+                title="Detected Target Category Distribution (Percentage)",
                 content=result_str,
-                image=self.current_workpath + r'\config\result.png',
+                image=self.current_workpath + r"\config\result.png",
                 isClosable=True,
             )
 
         else:
             view = AcrylicFlyoutView(
-                title='Result Statistics',
+                title="Result Statistics",
                 content="No completed target detection results detected, please execute the detection task first!",
                 isClosable=True,
             )

@@ -34,12 +34,12 @@ except (ImportError, AssertionError):
     os.system("pip install -U ultralytics")
     import ultralytics
 
-yoloname = glo.get_value('yoloname')
-yoloname1 = glo.get_value('yoloname1')
-yoloname2 = glo.get_value('yoloname2')
+yoloname = glo.get_value("yoloname")
+yoloname1 = glo.get_value("yoloname1")
+yoloname2 = glo.get_value("yoloname2")
 
 yolo_name = (
-    ((str(yoloname1) if yoloname1 else '') + (str(yoloname2) if str(yoloname2) else ''))
+    ((str(yoloname1) if yoloname1 else "") + (str(yoloname2) if str(yoloname2) else ""))
     if yoloname1 or yoloname2
     else yoloname
 )
@@ -1630,7 +1630,7 @@ if "yolov7" in yolo_name:
             self.model = model.eval()
 
         def autoshape(self):
-            print('autoShape already enabled, skipping... ')  # model already converted to model.autoshape()
+            print("autoShape already enabled, skipping... ")  # model already converted to model.autoshape()
             return self
 
         @torch.no_grad()
@@ -1647,22 +1647,22 @@ if "yolov7" in yolo_name:
             t = [time_synchronized()]
             p = next(self.model.parameters())  # for device and type
             if isinstance(imgs, torch.Tensor):  # torch
-                with amp.autocast(enabled=p.device.type != 'cpu'):
+                with amp.autocast(enabled=p.device.type != "cpu"):
                     return self.model(imgs.to(p.device).type_as(p), augment, profile)  # inference
 
             # Pre-process
             n, imgs = (len(imgs), imgs) if isinstance(imgs, list) else (1, [imgs])  # number of images, list of images
             shape0, shape1, files = [], [], []  # image and inference shapes, filenames
             for i, im in enumerate(imgs):
-                f = f'image{i}'  # filename
+                f = f"image{i}"  # filename
                 if isinstance(im, str):  # filename or uri
                     im, f = (
-                        np.asarray(Image.open(requests.get(im, stream=True).raw if im.startswith('http') else im)),
+                        np.asarray(Image.open(requests.get(im, stream=True).raw if im.startswith("http") else im)),
                         im,
                     )
                 elif isinstance(im, Image.Image):  # PIL Image
-                    im, f = np.asarray(im), getattr(im, 'filename', f) or f
-                files.append(Path(f).with_suffix('.jpg').name)
+                    im, f = np.asarray(im), getattr(im, "filename", f) or f
+                files.append(Path(f).with_suffix(".jpg").name)
                 if im.shape[0] < 5:  # image in CHW
                     im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
                 im = im[:, :, :3] if im.ndim == 3 else np.tile(im[:, :, None], 3)  # enforce 3ch input
@@ -1678,7 +1678,7 @@ if "yolov7" in yolo_name:
             x = torch.from_numpy(x).to(p.device).type_as(p) / 255.0  # uint8 to fp16/32
             t.append(time_synchronized())
 
-            with amp.autocast(enabled=p.device.type != 'cpu'):
+            with amp.autocast(enabled=p.device.type != "cpu"):
                 # Inference
                 y = self.model(x, augment, profile)[0]  # forward
                 t.append(time_synchronized())
@@ -1711,41 +1711,41 @@ if "yolov7" in yolo_name:
             self.t = tuple((times[i + 1] - times[i]) * 1000 / self.n for i in range(3))  # timestamps (ms)
             self.s = shape  # inference BCHW shape
 
-        def display(self, pprint=False, show=False, save=False, render=False, save_dir=''):
+        def display(self, pprint=False, show=False, save=False, render=False, save_dir=""):
             colors = color_list()
             for i, (img, pred) in enumerate(zip(self.imgs, self.pred)):
-                str = f'image {i + 1}/{len(self.pred)}: {img.shape[0]}x{img.shape[1]} '
+                str = f"image {i + 1}/{len(self.pred)}: {img.shape[0]}x{img.shape[1]} "
                 if pred is not None:
                     for c in pred[:, -1].unique():
                         n = (pred[:, -1] == c).sum()  # detections per class
                         str += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "  # add to string
                     if show or save or render:
                         for *box, conf, cls in pred:  # xyxy, confidence, class
-                            label = f'{self.names[int(cls)]} {conf:.2f}'
+                            label = f"{self.names[int(cls)]} {conf:.2f}"
                             plot_one_box(box, img, label=label, color=colors[int(cls) % 10])
                 img = Image.fromarray(img.astype(np.uint8)) if isinstance(img, np.ndarray) else img  # from np
                 if pprint:
-                    print(str.rstrip(', '))
+                    print(str.rstrip(", "))
                 if show:
                     img.show(self.files[i])  # show
                 if save:
                     f = self.files[i]
                     img.save(Path(save_dir) / f)  # save
-                    print(f"{'Saved' * (i == 0)} {f}", end=',' if i < self.n - 1 else f' to {save_dir}\n')
+                    print(f"{'Saved' * (i == 0)} {f}", end="," if i < self.n - 1 else f" to {save_dir}\n")
                 if render:
                     self.imgs[i] = np.asarray(img)
 
         def print(self):
             self.display(pprint=True)  # print results
             print(
-                f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {tuple(self.s)}' % self.t
+                f"Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {tuple(self.s)}" % self.t
             )
 
         def show(self):
             self.display(show=True)  # show results
 
-        def save(self, save_dir='runs/hub/exp'):
-            save_dir = increment_path(save_dir, exist_ok=save_dir != 'runs/hub/exp')  # increment save_dir
+        def save(self, save_dir="runs/hub/exp"):
+            save_dir = increment_path(save_dir, exist_ok=save_dir != "runs/hub/exp")  # increment save_dir
             Path(save_dir).mkdir(parents=True, exist_ok=True)
             self.display(save=True, save_dir=save_dir)  # save results
 
@@ -1756,9 +1756,9 @@ if "yolov7" in yolo_name:
         def pandas(self):
             # return detections as pandas DataFrames, i.e. print(results.pandas().xyxy[0])
             new = copy(self)  # return copy
-            ca = 'xmin', 'ymin', 'xmax', 'ymax', 'confidence', 'class', 'name'  # xyxy columns
-            cb = 'xcenter', 'ycenter', 'width', 'height', 'confidence', 'class', 'name'  # xywh columns
-            for k, c in zip(['xyxy', 'xyxyn', 'xywh', 'xywhn'], [ca, ca, cb, cb]):
+            ca = "xmin", "ymin", "xmax", "ymax", "confidence", "class", "name"  # xyxy columns
+            cb = "xcenter", "ycenter", "width", "height", "confidence", "class", "name"  # xywh columns
+            for k, c in zip(["xyxy", "xyxyn", "xywh", "xywhn"], [ca, ca, cb, cb]):
                 a = [
                     [x[:5] + [int(x[5]), self.names[int(x[5])]] for x in x.tolist()] for x in getattr(self, k)
                 ]  # update
@@ -1769,7 +1769,7 @@ if "yolov7" in yolo_name:
             # return a list of Detections objects, i.e. 'for result in results.tolist():'
             x = [Detections([self.imgs[i]], [self.pred[i]], self.names, self.s) for i in range(self.n)]
             for d in x:
-                for k in ['imgs', 'pred', 'xyxy', 'xyxyn', 'xywh', 'xywhn']:
+                for k in ["imgs", "pred", "xyxy", "xyxyn", "xywh", "xywhn"]:
                     setattr(d, k, getattr(d, k)[0])  # pop out of list
             return x
 
@@ -1836,7 +1836,7 @@ if "yolov7" in yolo_name:
                 self.bn = nn.BatchNorm2d(num_features=out_channels)
 
         def forward(self, x):
-            if hasattr(self, 'bn'):
+            if hasattr(self, "bn"):
                 return self.nonlinear(self.bn(self.conv(x)))
             else:
                 return self.nonlinear(self.conv(x))
@@ -1857,8 +1857,8 @@ if "yolov7" in yolo_name:
             conv.bias.data = bias
             for para in self.parameters():
                 para.detach_()
-            self.__delattr__('conv')
-            self.__delattr__('bn')
+            self.__delattr__("conv")
+            self.__delattr__("bn")
             self.conv = conv
 
     class OREPA_3x3_RepConv(nn.Module):
@@ -1914,7 +1914,7 @@ if "yolov7" in yolo_name:
                 self.weight_rbr_avg_conv.data
                 self.weight_rbr_pfir_conv.data
                 self.register_buffer(
-                    'weight_rbr_avg_avg', torch.ones(kernel_size, kernel_size).mul(1.0 / kernel_size / kernel_size)
+                    "weight_rbr_avg_avg", torch.ones(kernel_size, kernel_size).mul(1.0 / kernel_size / kernel_size)
                 )
                 self.branch_counter += 1
 
@@ -1935,7 +1935,7 @@ if "yolov7" in yolo_name:
                 for i in range(in_channels):
                     id_value[i, i % int(in_channels / self.groups), 0, 0] = 1
                 id_tensor = torch.from_numpy(id_value).type_as(self.weight_rbr_1x1_kxk_idconv1)
-                self.register_buffer('id_tensor', id_tensor)
+                self.register_buffer("id_tensor", id_tensor)
 
             else:
                 self.weight_rbr_1x1_kxk_conv1 = nn.Parameter(
@@ -1982,27 +1982,27 @@ if "yolov7" in yolo_name:
                         else:
                             prior_tensor[i, h, w] = math.cos(math.pi * (w + 0.5) * (i + 1 - half_fg) / 3)
 
-            self.register_buffer('weight_rbr_prior', prior_tensor)
+            self.register_buffer("weight_rbr_prior", prior_tensor)
 
         def weight_gen(self):
-            weight_rbr_origin = torch.einsum('oihw,o->oihw', self.weight_rbr_origin, self.vector[0, :])
+            weight_rbr_origin = torch.einsum("oihw,o->oihw", self.weight_rbr_origin, self.vector[0, :])
 
             weight_rbr_avg = torch.einsum(
-                'oihw,o->oihw',
-                torch.einsum('oihw,hw->oihw', self.weight_rbr_avg_conv, self.weight_rbr_avg_avg),
+                "oihw,o->oihw",
+                torch.einsum("oihw,hw->oihw", self.weight_rbr_avg_conv, self.weight_rbr_avg_avg),
                 self.vector[1, :],
             )
 
             weight_rbr_pfir = torch.einsum(
-                'oihw,o->oihw',
-                torch.einsum('oihw,ohw->oihw', self.weight_rbr_pfir_conv, self.weight_rbr_prior),
+                "oihw,o->oihw",
+                torch.einsum("oihw,ohw->oihw", self.weight_rbr_pfir_conv, self.weight_rbr_prior),
                 self.vector[2, :],
             )
 
             weight_rbr_1x1_kxk_conv1 = None
-            if hasattr(self, 'weight_rbr_1x1_kxk_idconv1'):
+            if hasattr(self, "weight_rbr_1x1_kxk_idconv1"):
                 weight_rbr_1x1_kxk_conv1 = (self.weight_rbr_1x1_kxk_idconv1 + self.id_tensor).squeeze()
-            elif hasattr(self, 'weight_rbr_1x1_kxk_conv1'):
+            elif hasattr(self, "weight_rbr_1x1_kxk_conv1"):
                 weight_rbr_1x1_kxk_conv1 = self.weight_rbr_1x1_kxk_conv1.squeeze()
             else:
                 raise NotImplementedError
@@ -2015,15 +2015,15 @@ if "yolov7" in yolo_name:
                 weight_rbr_1x1_kxk_conv1 = weight_rbr_1x1_kxk_conv1.view(g, int(t / g), ig)
                 weight_rbr_1x1_kxk_conv2 = weight_rbr_1x1_kxk_conv2.view(g, int(o / g), tg, h, w)
                 weight_rbr_1x1_kxk = torch.einsum(
-                    'gti,gothw->goihw', weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2
+                    "gti,gothw->goihw", weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2
                 ).view(o, ig, h, w)
             else:
-                weight_rbr_1x1_kxk = torch.einsum('ti,othw->oihw', weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2)
+                weight_rbr_1x1_kxk = torch.einsum("ti,othw->oihw", weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2)
 
-            weight_rbr_1x1_kxk = torch.einsum('oihw,o->oihw', weight_rbr_1x1_kxk, self.vector[3, :])
+            weight_rbr_1x1_kxk = torch.einsum("oihw,o->oihw", weight_rbr_1x1_kxk, self.vector[3, :])
 
             weight_rbr_gconv = self.dwsc2full(self.weight_rbr_gconv_dw, self.weight_rbr_gconv_pw, self.in_channels)
-            weight_rbr_gconv = torch.einsum('oihw,o->oihw', weight_rbr_gconv, self.vector[4, :])
+            weight_rbr_gconv = torch.einsum("oihw,o->oihw", weight_rbr_gconv, self.vector[4, :])
 
             weight = weight_rbr_origin + weight_rbr_avg + weight_rbr_1x1_kxk + weight_rbr_pfir + weight_rbr_gconv
 
@@ -2037,7 +2037,7 @@ if "yolov7" in yolo_name:
             weight_dw = weight_dw.view(groups, tg, ig, h, w)
             weight_pw = weight_pw.squeeze().view(o, groups, tg)
 
-            weight_dsc = torch.einsum('gtihw,ogt->ogihw', weight_dw, weight_pw)
+            weight_dsc = torch.einsum("gtihw,ogt->ogihw", weight_dw, weight_pw)
             return weight_dsc.view(o, i, h, w)
 
         def forward(self, inputs):
@@ -2064,7 +2064,7 @@ if "yolov7" in yolo_name:
             padding=1,
             dilation=1,
             groups=1,
-            padding_mode='zeros',
+            padding_mode="zeros",
             deploy=False,
             use_se=False,
             nonlinear=nn.SiLU(),
@@ -2131,10 +2131,10 @@ if "yolov7" in yolo_name:
                     groups=groups,
                     dilation=1,
                 )
-                print('RepVGG Block, identity = ', self.rbr_identity)
+                print("RepVGG Block, identity = ", self.rbr_identity)
 
         def forward(self, inputs):
-            if hasattr(self, 'rbr_reparam'):
+            if hasattr(self, "rbr_reparam"):
                 return self.nonlinearity(self.se(self.rbr_reparam(inputs)))
 
             if self.rbr_identity is None:
@@ -2210,7 +2210,7 @@ if "yolov7" in yolo_name:
                 beta = branch.bn.bias
                 eps = branch.bn.eps
             else:
-                if not hasattr(self, 'id_tensor'):
+                if not hasattr(self, "id_tensor"):
                     input_dim = self.in_channels // self.groups
                     kernel_value = np.zeros((self.in_channels, input_dim, 3, 3), dtype=np.float32)
                     for i in range(self.in_channels):
@@ -2227,7 +2227,7 @@ if "yolov7" in yolo_name:
             return kernel * t, beta - running_mean * gamma / std
 
         def switch_to_deploy(self):
-            if hasattr(self, 'rbr_reparam'):
+            if hasattr(self, "rbr_reparam"):
                 return
             print("RepConv_OREPA.switch_to_deploy")
             kernel, bias = self.get_equivalent_kernel_bias()
@@ -2245,10 +2245,10 @@ if "yolov7" in yolo_name:
             self.rbr_reparam.bias.data = bias
             for para in self.parameters():
                 para.detach_()
-            self.__delattr__('rbr_dense')
-            self.__delattr__('rbr_1x1')
-            if hasattr(self, 'rbr_identity'):
-                self.__delattr__('rbr_identity')
+            self.__delattr__("rbr_dense")
+            self.__delattr__("rbr_1x1")
+            if hasattr(self, "rbr_identity"):
+                self.__delattr__("rbr_identity")
 
     class WindowAttention(nn.Module):
         def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0.0, proj_drop=0.0):
@@ -2339,7 +2339,7 @@ if "yolov7" in yolo_name:
 
     def window_partition(x, window_size):
         B, H, W, C = x.shape
-        assert H % window_size == 0, 'feature map h and w can not divide by window size'
+        assert H % window_size == 0, "feature map h and w can not divide by window size"
         x = x.view(B, H // window_size, window_size, W // window_size, window_size, C)
         windows = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(-1, window_size, window_size, C)
         return windows
@@ -2681,8 +2681,8 @@ if "yolov7" in yolo_name:
 
         def extra_repr(self) -> str:
             return (
-                f'dim={self.dim}, window_size={self.window_size}, '
-                f'pretrained_window_size={self.pretrained_window_size}, num_heads={self.num_heads}'
+                f"dim={self.dim}, window_size={self.window_size}, "
+                f"pretrained_window_size={self.pretrained_window_size}, num_heads={self.num_heads}"
             )
 
         def flops(self, N):
@@ -3618,7 +3618,7 @@ if "yolov9" in yolo_name:
                 beta = branch.bn.bias
                 eps = branch.bn.eps
             elif isinstance(branch, nn.BatchNorm2d):
-                if not hasattr(self, 'id_tensor'):
+                if not hasattr(self, "id_tensor"):
                     input_dim = self.c1 // self.g
                     kernel_value = np.zeros((self.c1, input_dim, 3, 3), dtype=np.float32)
                     for i in range(self.c1):
@@ -3635,7 +3635,7 @@ if "yolov9" in yolo_name:
             return kernel * t, beta - running_mean * gamma / std
 
         def fuse_convs(self):
-            if hasattr(self, 'conv'):
+            if hasattr(self, "conv"):
                 return
             kernel, bias = self.get_equivalent_kernel_bias()
             self.conv = nn.Conv2d(
@@ -3652,14 +3652,14 @@ if "yolov9" in yolo_name:
             self.conv.bias.data = bias
             for para in self.parameters():
                 para.detach_()
-            self.__delattr__('conv1')
-            self.__delattr__('conv2')
-            if hasattr(self, 'nm'):
-                self.__delattr__('nm')
-            if hasattr(self, 'bn'):
-                self.__delattr__('bn')
-            if hasattr(self, 'id_tensor'):
-                self.__delattr__('id_tensor')
+            self.__delattr__("conv1")
+            self.__delattr__("conv2")
+            if hasattr(self, "nm"):
+                self.__delattr__("nm")
+            if hasattr(self, "bn"):
+                self.__delattr__("bn")
+            if hasattr(self, "id_tensor"):
+                self.__delattr__("id_tensor")
 
     class SP(nn.Module):
         def __init__(self, k=3, s=1):
@@ -3964,13 +3964,13 @@ if "yolov9" in yolo_name:
 
         def forward(self, xs):
             target_size = xs[-1].shape[2:]
-            res = [F.interpolate(x[self.idx[i]], size=target_size, mode='nearest') for i, x in enumerate(xs[:-1])]
+            res = [F.interpolate(x[self.idx[i]], size=target_size, mode="nearest") for i, x in enumerate(xs[:-1])]
             out = torch.sum(torch.stack(res + xs[-1:]), dim=0)
             return out
 
     class DetectMultiBackend_YOLOv9(nn.Module):
         # YOLO MultiBackend class for python inference on various backends
-        def __init__(self, weights='yolo.pt', device=torch.device('cpu'), dnn=False, data=None, fp16=False, fuse=True):
+        def __init__(self, weights="yolo.pt", device=torch.device("cpu"), dnn=False, data=None, fp16=False, fuse=True):
             # Usage:
             #   PyTorch:              weights = *.pt
             #   TorchScript:                    *.torchscript
@@ -3997,7 +3997,7 @@ if "yolov9" in yolo_name:
             fp16 &= pt or jit or onnx or engine  # FP16
             nhwc = coreml or saved_model or pb or tflite or edgetpu  # BHWC formats (vs torch BCWH)
             stride = 32  # default stride
-            cuda = torch.cuda.is_available() and device.type != 'cpu'  # use CUDA
+            cuda = torch.cuda.is_available() and device.type != "cpu"  # use CUDA
             if not (pt or triton):
                 w = attempt_download_YOLOV9(w)  # download if not local
 
@@ -4006,61 +4006,61 @@ if "yolov9" in yolo_name:
                     weights if isinstance(weights, list) else w, device=device, inplace=True, fuse=fuse
                 )
                 stride = max(int(model.stride.max()), 32)  # model stride
-                names = model.module.names if hasattr(model, 'module') else model.names  # get class names
+                names = model.module.names if hasattr(model, "module") else model.names  # get class names
                 model.half() if fp16 else model.float()
                 self.model = model  # explicitly assign for to(), cpu(), cuda(), half()
             elif jit:  # TorchScript
-                LOGGER.info(f'Loading {w} for TorchScript inference...')
-                extra_files = {'config.txt': ''}  # model metadata
+                LOGGER.info(f"Loading {w} for TorchScript inference...")
+                extra_files = {"config.txt": ""}  # model metadata
                 model = torch.jit.load(w, _extra_files=extra_files, map_location=device)
                 model.half() if fp16 else model.float()
-                if extra_files['config.txt']:  # load metadata dict
+                if extra_files["config.txt"]:  # load metadata dict
                     d = json.loads(
-                        extra_files['config.txt'],
+                        extra_files["config.txt"],
                         object_hook=lambda d: {int(k) if k.isdigit() else k: v for k, v in d.items()},
                     )
-                    stride, names = int(d['stride']), d['names']
+                    stride, names = int(d["stride"]), d["names"]
             elif dnn:  # ONNX OpenCV DNN
-                LOGGER.info(f'Loading {w} for ONNX OpenCV DNN inference...')
-                check_requirements('opencv-python>=4.5.4')
+                LOGGER.info(f"Loading {w} for ONNX OpenCV DNN inference...")
+                check_requirements("opencv-python>=4.5.4")
                 net = cv2.dnn.readNetFromONNX(w)
             elif onnx:  # ONNX Runtime
-                LOGGER.info(f'Loading {w} for ONNX Runtime inference...')
-                check_requirements(('onnx', 'onnxruntime-gpu' if cuda else 'onnxruntime'))
+                LOGGER.info(f"Loading {w} for ONNX Runtime inference...")
+                check_requirements(("onnx", "onnxruntime-gpu" if cuda else "onnxruntime"))
                 import onnxruntime
 
-                providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
+                providers = ["CUDAExecutionProvider", "CPUExecutionProvider"] if cuda else ["CPUExecutionProvider"]
                 session = onnxruntime.InferenceSession(w, providers=providers)
                 output_names = [x.name for x in session.get_outputs()]
                 meta = session.get_modelmeta().custom_metadata_map  # metadata
-                if 'stride' in meta:
-                    stride, names = int(meta['stride']), eval(meta['names'])
+                if "stride" in meta:
+                    stride, names = int(meta["stride"]), eval(meta["names"])
             elif xml:  # OpenVINO
-                LOGGER.info(f'Loading {w} for OpenVINO inference...')
-                check_requirements('openvino')  # requires openvino-dev: https://pypi.org/project/openvino-dev/
+                LOGGER.info(f"Loading {w} for OpenVINO inference...")
+                check_requirements("openvino")  # requires openvino-dev: https://pypi.org/project/openvino-dev/
                 from openvino.runtime import Core, Layout, get_batch
 
                 ie = Core()
                 if not Path(w).is_file():  # if not *.xml
-                    w = next(Path(w).glob('*.xml'))  # get *.xml file from *_openvino_model dir
-                network = ie.read_model(model=w, weights=Path(w).with_suffix('.bin'))
+                    w = next(Path(w).glob("*.xml"))  # get *.xml file from *_openvino_model dir
+                network = ie.read_model(model=w, weights=Path(w).with_suffix(".bin"))
                 if network.get_parameters()[0].get_layout().empty:
                     network.get_parameters()[0].set_layout(Layout("NCHW"))
                 batch_dim = get_batch(network)
                 if batch_dim.is_static:
                     batch_size = batch_dim.get_length()
                 executable_network = ie.compile_model(network, device_name="CPU")  # device_name="MYRIAD" for Intel NCS2
-                stride, names = self._load_metadata(Path(w).with_suffix('.yaml'))  # load metadata
+                stride, names = self._load_metadata(Path(w).with_suffix(".yaml"))  # load metadata
             elif engine:  # TensorRT
-                LOGGER.info(f'Loading {w} for TensorRT inference...')
+                LOGGER.info(f"Loading {w} for TensorRT inference...")
                 import tensorrt as trt  # https://developer.nvidia.com/nvidia-tensorrt-download
 
-                check_version(trt.__version__, '7.0.0', hard=True)  # require tensorrt>=7.0.0
-                if device.type == 'cpu':
-                    device = torch.device('cuda:0')
-                Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
+                check_version(trt.__version__, "7.0.0", hard=True)  # require tensorrt>=7.0.0
+                if device.type == "cpu":
+                    device = torch.device("cuda:0")
+                Binding = namedtuple("Binding", ("name", "dtype", "shape", "data", "ptr"))
                 logger = trt.Logger(trt.Logger.INFO)
-                with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
+                with open(w, "rb") as f, trt.Runtime(logger) as runtime:
                     model = runtime.deserialize_cuda_engine(f.read())
                 context = model.create_execution_context()
                 bindings = OrderedDict()
@@ -4082,20 +4082,20 @@ if "yolov9" in yolo_name:
                     im = torch.from_numpy(np.empty(shape, dtype=dtype)).to(device)
                     bindings[name] = Binding(name, dtype, shape, im, int(im.data_ptr()))
                 binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
-                batch_size = bindings['images'].shape[0]  # if dynamic, this is instead max batch size
+                batch_size = bindings["images"].shape[0]  # if dynamic, this is instead max batch size
             elif coreml:  # CoreML
-                LOGGER.info(f'Loading {w} for CoreML inference...')
+                LOGGER.info(f"Loading {w} for CoreML inference...")
                 import coremltools as ct
 
                 model = ct.models.MLModel(w)
             elif saved_model:  # TF SavedModel
-                LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
+                LOGGER.info(f"Loading {w} for TensorFlow SavedModel inference...")
                 import tensorflow as tf
 
                 keras = False  # assume TF1 saved_model
                 model = tf.keras.models.load_model(w) if keras else tf.saved_model.load(w)
             elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
-                LOGGER.info(f'Loading {w} for TensorFlow GraphDef inference...')
+                LOGGER.info(f"Loading {w} for TensorFlow GraphDef inference...")
                 import tensorflow as tf
 
                 def wrap_frozen_graph(gd, inputs, outputs):
@@ -4108,10 +4108,10 @@ if "yolov9" in yolo_name:
                     for node in gd.node:  # tensorflow.core.framework.node_def_pb2.NodeDef
                         name_list.append(node.name)
                         input_list.extend(node.input)
-                    return sorted(f'{x}:0' for x in list(set(name_list) - set(input_list)) if not x.startswith('NoOp'))
+                    return sorted(f"{x}:0" for x in list(set(name_list) - set(input_list)) if not x.startswith("NoOp"))
 
                 gd = tf.Graph().as_graph_def()  # TF GraphDef
-                with open(w, 'rb') as f:
+                with open(w, "rb") as f:
                     gd.ParseFromString(f.read())
                 frozen_func = wrap_frozen_graph(gd, inputs="x:0", outputs=gd_outputs(gd))
             elif tflite or edgetpu:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
@@ -4125,13 +4125,13 @@ if "yolov9" in yolo_name:
                         tf.lite.experimental.load_delegate,
                     )
                 if edgetpu:  # TF Edge TPU https://coral.ai/software/#edgetpu-runtime
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite Edge TPU inference...')
-                    delegate = {'Linux': 'libedgetpu.so.1', 'Darwin': 'libedgetpu.1.dylib', 'Windows': 'edgetpu.dll'}[
+                    LOGGER.info(f"Loading {w} for TensorFlow Lite Edge TPU inference...")
+                    delegate = {"Linux": "libedgetpu.so.1", "Darwin": "libedgetpu.1.dylib", "Windows": "edgetpu.dll"}[
                         platform.system()
                     ]
                     interpreter = Interpreter(model_path=w, experimental_delegates=[load_delegate(delegate)])
                 else:  # TFLite
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite inference...')
+                    LOGGER.info(f"Loading {w} for TensorFlow Lite inference...")
                     interpreter = Interpreter(model_path=w)  # load TFLite model
                 interpreter.allocate_tensors()  # allocate
                 input_details = interpreter.get_input_details()  # inputs
@@ -4141,17 +4141,17 @@ if "yolov9" in yolo_name:
                     with zipfile.ZipFile(w, "r") as model:
                         meta_file = model.namelist()[0]
                         meta = ast.literal_eval(model.read(meta_file).decode("utf-8"))
-                        stride, names = int(meta['stride']), meta['names']
+                        stride, names = int(meta["stride"]), meta["names"]
             elif tfjs:  # TF.js
-                raise NotImplementedError('ERROR: YOLO TF.js inference is not supported')
+                raise NotImplementedError("ERROR: YOLO TF.js inference is not supported")
             elif paddle:  # PaddlePaddle
-                LOGGER.info(f'Loading {w} for PaddlePaddle inference...')
-                check_requirements('paddlepaddle-gpu' if cuda else 'paddlepaddle')
+                LOGGER.info(f"Loading {w} for PaddlePaddle inference...")
+                check_requirements("paddlepaddle-gpu" if cuda else "paddlepaddle")
                 import paddle.inference as pdi
 
                 if not Path(w).is_file():  # if not *.pdmodel
-                    w = next(Path(w).rglob('*.pdmodel'))  # get *.pdmodel file from *_paddle_model dir
-                weights = Path(w).with_suffix('.pdiparams')
+                    w = next(Path(w).rglob("*.pdmodel"))  # get *.pdmodel file from *_paddle_model dir
+                weights = Path(w).with_suffix(".pdiparams")
                 config = pdi.Config(str(w), str(weights))
                 if cuda:
                     config.enable_use_gpu(memory_pool_init_size_mb=2048, device_id=0)
@@ -4159,20 +4159,20 @@ if "yolov9" in yolo_name:
                 input_handle = predictor.get_input_handle(predictor.get_input_names()[0])
                 output_names = predictor.get_output_names()
             elif triton:  # NVIDIA Triton Inference Server
-                LOGGER.info(f'Using {w} as Triton Inference Server...')
-                check_requirements('tritonclient[all]')
+                LOGGER.info(f"Using {w} as Triton Inference Server...")
+                check_requirements("tritonclient[all]")
                 from utils.triton import TritonRemoteModel
 
                 model = TritonRemoteModel(url=w)
                 nhwc = model.runtime.startswith("tensorflow")
             else:
-                raise NotImplementedError(f'ERROR: {w} is not a supported format')
+                raise NotImplementedError(f"ERROR: {w} is not a supported format")
 
             # class names
-            if 'names' not in locals():
-                names = yaml_load(data)['names'] if data else {i: f'class{i}' for i in range(999)}
-            if names[0] == 'n01440764' and len(names) == 1000:  # ImageNet
-                names = yaml_load(ROOT / 'data/ImageNet.yaml')['names']  # human-readable names
+            if "names" not in locals():
+                names = yaml_load(data)["names"] if data else {i: f"class{i}" for i in range(999)}
+            if names[0] == "n01440764" and len(names) == 1000:  # ImageNet
+                names = yaml_load(ROOT / "data/ImageNet.yaml")["names"]  # human-readable names
 
             self.__dict__.update(locals())  # assign all variables to self
 
@@ -4199,28 +4199,28 @@ if "yolov9" in yolo_name:
                 im = im.cpu().numpy()  # FP32
                 y = list(self.executable_network([im]).values())
             elif self.engine:  # TensorRT
-                if self.dynamic and im.shape != self.bindings['images'].shape:
-                    i = self.model.get_binding_index('images')
+                if self.dynamic and im.shape != self.bindings["images"].shape:
+                    i = self.model.get_binding_index("images")
                     self.context.set_binding_shape(i, im.shape)  # reshape if dynamic
-                    self.bindings['images'] = self.bindings['images']._replace(shape=im.shape)
+                    self.bindings["images"] = self.bindings["images"]._replace(shape=im.shape)
                     for name in self.output_names:
                         i = self.model.get_binding_index(name)
                         self.bindings[name].data.resize_(tuple(self.context.get_binding_shape(i)))
-                s = self.bindings['images'].shape
+                s = self.bindings["images"].shape
                 assert (
                     im.shape == s
                 ), f"input size {im.shape} {'>' if self.dynamic else 'not equal to'} max model size {s}"
-                self.binding_addrs['images'] = int(im.data_ptr())
+                self.binding_addrs["images"] = int(im.data_ptr())
                 self.context.execute_v2(list(self.binding_addrs.values()))
                 y = [self.bindings[x].data for x in sorted(self.output_names)]
             elif self.coreml:  # CoreML
                 im = im.cpu().numpy()
-                im = Image.fromarray((im[0] * 255).astype('uint8'))
+                im = Image.fromarray((im[0] * 255).astype("uint8"))
                 # im = im.resize((192, 320), Image.ANTIALIAS)
-                y = self.model.predict({'image': im})  # coordinates are xywh normalized
-                if 'confidence' in y:
-                    box = xywh2xyxy(y['coordinates'] * [[w, h, w, h]])  # xyxy pixels
-                    conf, cls = y['confidence'].max(1), y['confidence'].argmax(1).astype(np.float)
+                y = self.model.predict({"image": im})  # coordinates are xywh normalized
+                if "confidence" in y:
+                    box = xywh2xyxy(y["coordinates"] * [[w, h, w, h]])  # xyxy pixels
+                    conf, cls = y["confidence"].max(1), y["confidence"].argmax(1).astype(np.float)
                     y = np.concatenate((box, conf.reshape(-1, 1), cls.reshape(-1, 1)), 1)
                 else:
                     y = list(reversed(y.values()))  # reversed for segmentation models (pred, proto)
@@ -4239,17 +4239,17 @@ if "yolov9" in yolo_name:
                     y = self.frozen_func(x=self.tf.constant(im))
                 else:  # Lite or Edge TPU
                     input = self.input_details[0]
-                    int8 = input['dtype'] == np.uint8  # is TFLite quantized uint8 model
+                    int8 = input["dtype"] == np.uint8  # is TFLite quantized uint8 model
                     if int8:
-                        scale, zero_point = input['quantization']
+                        scale, zero_point = input["quantization"]
                         im = (im / scale + zero_point).astype(np.uint8)  # de-scale
-                    self.interpreter.set_tensor(input['index'], im)
+                    self.interpreter.set_tensor(input["index"], im)
                     self.interpreter.invoke()
                     y = []
                     for output in self.output_details:
-                        x = self.interpreter.get_tensor(output['index'])
+                        x = self.interpreter.get_tensor(output["index"])
                         if int8:
-                            scale, zero_point = output['quantization']
+                            scale, zero_point = output["quantization"]
                             x = (x.astype(np.float32) - zero_point) * scale  # re-scale
                         y.append(x)
                 y = [x if isinstance(x, np.ndarray) else x.numpy() for x in y]
@@ -4266,13 +4266,13 @@ if "yolov9" in yolo_name:
         def warmup(self, imgsz=(1, 3, 640, 640)):
             # Warmup model by running inference once
             warmup_types = self.pt, self.jit, self.onnx, self.engine, self.saved_model, self.pb, self.triton
-            if any(warmup_types) and (self.device.type != 'cpu' or self.triton):
+            if any(warmup_types) and (self.device.type != "cpu" or self.triton):
                 im = torch.empty(*imgsz, dtype=torch.half if self.fp16 else torch.float, device=self.device)  # input
                 for _ in range(2 if self.jit else 1):  #
                     self.forward(im)  # warmup
 
         @staticmethod
-        def _model_type(p='path/to/model.pt'):
+        def _model_type(p="path/to/model.pt"):
             # Return model type from model path, i.e. path='path/to/model.onnx' -> type=onnx
             # types = [pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle]
             from yolocode.yolov9.export import export_formats
@@ -4288,11 +4288,11 @@ if "yolov9" in yolo_name:
             return types + [triton]
 
         @staticmethod
-        def _load_metadata(f=Path('path/to/meta.yaml')):
+        def _load_metadata(f=Path("path/to/meta.yaml")):
             # Load metadata from meta.yaml if it exists
             if f.exists():
                 d = yaml_load(f)
-                return d['stride'], d['names']  # assign stride, names
+                return d["stride"], d["names"]  # assign stride, names
             return None, None
 
     class AutoShape(nn.Module):
@@ -4308,9 +4308,9 @@ if "yolov9" in yolo_name:
         def __init__(self, model, verbose=True):
             super().__init__()
             if verbose:
-                LOGGER.info('Adding AutoShape... ')
+                LOGGER.info("Adding AutoShape... ")
             copy_attr(
-                self, model, include=('yaml', 'nc', 'hyp', 'names', 'stride', 'abc'), exclude=()
+                self, model, include=("yaml", "nc", "hyp", "names", "stride", "abc"), exclude=()
             )  # copy attributes
             self.dmb = isinstance(model, DetectMultiBackend_YOLOv9)  # DetectMultiBackend() instance
             self.pt = not self.dmb or model.pt  # PyTorch model
@@ -4328,7 +4328,7 @@ if "yolov9" in yolo_name:
             if self.pt:
                 m = self.model.model.model[-1] if self.dmb else self.model.model[-1]  # Detect()
                 if isinstance(m, (Detect_YOLOv9, Segment_YOLOv9)):
-                    for k in 'stride', 'anchor_grid', 'stride_grid', 'grid':
+                    for k in "stride", "anchor_grid", "stride_grid", "grid":
                         x = getattr(m, k)
                         setattr(m, k, list(map(fn, x))) if isinstance(x, (list, tuple)) else setattr(m, k, fn(x))
             return self
@@ -4349,7 +4349,7 @@ if "yolov9" in yolo_name:
                 if isinstance(size, int):  # expand
                     size = (size, size)
                 p = next(self.model.parameters()) if self.pt else torch.empty(1, device=self.model.device)  # param
-                autocast = self.amp and (p.device.type != 'cpu')  # Automatic Mixed Precision (AMP) inference
+                autocast = self.amp and (p.device.type != "cpu")  # Automatic Mixed Precision (AMP) inference
                 if isinstance(ims, torch.Tensor):  # torch
                     with amp.autocast(autocast):
                         return self.model(ims.to(p.device).type_as(p), augment=augment)  # inference
@@ -4360,13 +4360,13 @@ if "yolov9" in yolo_name:
                 )  # number, list of images
                 shape0, shape1, files = [], [], []  # image and inference shapes, filenames
                 for i, im in enumerate(ims):
-                    f = f'image{i}'  # filename
+                    f = f"image{i}"  # filename
                     if isinstance(im, (str, Path)):  # filename or uri
-                        im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith('http') else im), im
+                        im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith("http") else im), im
                         im = np.asarray(exif_transpose(im))
                     elif isinstance(im, Image.Image):  # PIL Image
-                        im, f = np.asarray(exif_transpose(im)), getattr(im, 'filename', f) or f
-                    files.append(Path(f).with_suffix('.jpg').name)
+                        im, f = np.asarray(exif_transpose(im)), getattr(im, "filename", f) or f
+                    files.append(Path(f).with_suffix(".jpg").name)
                     if im.shape[0] < 5:  # image in CHW
                         im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
                     im = im[..., :3] if im.ndim == 3 else cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)  # enforce 3ch input
@@ -4420,35 +4420,35 @@ if "yolov9" in yolo_name:
             self.t = tuple(x.t / self.n * 1e3 for x in times)  # timestamps (ms)
             self.s = tuple(shape)  # inference BCHW shape
 
-        def _run(self, pprint=False, show=False, save=False, crop=False, render=False, labels=True, save_dir=Path('')):
-            s, crops = '', []
+        def _run(self, pprint=False, show=False, save=False, crop=False, render=False, labels=True, save_dir=Path("")):
+            s, crops = "", []
             for i, (im, pred) in enumerate(zip(self.ims, self.pred)):
-                s += f'\nimage {i + 1}/{len(self.pred)}: {im.shape[0]}x{im.shape[1]} '  # string
+                s += f"\nimage {i + 1}/{len(self.pred)}: {im.shape[0]}x{im.shape[1]} "  # string
                 if pred.shape[0]:
                     for c in pred[:, -1].unique():
                         n = (pred[:, -1] == c).sum()  # detections per class
                         s += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                    s = s.rstrip(', ')
+                    s = s.rstrip(", ")
                     if show or save or render or crop:
                         annotator = Annotator(im, example=str(self.names))
                         for *box, conf, cls in reversed(pred):  # xyxy, confidence, class
-                            label = f'{self.names[int(cls)]} {conf:.2f}'
+                            label = f"{self.names[int(cls)]} {conf:.2f}"
                             if crop:
-                                file = save_dir / 'crops' / self.names[int(cls)] / self.files[i] if save else None
+                                file = save_dir / "crops" / self.names[int(cls)] / self.files[i] if save else None
                                 crops.append(
                                     {
-                                        'box': box,
-                                        'conf': conf,
-                                        'cls': cls,
-                                        'label': label,
-                                        'im': save_one_box(box, im, file=file, save=save),
+                                        "box": box,
+                                        "conf": conf,
+                                        "cls": cls,
+                                        "label": label,
+                                        "im": save_one_box(box, im, file=file, save=save),
                                     }
                                 )
                             else:  # all others
-                                annotator.box_label(box, label if labels else '', color=colors(cls))
+                                annotator.box_label(box, label if labels else "", color=colors(cls))
                         im = annotator.im
                 else:
-                    s += '(no detections)'
+                    s += "(no detections)"
 
                 im = Image.fromarray(im.astype(np.uint8)) if isinstance(im, np.ndarray) else im  # from np
                 if show:
@@ -4461,24 +4461,24 @@ if "yolov9" in yolo_name:
                 if render:
                     self.ims[i] = np.asarray(im)
             if pprint:
-                s = s.lstrip('\n')
+                s = s.lstrip("\n")
                 return (
-                    f'{s}\nSpeed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {self.s}' % self.t
+                    f"{s}\nSpeed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {self.s}" % self.t
                 )
             if crop:
                 if save:
-                    LOGGER.info(f'Saved results to {save_dir}\n')
+                    LOGGER.info(f"Saved results to {save_dir}\n")
                 return crops
 
-        @TryExcept('Showing images is not supported in this environment')
+        @TryExcept("Showing images is not supported in this environment")
         def show(self, labels=True):
             self._run(show=True, labels=labels)  # show results
 
-        def save(self, labels=True, save_dir='runs/detect/exp', exist_ok=False):
+        def save(self, labels=True, save_dir="runs/detect/exp", exist_ok=False):
             save_dir = increment_path(save_dir, exist_ok, mkdir=True)  # increment save_dir
             self._run(save=True, labels=labels, save_dir=save_dir)  # save results
 
-        def crop(self, save=True, save_dir='runs/detect/exp', exist_ok=False):
+        def crop(self, save=True, save_dir="runs/detect/exp", exist_ok=False):
             save_dir = increment_path(save_dir, exist_ok, mkdir=True) if save else None
             return self._run(crop=True, save=save, save_dir=save_dir)  # crop results
 
@@ -4489,9 +4489,9 @@ if "yolov9" in yolo_name:
         def pandas(self):
             # return detections as pandas DataFrames, i.e. print(results.pandas().xyxy[0])
             new = copy(self)  # return copy
-            ca = 'xmin', 'ymin', 'xmax', 'ymax', 'confidence', 'class', 'name'  # xyxy columns
-            cb = 'xcenter', 'ycenter', 'width', 'height', 'confidence', 'class', 'name'  # xywh columns
-            for k, c in zip(['xyxy', 'xyxyn', 'xywh', 'xywhn'], [ca, ca, cb, cb]):
+            ca = "xmin", "ymin", "xmax", "ymax", "confidence", "class", "name"  # xyxy columns
+            cb = "xcenter", "ycenter", "width", "height", "confidence", "class", "name"  # xywh columns
+            for k, c in zip(["xyxy", "xyxyn", "xywh", "xywhn"], [ca, ca, cb, cb]):
                 a = [
                     [x[:5] + [int(x[5]), self.names[int(x[5])]] for x in x.tolist()] for x in getattr(self, k)
                 ]  # update
@@ -4517,7 +4517,7 @@ if "yolov9" in yolo_name:
             return self._run(pprint=True)  # print results
 
         def __repr__(self):
-            return f'YOLO {self.__class__} instance\n' + self.__str__()
+            return f"YOLO {self.__class__} instance\n" + self.__str__()
 
     class Classify(nn.Module):
         # YOLO classification head, i.e. x(b,c1,20,20) to x(b,c2)

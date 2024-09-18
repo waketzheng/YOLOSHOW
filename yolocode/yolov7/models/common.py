@@ -893,7 +893,7 @@ class autoShape(nn.Module):
         self.model = model.eval()
 
     def autoshape(self):
-        print('autoShape already enabled, skipping... ')  # model already converted to model.autoshape()
+        print("autoShape already enabled, skipping... ")  # model already converted to model.autoshape()
         return self
 
     @torch.no_grad()
@@ -910,19 +910,19 @@ class autoShape(nn.Module):
         t = [time_synchronized()]
         p = next(self.model.parameters())  # for device and type
         if isinstance(imgs, torch.Tensor):  # torch
-            with amp.autocast(enabled=p.device.type != 'cpu'):
+            with amp.autocast(enabled=p.device.type != "cpu"):
                 return self.model(imgs.to(p.device).type_as(p), augment, profile)  # inference
 
         # Pre-process
         n, imgs = (len(imgs), imgs) if isinstance(imgs, list) else (1, [imgs])  # number of images, list of images
         shape0, shape1, files = [], [], []  # image and inference shapes, filenames
         for i, im in enumerate(imgs):
-            f = f'image{i}'  # filename
+            f = f"image{i}"  # filename
             if isinstance(im, str):  # filename or uri
-                im, f = np.asarray(Image.open(requests.get(im, stream=True).raw if im.startswith('http') else im)), im
+                im, f = np.asarray(Image.open(requests.get(im, stream=True).raw if im.startswith("http") else im)), im
             elif isinstance(im, Image.Image):  # PIL Image
-                im, f = np.asarray(im), getattr(im, 'filename', f) or f
-            files.append(Path(f).with_suffix('.jpg').name)
+                im, f = np.asarray(im), getattr(im, "filename", f) or f
+            files.append(Path(f).with_suffix(".jpg").name)
             if im.shape[0] < 5:  # image in CHW
                 im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
             im = im[:, :, :3] if im.ndim == 3 else np.tile(im[:, :, None], 3)  # enforce 3ch input
@@ -938,7 +938,7 @@ class autoShape(nn.Module):
         x = torch.from_numpy(x).to(p.device).type_as(p) / 255.0  # uint8 to fp16/32
         t.append(time_synchronized())
 
-        with amp.autocast(enabled=p.device.type != 'cpu'):
+        with amp.autocast(enabled=p.device.type != "cpu"):
             # Inference
             y = self.model(x, augment, profile)[0]  # forward
             t.append(time_synchronized())
@@ -970,39 +970,39 @@ class Detections:
         self.t = tuple((times[i + 1] - times[i]) * 1000 / self.n for i in range(3))  # timestamps (ms)
         self.s = shape  # inference BCHW shape
 
-    def display(self, pprint=False, show=False, save=False, render=False, save_dir=''):
+    def display(self, pprint=False, show=False, save=False, render=False, save_dir=""):
         colors = color_list()
         for i, (img, pred) in enumerate(zip(self.imgs, self.pred)):
-            str = f'image {i + 1}/{len(self.pred)}: {img.shape[0]}x{img.shape[1]} '
+            str = f"image {i + 1}/{len(self.pred)}: {img.shape[0]}x{img.shape[1]} "
             if pred is not None:
                 for c in pred[:, -1].unique():
                     n = (pred[:, -1] == c).sum()  # detections per class
                     str += f"{n} {self.names[int(c)]}{'s' * (n > 1)}, "  # add to string
                 if show or save or render:
                     for *box, conf, cls in pred:  # xyxy, confidence, class
-                        label = f'{self.names[int(cls)]} {conf:.2f}'
+                        label = f"{self.names[int(cls)]} {conf:.2f}"
                         plot_one_box(box, img, label=label, color=colors[int(cls) % 10])
             img = Image.fromarray(img.astype(np.uint8)) if isinstance(img, np.ndarray) else img  # from np
             if pprint:
-                print(str.rstrip(', '))
+                print(str.rstrip(", "))
             if show:
                 img.show(self.files[i])  # show
             if save:
                 f = self.files[i]
                 img.save(Path(save_dir) / f)  # save
-                print(f"{'Saved' * (i == 0)} {f}", end=',' if i < self.n - 1 else f' to {save_dir}\n')
+                print(f"{'Saved' * (i == 0)} {f}", end="," if i < self.n - 1 else f" to {save_dir}\n")
             if render:
                 self.imgs[i] = np.asarray(img)
 
     def print(self):
         self.display(pprint=True)  # print results
-        print(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {tuple(self.s)}' % self.t)
+        print(f"Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {tuple(self.s)}" % self.t)
 
     def show(self):
         self.display(show=True)  # show results
 
-    def save(self, save_dir='runs/hub/exp'):
-        save_dir = increment_path(save_dir, exist_ok=save_dir != 'runs/hub/exp')  # increment save_dir
+    def save(self, save_dir="runs/hub/exp"):
+        save_dir = increment_path(save_dir, exist_ok=save_dir != "runs/hub/exp")  # increment save_dir
         Path(save_dir).mkdir(parents=True, exist_ok=True)
         self.display(save=True, save_dir=save_dir)  # save results
 
@@ -1013,9 +1013,9 @@ class Detections:
     def pandas(self):
         # return detections as pandas DataFrames, i.e. print(results.pandas().xyxy[0])
         new = copy(self)  # return copy
-        ca = 'xmin', 'ymin', 'xmax', 'ymax', 'confidence', 'class', 'name'  # xyxy columns
-        cb = 'xcenter', 'ycenter', 'width', 'height', 'confidence', 'class', 'name'  # xywh columns
-        for k, c in zip(['xyxy', 'xyxyn', 'xywh', 'xywhn'], [ca, ca, cb, cb]):
+        ca = "xmin", "ymin", "xmax", "ymax", "confidence", "class", "name"  # xyxy columns
+        cb = "xcenter", "ycenter", "width", "height", "confidence", "class", "name"  # xywh columns
+        for k, c in zip(["xyxy", "xyxyn", "xywh", "xywhn"], [ca, ca, cb, cb]):
             a = [[x[:5] + [int(x[5]), self.names[int(x[5])]] for x in x.tolist()] for x in getattr(self, k)]  # update
             setattr(new, k, [pd.DataFrame(x, columns=c) for x in a])
         return new
@@ -1024,7 +1024,7 @@ class Detections:
         # return a list of Detections objects, i.e. 'for result in results.tolist():'
         x = [Detections([self.imgs[i]], [self.pred[i]], self.names, self.s) for i in range(self.n)]
         for d in x:
-            for k in ['imgs', 'pred', 'xyxy', 'xyxyn', 'xywh', 'xywhn']:
+            for k in ["imgs", "pred", "xyxy", "xyxyn", "xywh", "xywhn"]:
                 setattr(d, k, getattr(d, k)[0])  # pop out of list
         return x
 
@@ -1100,7 +1100,7 @@ class ConvBN(nn.Module):
             self.bn = nn.BatchNorm2d(num_features=out_channels)
 
     def forward(self, x):
-        if hasattr(self, 'bn'):
+        if hasattr(self, "bn"):
             return self.nonlinear(self.bn(self.conv(x)))
         else:
             return self.nonlinear(self.conv(x))
@@ -1121,8 +1121,8 @@ class ConvBN(nn.Module):
         conv.bias.data = bias
         for para in self.parameters():
             para.detach_()
-        self.__delattr__('conv')
-        self.__delattr__('bn')
+        self.__delattr__("conv")
+        self.__delattr__("bn")
         self.conv = conv
 
 
@@ -1175,7 +1175,7 @@ class OREPA_3x3_RepConv(nn.Module):
             self.weight_rbr_avg_conv.data
             self.weight_rbr_pfir_conv.data
             self.register_buffer(
-                'weight_rbr_avg_avg', torch.ones(kernel_size, kernel_size).mul(1.0 / kernel_size / kernel_size)
+                "weight_rbr_avg_avg", torch.ones(kernel_size, kernel_size).mul(1.0 / kernel_size / kernel_size)
             )
             self.branch_counter += 1
 
@@ -1196,7 +1196,7 @@ class OREPA_3x3_RepConv(nn.Module):
             for i in range(in_channels):
                 id_value[i, i % int(in_channels / self.groups), 0, 0] = 1
             id_tensor = torch.from_numpy(id_value).type_as(self.weight_rbr_1x1_kxk_idconv1)
-            self.register_buffer('id_tensor', id_tensor)
+            self.register_buffer("id_tensor", id_tensor)
 
         else:
             self.weight_rbr_1x1_kxk_conv1 = nn.Parameter(
@@ -1241,27 +1241,27 @@ class OREPA_3x3_RepConv(nn.Module):
                     else:
                         prior_tensor[i, h, w] = math.cos(math.pi * (w + 0.5) * (i + 1 - half_fg) / 3)
 
-        self.register_buffer('weight_rbr_prior', prior_tensor)
+        self.register_buffer("weight_rbr_prior", prior_tensor)
 
     def weight_gen(self):
-        weight_rbr_origin = torch.einsum('oihw,o->oihw', self.weight_rbr_origin, self.vector[0, :])
+        weight_rbr_origin = torch.einsum("oihw,o->oihw", self.weight_rbr_origin, self.vector[0, :])
 
         weight_rbr_avg = torch.einsum(
-            'oihw,o->oihw',
-            torch.einsum('oihw,hw->oihw', self.weight_rbr_avg_conv, self.weight_rbr_avg_avg),
+            "oihw,o->oihw",
+            torch.einsum("oihw,hw->oihw", self.weight_rbr_avg_conv, self.weight_rbr_avg_avg),
             self.vector[1, :],
         )
 
         weight_rbr_pfir = torch.einsum(
-            'oihw,o->oihw',
-            torch.einsum('oihw,ohw->oihw', self.weight_rbr_pfir_conv, self.weight_rbr_prior),
+            "oihw,o->oihw",
+            torch.einsum("oihw,ohw->oihw", self.weight_rbr_pfir_conv, self.weight_rbr_prior),
             self.vector[2, :],
         )
 
         weight_rbr_1x1_kxk_conv1 = None
-        if hasattr(self, 'weight_rbr_1x1_kxk_idconv1'):
+        if hasattr(self, "weight_rbr_1x1_kxk_idconv1"):
             weight_rbr_1x1_kxk_conv1 = (self.weight_rbr_1x1_kxk_idconv1 + self.id_tensor).squeeze()
-        elif hasattr(self, 'weight_rbr_1x1_kxk_conv1'):
+        elif hasattr(self, "weight_rbr_1x1_kxk_conv1"):
             weight_rbr_1x1_kxk_conv1 = self.weight_rbr_1x1_kxk_conv1.squeeze()
         else:
             raise NotImplementedError
@@ -1274,15 +1274,15 @@ class OREPA_3x3_RepConv(nn.Module):
             weight_rbr_1x1_kxk_conv1 = weight_rbr_1x1_kxk_conv1.view(g, int(t / g), ig)
             weight_rbr_1x1_kxk_conv2 = weight_rbr_1x1_kxk_conv2.view(g, int(o / g), tg, h, w)
             weight_rbr_1x1_kxk = torch.einsum(
-                'gti,gothw->goihw', weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2
+                "gti,gothw->goihw", weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2
             ).view(o, ig, h, w)
         else:
-            weight_rbr_1x1_kxk = torch.einsum('ti,othw->oihw', weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2)
+            weight_rbr_1x1_kxk = torch.einsum("ti,othw->oihw", weight_rbr_1x1_kxk_conv1, weight_rbr_1x1_kxk_conv2)
 
-        weight_rbr_1x1_kxk = torch.einsum('oihw,o->oihw', weight_rbr_1x1_kxk, self.vector[3, :])
+        weight_rbr_1x1_kxk = torch.einsum("oihw,o->oihw", weight_rbr_1x1_kxk, self.vector[3, :])
 
         weight_rbr_gconv = self.dwsc2full(self.weight_rbr_gconv_dw, self.weight_rbr_gconv_pw, self.in_channels)
-        weight_rbr_gconv = torch.einsum('oihw,o->oihw', weight_rbr_gconv, self.vector[4, :])
+        weight_rbr_gconv = torch.einsum("oihw,o->oihw", weight_rbr_gconv, self.vector[4, :])
 
         weight = weight_rbr_origin + weight_rbr_avg + weight_rbr_1x1_kxk + weight_rbr_pfir + weight_rbr_gconv
 
@@ -1296,7 +1296,7 @@ class OREPA_3x3_RepConv(nn.Module):
         weight_dw = weight_dw.view(groups, tg, ig, h, w)
         weight_pw = weight_pw.squeeze().view(o, groups, tg)
 
-        weight_dsc = torch.einsum('gtihw,ogt->ogihw', weight_dw, weight_pw)
+        weight_dsc = torch.einsum("gtihw,ogt->ogihw", weight_dw, weight_pw)
         return weight_dsc.view(o, i, h, w)
 
     def forward(self, inputs):
@@ -1324,7 +1324,7 @@ class RepConv_OREPA(nn.Module):
         padding=1,
         dilation=1,
         groups=1,
-        padding_mode='zeros',
+        padding_mode="zeros",
         deploy=False,
         use_se=False,
         nonlinear=nn.SiLU(),
@@ -1391,10 +1391,10 @@ class RepConv_OREPA(nn.Module):
                 groups=groups,
                 dilation=1,
             )
-            print('RepVGG Block, identity = ', self.rbr_identity)
+            print("RepVGG Block, identity = ", self.rbr_identity)
 
     def forward(self, inputs):
-        if hasattr(self, 'rbr_reparam'):
+        if hasattr(self, "rbr_reparam"):
             return self.nonlinearity(self.se(self.rbr_reparam(inputs)))
 
         if self.rbr_identity is None:
@@ -1470,7 +1470,7 @@ class RepConv_OREPA(nn.Module):
             beta = branch.bn.bias
             eps = branch.bn.eps
         else:
-            if not hasattr(self, 'id_tensor'):
+            if not hasattr(self, "id_tensor"):
                 input_dim = self.in_channels // self.groups
                 kernel_value = np.zeros((self.in_channels, input_dim, 3, 3), dtype=np.float32)
                 for i in range(self.in_channels):
@@ -1487,7 +1487,7 @@ class RepConv_OREPA(nn.Module):
         return kernel * t, beta - running_mean * gamma / std
 
     def switch_to_deploy(self):
-        if hasattr(self, 'rbr_reparam'):
+        if hasattr(self, "rbr_reparam"):
             return
         print("RepConv_OREPA.switch_to_deploy")
         kernel, bias = self.get_equivalent_kernel_bias()
@@ -1505,10 +1505,10 @@ class RepConv_OREPA(nn.Module):
         self.rbr_reparam.bias.data = bias
         for para in self.parameters():
             para.detach_()
-        self.__delattr__('rbr_dense')
-        self.__delattr__('rbr_1x1')
-        if hasattr(self, 'rbr_identity'):
-            self.__delattr__('rbr_identity')
+        self.__delattr__("rbr_dense")
+        self.__delattr__("rbr_1x1")
+        if hasattr(self, "rbr_identity"):
+            self.__delattr__("rbr_identity")
 
 
 ##### end of orepa #####
@@ -1608,7 +1608,7 @@ class Mlp(nn.Module):
 
 def window_partition(x, window_size):
     B, H, W, C = x.shape
-    assert H % window_size == 0, 'feature map h and w can not divide by window size'
+    assert H % window_size == 0, "feature map h and w can not divide by window size"
     x = x.view(B, H // window_size, window_size, W // window_size, window_size, C)
     windows = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(-1, window_size, window_size, C)
     return windows
@@ -1950,8 +1950,8 @@ class WindowAttention_v2(nn.Module):
 
     def extra_repr(self) -> str:
         return (
-            f'dim={self.dim}, window_size={self.window_size}, '
-            f'pretrained_window_size={self.pretrained_window_size}, num_heads={self.num_heads}'
+            f"dim={self.dim}, window_size={self.window_size}, "
+            f"pretrained_window_size={self.pretrained_window_size}, num_heads={self.num_heads}"
         )
 
     def flops(self, N):

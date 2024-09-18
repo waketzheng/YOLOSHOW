@@ -720,9 +720,9 @@ def torch_safe_load(weight):
                 from yolocode.yolov10.nn.modules import block, head
 
                 # 在加载模型前映射旧模块到新位置
-                sys.modules['ultralytics.nn.tasks'] = sys.modules[__name__]
-                sys.modules['ultralytics.nn.modules.block'] = block
-                sys.modules['ultralytics.nn.modules.head'] = head
+                sys.modules["ultralytics.nn.tasks"] = sys.modules[__name__]
+                sys.modules["ultralytics.nn.modules.block"] = block
+                sys.modules["ultralytics.nn.modules.head"] = head
             ckpt = torch.load(file, map_location="cpu")
 
     except ModuleNotFoundError as e:  # e.name is missing module name

@@ -27,7 +27,7 @@ class TritonRemoteModel:
 
             def create_input_placeholders() -> typing.List[InferInput]:
                 return [
-                    InferInput(i['name'], [int(s) for s in i["shape"]], i['datatype']) for i in self.metadata['inputs']
+                    InferInput(i["name"], [int(s) for s in i["shape"]], i["datatype"]) for i in self.metadata["inputs"]
                 ]
 
         else:
@@ -35,12 +35,12 @@ class TritonRemoteModel:
 
             self.client = InferenceServerClient(parsed_url.netloc)  # Triton HTTP client
             model_repository = self.client.get_model_repository_index()
-            self.model_name = model_repository[0]['name']
+            self.model_name = model_repository[0]["name"]
             self.metadata = self.client.get_model_metadata(self.model_name)
 
             def create_input_placeholders() -> typing.List[InferInput]:
                 return [
-                    InferInput(i['name'], [int(s) for s in i["shape"]], i['datatype']) for i in self.metadata['inputs']
+                    InferInput(i["name"], [int(s) for s in i["shape"]], i["datatype"]) for i in self.metadata["inputs"]
                 ]
 
         self._create_input_placeholders_fn = create_input_placeholders
@@ -58,8 +58,8 @@ class TritonRemoteModel:
         inputs = self._create_inputs(*args, **kwargs)
         response = self.client.infer(model_name=self.model_name, inputs=inputs)
         result = []
-        for output in self.metadata['outputs']:
-            tensor = torch.as_tensor(response.as_numpy(output['name']))
+        for output in self.metadata["outputs"]:
+            tensor = torch.as_tensor(response.as_numpy(output["name"]))
             result.append(tensor)
         return result[0] if len(result) == 1 else result
 

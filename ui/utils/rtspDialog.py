@@ -10,11 +10,11 @@ class CustomMessageBox(MessageBoxBase):
         super().__init__(parent)
         self.urlLineEdit = LineEdit(self)
         if mode == "single":
-            self.titleLabel = SubtitleLabel('Input Rtsp/Http/Https URL', self)
-            self.urlLineEdit.setPlaceholderText('rtsp:// - http:// - https://')
+            self.titleLabel = SubtitleLabel("Input Rtsp/Http/Https URL", self)
+            self.urlLineEdit.setPlaceholderText("rtsp:// - http:// - https://")
         else:
-            self.titleLabel = SubtitleLabel('Input Rtsp URL', self)
-            self.urlLineEdit.setPlaceholderText('rtsp://')
+            self.titleLabel = SubtitleLabel("Input Rtsp URL", self)
+            self.urlLineEdit.setPlaceholderText("rtsp://")
 
         self.urlLineEdit.setFont(QFont("Segoe UI", 14))
         self.urlLineEdit.setClearButtonEnabled(True)
@@ -24,8 +24,8 @@ class CustomMessageBox(MessageBoxBase):
         self.viewLayout.addWidget(self.urlLineEdit)
 
         # change the text of button
-        self.yesButton.setText('Confirm')
-        self.cancelButton.setText('Cancel')
+        self.yesButton.setText("Confirm")
+        self.cancelButton.setText("Cancel")
 
         self.widget.setMinimumWidth(400)
         self.yesButton.setDisabled(True)

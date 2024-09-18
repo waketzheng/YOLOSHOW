@@ -23,11 +23,11 @@ from yolocode.yolov7.utils.metrics import fitness
 from yolocode.yolov7.utils.torch_utils import init_torch_seeds
 
 # Settings
-torch.set_printoptions(linewidth=320, precision=5, profile='long')
-np.set_printoptions(linewidth=320, formatter={'float_kind': '{:11.5g}'.format})  # format short g, %precision=5
+torch.set_printoptions(linewidth=320, precision=5, profile="long")
+np.set_printoptions(linewidth=320, formatter={"float_kind": "{:11.5g}".format})  # format short g, %precision=5
 pd.options.display.max_columns = 10
 cv2.setNumThreads(0)  # prevent OpenCV from multithreading (incompatible with PyTorch DataLoader)
-os.environ['NUMEXPR_MAX_THREADS'] = str(min(os.cpu_count(), 8))  # NumExpr max threads
+os.environ["NUMEXPR_MAX_THREADS"] = str(min(os.cpu_count(), 8))  # NumExpr max threads
 
 
 def set_logging(rank=-1):
@@ -41,20 +41,20 @@ def init_seeds(seed=0):
     init_torch_seeds(seed)
 
 
-def get_latest_run(search_dir='.'):
+def get_latest_run(search_dir="."):
     # Return path to most recent 'last.pt' in /runs (i.e. to --resume from)
-    last_list = glob.glob(f'{search_dir}/**/last*.pt', recursive=True)
-    return max(last_list, key=os.path.getctime) if last_list else ''
+    last_list = glob.glob(f"{search_dir}/**/last*.pt", recursive=True)
+    return max(last_list, key=os.path.getctime) if last_list else ""
 
 
 def isdocker():
     # Is environment a Docker container
-    return Path('/workspace').exists()  # or Path('/.dockerenv').exists()
+    return Path("/workspace").exists()  # or Path('/.dockerenv').exists()
 
 
-def emojis(str=''):
+def emojis(str=""):
     # Return platform-dependent emoji-safe version of string
-    return str.encode().decode('ascii', 'ignore') if platform.system() == 'Windows' else str
+    return str.encode().decode("ascii", "ignore") if platform.system() == "Windows" else str
 
 
 def check_online():
@@ -70,39 +70,39 @@ def check_online():
 
 def check_git_status():
     # Recommend 'git pull' if code is out of date
-    print(colorstr('github: '), end='')
+    print(colorstr("github: "), end="")
     try:
-        assert Path('.git').exists(), 'skipping check (not a git repository)'
-        assert not isdocker(), 'skipping check (Docker image)'
-        assert check_online(), 'skipping check (offline)'
+        assert Path(".git").exists(), "skipping check (not a git repository)"
+        assert not isdocker(), "skipping check (Docker image)"
+        assert check_online(), "skipping check (offline)"
 
-        cmd = 'git fetch && git config --get remote.origin.url'
-        url = subprocess.check_output(cmd, shell=True).decode().strip().rstrip('.git')  # github repo url
-        branch = subprocess.check_output('git rev-parse --abbrev-ref HEAD', shell=True).decode().strip()  # checked out
-        n = int(subprocess.check_output(f'git rev-list {branch}..origin/master --count', shell=True))  # commits behind
+        cmd = "git fetch && git config --get remote.origin.url"
+        url = subprocess.check_output(cmd, shell=True).decode().strip().rstrip(".git")  # github repo url
+        branch = subprocess.check_output("git rev-parse --abbrev-ref HEAD", shell=True).decode().strip()  # checked out
+        n = int(subprocess.check_output(f"git rev-list {branch}..origin/master --count", shell=True))  # commits behind
         if n > 0:
             s = (
                 f"⚠️ WARNING: code is out of date by {n} commit{'s' * (n > 1)}. "
                 f"Use 'git pull' to update or 'git clone {url}' to download latest."
             )
         else:
-            s = f'up to date with {url} ✅'
+            s = f"up to date with {url} ✅"
         print(emojis(s))  # emoji-safe
     except Exception as e:
         print(e)
 
 
-def check_requirements(requirements='requirements.txt', exclude=()):
+def check_requirements(requirements="requirements.txt", exclude=()):
     # Check installed dependencies meet requirements (pass *.txt file or list of packages)
     import pkg_resources as pkg
 
-    prefix = colorstr('red', 'bold', 'requirements:')
+    prefix = colorstr("red", "bold", "requirements:")
     if isinstance(requirements, (str, Path)):  # requirements.txt file
         file = Path(requirements)
         if not file.exists():
             print(f"{prefix} {file.resolve()} not found, check failed.")
             return
-        requirements = [f'{x.name}{x.specifier}' for x in pkg.parse_requirements(file.open()) if x.name not in exclude]
+        requirements = [f"{x.name}{x.specifier}" for x in pkg.parse_requirements(file.open()) if x.name not in exclude]
     else:  # list or tuple of packages
         requirements = [x for x in requirements if x not in exclude]
 
@@ -116,7 +116,7 @@ def check_requirements(requirements='requirements.txt', exclude=()):
             print(subprocess.check_output(f"pip install '{e.req}'", shell=True).decode())
 
     if n:  # if packages updated
-        source = file.resolve() if 'file' in locals() else requirements
+        source = file.resolve() if "file" in locals() else requirements
         s = (
             f"{prefix} {n} package{'s' * (n > 1)} updated per {source}\n"
             f"{prefix} ⚠️ {colorstr('bold', 'Restart runtime or rerun command for updates to take effect')}\n"
@@ -128,53 +128,53 @@ def check_img_size(img_size, s=32):
     # Verify img_size is a multiple of stride s
     new_size = make_divisible(img_size, int(s))  # ceil gs-multiple
     if new_size != img_size:
-        print('WARNING: --img-size %g must be multiple of max stride %g, updating to %g' % (img_size, s, new_size))
+        print("WARNING: --img-size %g must be multiple of max stride %g, updating to %g" % (img_size, s, new_size))
     return new_size
 
 
 def check_imshow():
     # Check if environment supports image displays
     try:
-        assert not isdocker(), 'cv2.imshow() is disabled in Docker environments'
-        cv2.imshow('test', np.zeros((1, 1, 3)))
+        assert not isdocker(), "cv2.imshow() is disabled in Docker environments"
+        cv2.imshow("test", np.zeros((1, 1, 3)))
         cv2.waitKey(1)
         cv2.destroyAllWindows()
         cv2.waitKey(1)
         return True
     except Exception as e:
-        print(f'WARNING: Environment does not support cv2.imshow() or PIL Image.show() image displays\n{e}')
+        print(f"WARNING: Environment does not support cv2.imshow() or PIL Image.show() image displays\n{e}")
         return False
 
 
 def check_file(file):
     # Search for file if not found
-    if Path(file).is_file() or file == '':
+    if Path(file).is_file() or file == "":
         return file
     else:
-        files = glob.glob('./**/' + file, recursive=True)  # find file
-        assert len(files), f'File Not Found: {file}'  # assert file was found
+        files = glob.glob("./**/" + file, recursive=True)  # find file
+        assert len(files), f"File Not Found: {file}"  # assert file was found
         assert len(files) == 1, f"Multiple files match '{file}', specify exact path: {files}"  # assert unique
         return files[0]  # return file
 
 
 def check_dataset(dict):
     # Download dataset if not found locally
-    val, s = dict.get('val'), dict.get('download')
+    val, s = dict.get("val"), dict.get("download")
     if val and len(val):
         val = [Path(x).resolve() for x in (val if isinstance(val, list) else [val])]  # val path
         if not all(x.exists() for x in val):
-            print('\nWARNING: Dataset not found, nonexistent paths: %s' % [str(x) for x in val if not x.exists()])
+            print("\nWARNING: Dataset not found, nonexistent paths: %s" % [str(x) for x in val if not x.exists()])
             if s and len(s):  # download script
-                print('Downloading %s ...' % s)
-                if s.startswith('http') and s.endswith('.zip'):  # URL
+                print("Downloading %s ..." % s)
+                if s.startswith("http") and s.endswith(".zip"):  # URL
                     f = Path(s).name  # filename
                     torch.hub.download_url_to_file(s, f)
-                    r = os.system('unzip -q %s -d ../ && rm %s' % (f, f))  # unzip
+                    r = os.system("unzip -q %s -d ../ && rm %s" % (f, f))  # unzip
                 else:  # bash script
                     r = os.system(s)
-                print('Dataset autodownload %s\n' % ('success' if r == 0 else 'failure'))  # analyze return value
+                print("Dataset autodownload %s\n" % ("success" if r == 0 else "failure"))  # analyze return value
             else:
-                raise Exception('Dataset not found.')
+                raise Exception("Dataset not found.")
 
 
 def make_divisible(x, divisor):
@@ -194,29 +194,29 @@ def one_cycle(y1=0.0, y2=1.0, steps=100):
 
 def colorstr(*input):
     # Colors a string https://en.wikipedia.org/wiki/ANSI_escape_code, i.e.  colorstr('blue', 'hello world')
-    *args, string = input if len(input) > 1 else ('blue', 'bold', input[0])  # color arguments, string
+    *args, string = input if len(input) > 1 else ("blue", "bold", input[0])  # color arguments, string
     colors = {
-        'black': '\033[30m',  # basic colors
-        'red': '\033[31m',
-        'green': '\033[32m',
-        'yellow': '\033[33m',
-        'blue': '\033[34m',
-        'magenta': '\033[35m',
-        'cyan': '\033[36m',
-        'white': '\033[37m',
-        'bright_black': '\033[90m',  # bright colors
-        'bright_red': '\033[91m',
-        'bright_green': '\033[92m',
-        'bright_yellow': '\033[93m',
-        'bright_blue': '\033[94m',
-        'bright_magenta': '\033[95m',
-        'bright_cyan': '\033[96m',
-        'bright_white': '\033[97m',
-        'end': '\033[0m',  # misc
-        'bold': '\033[1m',
-        'underline': '\033[4m',
+        "black": "\033[30m",  # basic colors
+        "red": "\033[31m",
+        "green": "\033[32m",
+        "yellow": "\033[33m",
+        "blue": "\033[34m",
+        "magenta": "\033[35m",
+        "cyan": "\033[36m",
+        "white": "\033[37m",
+        "bright_black": "\033[90m",  # bright colors
+        "bright_red": "\033[91m",
+        "bright_green": "\033[92m",
+        "bright_yellow": "\033[93m",
+        "bright_blue": "\033[94m",
+        "bright_magenta": "\033[95m",
+        "bright_cyan": "\033[96m",
+        "bright_white": "\033[97m",
+        "end": "\033[0m",  # misc
+        "bold": "\033[1m",
+        "underline": "\033[4m",
     }
-    return ''.join(colors[x] for x in args) + f'{string}' + colors['end']
+    return "".join(colors[x] for x in args) + f"{string}" + colors["end"]
 
 
 def labels_to_class_weights(labels, nc=80):
@@ -784,7 +784,7 @@ def non_max_suppression(
 
         output[xi] = x[i]
         if (time.time() - t) > time_limit:
-            print(f'WARNING: NMS time limit {time_limit}s exceeded')
+            print(f"WARNING: NMS time limit {time_limit}s exceeded")
             break  # time limit exceeded
 
     return output
@@ -890,57 +890,57 @@ def non_max_suppression_kpt(
 
         output[xi] = x[i]
         if (time.time() - t) > time_limit:
-            print(f'WARNING: NMS time limit {time_limit}s exceeded')
+            print(f"WARNING: NMS time limit {time_limit}s exceeded")
             break  # time limit exceeded
 
     return output
 
 
-def strip_optimizer(f='best.pt', s=''):  # from utils.general import *; strip_optimizer()
+def strip_optimizer(f="best.pt", s=""):  # from utils.general import *; strip_optimizer()
     # Strip optimizer from 'f' to finalize training, optionally save as 's'
-    x = torch.load(f, map_location=torch.device('cpu'))
-    if x.get('ema'):
-        x['model'] = x['ema']  # replace model with ema
-    for k in 'optimizer', 'training_results', 'wandb_id', 'ema', 'updates':  # keys
+    x = torch.load(f, map_location=torch.device("cpu"))
+    if x.get("ema"):
+        x["model"] = x["ema"]  # replace model with ema
+    for k in "optimizer", "training_results", "wandb_id", "ema", "updates":  # keys
         x[k] = None
-    x['epoch'] = -1
-    x['model'].half()  # to FP16
-    for p in x['model'].parameters():
+    x["epoch"] = -1
+    x["model"].half()  # to FP16
+    for p in x["model"].parameters():
         p.requires_grad = False
     torch.save(x, s or f)
     mb = os.path.getsize(s or f) / 1e6  # filesize
     print(f"Optimizer stripped from {f},{(' saved as %s,' % s) if s else ''} {mb:.1f}MB")
 
 
-def print_mutation(hyp, results, yaml_file='hyp_evolved.yaml', bucket=''):
+def print_mutation(hyp, results, yaml_file="hyp_evolved.yaml", bucket=""):
     # Print mutation results to evolve.txt (for use with train.py --evolve)
-    a = '%10s' * len(hyp) % tuple(hyp.keys())  # hyperparam keys
-    b = '%10.3g' * len(hyp) % tuple(hyp.values())  # hyperparam values
-    c = '%10.4g' * len(results) % results  # results (P, R, mAP@0.5, mAP@0.5:0.95, val_losses x 3)
-    print('\n%s\n%s\nEvolved fitness: %s\n' % (a, b, c))
+    a = "%10s" * len(hyp) % tuple(hyp.keys())  # hyperparam keys
+    b = "%10.3g" * len(hyp) % tuple(hyp.values())  # hyperparam values
+    c = "%10.4g" * len(results) % results  # results (P, R, mAP@0.5, mAP@0.5:0.95, val_losses x 3)
+    print("\n%s\n%s\nEvolved fitness: %s\n" % (a, b, c))
 
     if bucket:
-        url = 'gs://%s/evolve.txt' % bucket
-        if gsutil_getsize(url) > (os.path.getsize('evolve.txt') if os.path.exists('evolve.txt') else 0):
-            os.system('gsutil cp %s .' % url)  # download evolve.txt if larger than local
+        url = "gs://%s/evolve.txt" % bucket
+        if gsutil_getsize(url) > (os.path.getsize("evolve.txt") if os.path.exists("evolve.txt") else 0):
+            os.system("gsutil cp %s ." % url)  # download evolve.txt if larger than local
 
-    with open('evolve.txt', 'a') as f:  # append result
-        f.write(c + b + '\n')
-    x = np.unique(np.loadtxt('evolve.txt', ndmin=2), axis=0)  # load unique rows
+    with open("evolve.txt", "a") as f:  # append result
+        f.write(c + b + "\n")
+    x = np.unique(np.loadtxt("evolve.txt", ndmin=2), axis=0)  # load unique rows
     x = x[np.argsort(-fitness(x))]  # sort
-    np.savetxt('evolve.txt', x, '%10.3g')  # save sort by fitness
+    np.savetxt("evolve.txt", x, "%10.3g")  # save sort by fitness
 
     # Save yaml
     for i, k in enumerate(hyp.keys()):
         hyp[k] = float(x[0, i + 7])
-    with open(yaml_file, 'w') as f:
+    with open(yaml_file, "w") as f:
         results = tuple(x[0, :7])
-        c = '%10.4g' * len(results) % results  # results (P, R, mAP@0.5, mAP@0.5:0.95, val_losses x 3)
-        f.write('# Hyperparameter Evolution Results\n# Generations: %g\n# Metrics: ' % len(x) + c + '\n\n')
+        c = "%10.4g" * len(results) % results  # results (P, R, mAP@0.5, mAP@0.5:0.95, val_losses x 3)
+        f.write("# Hyperparameter Evolution Results\n# Generations: %g\n# Metrics: " % len(x) + c + "\n\n")
         yaml.dump(hyp, f, sort_keys=False)
 
     if bucket:
-        os.system('gsutil cp evolve.txt %s gs://%s' % (yaml_file, bucket))  # upload
+        os.system("gsutil cp evolve.txt %s gs://%s" % (yaml_file, bucket))  # upload
 
 
 def apply_classifier(x, model, img, im0):
@@ -978,7 +978,7 @@ def apply_classifier(x, model, img, im0):
     return x
 
 
-def increment_path(path, exist_ok=True, sep=''):
+def increment_path(path, exist_ok=True, sep=""):
     # Increment path, i.e. runs/exp --> runs/exp{sep}0, runs/exp{sep}1 etc.
     path = Path(path)  # os-agnostic
     if (path.exists() and exist_ok) or (not path.exists()):

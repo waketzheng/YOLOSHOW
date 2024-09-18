@@ -53,11 +53,11 @@ class YOLOv8PoseThread(QThread):
 
         # YOLOv8 参数设置
         self.model = None
-        self.data = 'yolocode/yolov8/cfg/datasets/coco.yaml'  # data_dict
+        self.data = "yolocode/yolov8/cfg/datasets/coco.yaml"  # data_dict
         self.imgsz = 640
-        self.device = ''
+        self.device = ""
         self.dataset = None
-        self.task = 'detect'
+        self.task = "detect"
         self.dnn = False
         self.half = False
         self.agnostic_nms = False
@@ -67,8 +67,8 @@ class YOLOv8PoseThread(QThread):
         self.vid_path, self.vid_writerm, self.vid_cap = None, None, None
         self.batch = None
         self.batchsize = 1
-        self.project = 'runs/detect'
-        self.name = 'exp'
+        self.project = "runs/detect"
+        self.name = "exp"
         self.exist_ok = False
         self.vid_stride = 1  # 视频帧率
         self.max_det = 1000  # 最大检测数
@@ -118,7 +118,7 @@ class YOLOv8PoseThread(QThread):
         start_time = time.time()  # used to calculate the frame rate
         while True:
             if self.stop_dtc:
-                self.send_msg.emit('Stop Detection')
+                self.send_msg.emit("Stop Detection")
                 # --- 发送图片和表格结果 --- #
                 self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                 for key, value in self.results_picture.items():
@@ -130,11 +130,11 @@ class YOLOv8PoseThread(QThread):
                 # 释放资源
                 self.dataset.running = False  # stop flag for Thread
                 # 判断self.dataset里面是否有threads
-                if hasattr(self.dataset, 'threads'):
+                if hasattr(self.dataset, "threads"):
                     for thread in self.dataset.threads:
                         if thread.is_alive():
                             thread.join(timeout=1)  # Add timeout
-                if hasattr(self.dataset, 'caps'):
+                if hasattr(self.dataset, "caps"):
                     for cap in self.dataset.caps:  # Iterate through the stored VideoCapture objects
                         try:
                             cap.release()  # release video capture
@@ -146,7 +146,7 @@ class YOLOv8PoseThread(QThread):
                 break
                 #  判断是否更换模型
             if self.current_model_name != self.new_model_name:
-                self.send_msg.emit('Loading Model: {}'.format(os.path.basename(self.new_model_name)))
+                self.send_msg.emit("Loading Model: {}".format(os.path.basename(self.new_model_name)))
                 self.setup_model(self.new_model_name)
                 self.current_model_name = self.new_model_name
             if self.is_continue:
@@ -207,11 +207,11 @@ class YOLOv8PoseThread(QThread):
                     class_nums = 0
                     target_nums = 0
                     self.labels_dict = {}
-                    if 'no detections' in label_str:
+                    if "no detections" in label_str:
                         pass
                     else:
-                        for each_target in label_str.split(',')[:-1]:
-                            num_labelname = list(each_target.split(' '))
+                        for each_target in label_str.split(",")[:-1]:
+                            num_labelname = list(each_target.split(" "))
                             nums = 0
                             label_name = ""
                             for each in range(len(num_labelname)):
@@ -241,7 +241,7 @@ class YOLOv8PoseThread(QThread):
 
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
-                    self.send_msg.emit('Finish Detection')
+                    self.send_msg.emit("Finish Detection")
                     # --- 发送图片和表格结果 --- #
                     self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                     for key, value in self.results_picture.items():

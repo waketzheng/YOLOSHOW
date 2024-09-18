@@ -6,12 +6,12 @@ import torch.nn as nn
 
 from utils import glo
 
-yoloname = glo.get_value('yoloname')
-yoloname1 = glo.get_value('yoloname1')
-yoloname2 = glo.get_value('yoloname2')
+yoloname = glo.get_value("yoloname")
+yoloname1 = glo.get_value("yoloname1")
+yoloname2 = glo.get_value("yoloname2")
 
 yolo_name = (
-    ((str(yoloname1) if yoloname1 else '') + (str(yoloname2) if str(yoloname2) else ''))
+    ((str(yoloname1) if yoloname1 else "") + (str(yoloname2) if str(yoloname2) else ""))
     if yoloname1 or yoloname2
     else yoloname
 )
@@ -78,7 +78,7 @@ class Ensemble(nn.ModuleList):
 
 
 ### --- YOLOv5 Code --- ###
-if 'yolov5' in yolo_name:
+if "yolov5" in yolo_name:
     from yolocode.yolov5.utils.downloads import attempt_download_YOLOV5
 
     def attempt_load_YOLOv5(weights, device=None, inplace=True, fuse=True):
@@ -128,7 +128,7 @@ if 'yolov5' in yolo_name:
 
 
 ### --- YOLOv7 Code --- ###
-if 'yolov7' in yolo_name:
+if "yolov7" in yolo_name:
     from yolocode.yolov7.models.common import Conv
     from yolocode.yolov7.utils.google_utils import attempt_download
 
@@ -146,7 +146,7 @@ if 'yolov7' in yolo_name:
             return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
     class ORT_NMS(torch.autograd.Function):
-        '''ONNX-Runtime NMS operation'''
+        """ONNX-Runtime NMS operation"""
 
         @staticmethod
         def forward(
@@ -172,7 +172,7 @@ if 'yolov7' in yolo_name:
             return g.op("NonMaxSuppression", boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold)
 
     class TRT_NMS(torch.autograd.Function):
-        '''TensorRT NMS operation'''
+        """TensorRT NMS operation"""
 
         @staticmethod
         def forward(
@@ -224,7 +224,7 @@ if 'yolov7' in yolo_name:
             return nums, boxes, scores, classes
 
     class ONNX_ORT(nn.Module):
-        '''onnx module with ONNX-Runtime NMS operation.'''
+        """onnx module with ONNX-Runtime NMS operation."""
 
         def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=640, device=None, n_classes=80):
             super().__init__()
@@ -265,17 +265,17 @@ if 'yolov7' in yolo_name:
             return torch.cat([X, selected_boxes, selected_categories, selected_scores], 1)
 
     class ONNX_TRT(nn.Module):
-        '''onnx module with TensorRT NMS operation.'''
+        """onnx module with TensorRT NMS operation."""
 
         def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None, device=None, n_classes=80):
             super().__init__()
             assert max_wh is None
-            self.device = device if device else torch.device('cpu')
+            self.device = device if device else torch.device("cpu")
             self.background_class = (-1,)
             self.box_coding = (1,)
             self.iou_threshold = iou_thres
             self.max_obj = max_obj
-            self.plugin_version = '1'
+            self.plugin_version = "1"
             self.score_activation = 0
             self.score_threshold = score_thres
             self.n_classes = n_classes
@@ -303,13 +303,13 @@ if 'yolov7' in yolo_name:
             return num_det, det_boxes, det_scores, det_classes
 
     class End2End(nn.Module):
-        '''export onnx or tensorrt model with NMS operation.'''
+        """export onnx or tensorrt model with NMS operation."""
 
         def __init__(
             self, model, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None, device=None, n_classes=80
         ):
             super().__init__()
-            device = device if device else torch.device('cpu')
+            device = device if device else torch.device("cpu")
             assert isinstance(max_wh, (int)) or max_wh is None
             self.model = model.to(device)
             self.model.model[-1].end2end = True
@@ -328,7 +328,7 @@ if 'yolov7' in yolo_name:
         for w in weights if isinstance(weights, list) else [weights]:
             attempt_download(w)
             ckpt = torch.load(w, map_location=map_location)  # load
-            model.append(ckpt['ema' if ckpt.get('ema') else 'model'].float().fuse().eval())  # FP32 model
+            model.append(ckpt["ema" if ckpt.get("ema") else "model"].float().fuse().eval())  # FP32 model
 
         # Compatibility updates
         for m in model.modules():
@@ -342,15 +342,15 @@ if 'yolov7' in yolo_name:
         if len(model) == 1:
             return model[-1]  # return model
         else:
-            print('Ensemble created with %s\n' % weights)
-            for k in ['names', 'stride']:
+            print("Ensemble created with %s\n" % weights)
+            for k in ["names", "stride"]:
                 setattr(model, k, getattr(model[-1], k))
             return model  # return ensemble
 ### --- YOLOv7 Code --- ###
 
 
 ### --- YOLOv9 Code --- ###
-if 'yolov9' in yolo_name:
+if "yolov9" in yolo_name:
     from yolocode.yolov9.utils.downloads import attempt_download_YOLOV9
 
     def attempt_load_YOLOV9(weights, device=None, inplace=True, fuse=True):
@@ -359,16 +359,16 @@ if 'yolov9' in yolo_name:
 
         model = Ensemble()
         for w in weights if isinstance(weights, list) else [weights]:
-            ckpt = torch.load(attempt_download_YOLOV9(w), map_location='cpu')  # load
-            ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
+            ckpt = torch.load(attempt_download_YOLOV9(w), map_location="cpu")  # load
+            ckpt = (ckpt.get("ema") or ckpt["model"]).to(device).float()  # FP32 model
 
             # Model compatibility updates
-            if not hasattr(ckpt, 'stride'):
+            if not hasattr(ckpt, "stride"):
                 ckpt.stride = torch.tensor([32.0])
-            if hasattr(ckpt, 'names') and isinstance(ckpt.names, (list, tuple)):
+            if hasattr(ckpt, "names") and isinstance(ckpt.names, (list, tuple)):
                 ckpt.names = dict(enumerate(ckpt.names))  # convert to dict
 
-            model.append(ckpt.fuse().eval() if fuse and hasattr(ckpt, 'fuse') else ckpt.eval())  # model in eval mode
+            model.append(ckpt.fuse().eval() if fuse and hasattr(ckpt, "fuse") else ckpt.eval())  # model in eval mode
 
         # Module compatibility updates
         for m in model.modules():
@@ -378,7 +378,7 @@ if 'yolov9' in yolo_name:
                 # if t is Detect and not isinstance(m.anchor_grid, list):
                 #    delattr(m, 'anchor_grid')
                 #    setattr(m, 'anchor_grid', [torch.zeros(1)] * m.nl)
-            elif t is nn.Upsample and not hasattr(m, 'recompute_scale_factor'):
+            elif t is nn.Upsample and not hasattr(m, "recompute_scale_factor"):
                 m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 
         # Return model
@@ -386,10 +386,10 @@ if 'yolov9' in yolo_name:
             return model[-1]
 
         # Return detection ensemble
-        print(f'Ensemble created with {weights}\n')
-        for k in 'names', 'nc', 'yaml':
+        print(f"Ensemble created with {weights}\n")
+        for k in "names", "nc", "yaml":
             setattr(model, k, getattr(model[0], k))
         model.stride = model[torch.argmax(torch.tensor([m.stride.max() for m in model])).int()].stride  # max stride
-        assert all(model[0].nc == m.nc for m in model), f'Models have different class counts: {[m.nc for m in model]}'
+        assert all(model[0].nc == m.nc for m in model), f"Models have different class counts: {[m.nc for m in model]}"
         return model
 ### --- YOLOv9 Code --- ###

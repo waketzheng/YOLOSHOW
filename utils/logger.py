@@ -6,7 +6,7 @@ from colorlog import ColoredFormatter
 class LoggerUtils:
     def __init__(self):
         # 创建一个日志器
-        self.logger = logging.getLogger('example_logger')
+        self.logger = logging.getLogger("example_logger")
         self.logger.setLevel(logging.INFO)
 
         # 检查日志器是否已经有处理器，避免重复添加

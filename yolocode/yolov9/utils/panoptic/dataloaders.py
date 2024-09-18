@@ -26,7 +26,7 @@ from ..general import LOGGER, NUM_THREADS, xyn2xy, xywhn2xyxy, xyxy2xywhn
 from ..torch_utils import torch_distributed_zero_first
 from .augmentations import copy_paste, letterbox, mixup, random_perspective
 
-RANK = int(os.getenv('RANK', -1))
+RANK = int(os.getenv("RANK", -1))
 
 
 def create_dataloader(
@@ -45,13 +45,13 @@ def create_dataloader(
     image_weights=False,
     close_mosaic=False,
     quad=False,
-    prefix='',
+    prefix="",
     shuffle=False,
     mask_downsample_ratio=1,
     overlap_mask=False,
 ):
     if rect and shuffle:
-        LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
+        LOGGER.warning("WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False")
         shuffle = False
     with torch_distributed_zero_first(rank):  # init dataset *.cache only once if DDP
         dataset = LoadImagesAndLabelsAndMasks(
@@ -94,8 +94,8 @@ def create_dataloader(
 
 def img2stuff_paths(img_paths):
     # Define label paths as a function of image paths
-    sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}stuff{os.sep}'  # /images/, /segmentations/ substrings
-    return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
+    sa, sb = f"{os.sep}images{os.sep}", f"{os.sep}stuff{os.sep}"  # /images/, /segmentations/ substrings
+    return [sb.join(x.rsplit(sa, 1)).rsplit(".", 1)[0] + ".txt" for x in img_paths]
 
 
 class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
@@ -141,8 +141,8 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
         # Check cache
         self.seg_files = img2stuff_paths(self.im_files)  # labels
         p = Path(path)
-        cache_path = p.with_suffix('') if p.is_file() else Path(self.seg_files[0]).parent
-        cache_path = Path(str(cache_path) + '_stuff').with_suffix('.cache')
+        cache_path = p.with_suffix("") if p.is_file() else Path(self.seg_files[0]).parent
+        cache_path = Path(str(cache_path) + "_stuff").with_suffix(".cache")
         try:
             cache, exists = np.load(cache_path, allow_pickle=True).item(), True  # load dict
             # assert cache['version'] == self.cache_version  # matches current version
@@ -151,19 +151,19 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
             cache, exists = self.cache_seg_labels(cache_path, prefix), False  # run cache ops
 
         # Display cache
-        nf, nm, ne, nc, n = cache.pop('results')  # found, missing, empty, corrupt, total
+        nf, nm, ne, nc, n = cache.pop("results")  # found, missing, empty, corrupt, total
         if exists and LOCAL_RANK in {-1, 0}:
             d = f"Scanning '{cache_path}' images and labels... {nf} found, {nm} missing, {ne} empty, {nc} corrupt"
             tqdm(None, desc=(prefix + d), total=n, initial=n, bar_format=TQDM_BAR_FORMAT)  # display cache results
-            if cache['msgs']:
-                LOGGER.info('\n'.join(cache['msgs']))  # display warnings
-        assert (nf > 0) or (not augment), f'{prefix}No labels found in {cache_path}, can not start training. {HELP_URL}'
+            if cache["msgs"]:
+                LOGGER.info("\n".join(cache["msgs"]))  # display warnings
+        assert (nf > 0) or (not augment), f"{prefix}No labels found in {cache_path}, can not start training. {HELP_URL}"
 
         # Read cache
-        [cache.pop(k) for k in ('hash', 'version', 'msgs')]  # remove items
+        [cache.pop(k) for k in ("hash", "version", "msgs")]  # remove items
         seg_labels, _, self.semantic_masks = zip(*cache.values())
         nl = len(np.concatenate(seg_labels, 0))  # number of labels
-        assert nl > 0 or not augment, f'{prefix}All labels empty in {cache_path}, can not start training. {HELP_URL}'
+        assert nl > 0 or not augment, f"{prefix}All labels empty in {cache_path}, can not start training. {HELP_URL}"
 
         # Update labels
         self.seg_cls = []
@@ -183,7 +183,7 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
         index = self.indices[index]  # linear, shuffled, or image_weights
 
         hyp = self.hyp
-        mosaic = self.mosaic and random.random() < hyp['mosaic']
+        mosaic = self.mosaic and random.random() < hyp["mosaic"]
         masks = []
         if mosaic:
             # Load mosaic
@@ -395,7 +395,7 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
 
         return img4, labels4, segments4, seg_cls, semantic_masks4
 
-    def cache_seg_labels(self, path=Path('./labels_stuff.cache'), prefix=''):
+    def cache_seg_labels(self, path=Path("./labels_stuff.cache"), prefix=""):
         # Cache dataset labels, check images and read shapes
         x = {}  # dict
         nm, nf, ne, nc, msgs = 0, 0, 0, 0, []  # number missing, found, empty, corrupt, messages
@@ -420,19 +420,19 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
 
         pbar.close()
         if msgs:
-            LOGGER.info('\n'.join(msgs))
+            LOGGER.info("\n".join(msgs))
         if nf == 0:
-            LOGGER.warning(f'{prefix}WARNING: No labels found in {path}. {HELP_URL}')
-        x['hash'] = get_hash(self.seg_files + self.im_files)
-        x['results'] = nf, nm, ne, nc, len(self.im_files)
-        x['msgs'] = msgs  # warnings
-        x['version'] = self.cache_version  # cache version
+            LOGGER.warning(f"{prefix}WARNING: No labels found in {path}. {HELP_URL}")
+        x["hash"] = get_hash(self.seg_files + self.im_files)
+        x["results"] = nf, nm, ne, nc, len(self.im_files)
+        x["msgs"] = msgs  # warnings
+        x["version"] = self.cache_version  # cache version
         try:
             np.save(path, x)  # save cache for next time
-            path.with_suffix('.cache.npy').rename(path)  # remove .npy suffix
-            LOGGER.info(f'{prefix}New cache created: {path}')
+            path.with_suffix(".cache.npy").rename(path)  # remove .npy suffix
+            LOGGER.info(f"{prefix}New cache created: {path}")
         except Exception as e:
-            LOGGER.warning(f'{prefix}WARNING: Cache directory {path.parent} is not writeable: {e}')  # not writeable
+            LOGGER.warning(f"{prefix}WARNING: Cache directory {path.parent} is not writeable: {e}")  # not writeable
         return x
 
     @staticmethod

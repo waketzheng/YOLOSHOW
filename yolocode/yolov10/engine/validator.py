@@ -204,7 +204,7 @@ class BaseValidator:
                     LOGGER.info(f"Saving {f.name}...")
                     json.dump(self.jdict, f)  # flatten and save
                 stats = self.eval_json(stats)  # update stats
-                stats['fitness'] = stats['metrics/mAP50-95(B)']
+                stats["fitness"] = stats["metrics/mAP50-95(B)"]
             results = {**stats, **trainer.label_loss_items(self.loss.cpu() / len(self.dataloader), prefix="val")}
             return {k: round(float(v), 5) for k, v in results.items()}  # return results as 5 decimal place floats
         else:

@@ -12,7 +12,7 @@ from ..general import LOGGER, xyn2xy, xywhn2xyxy, xyxy2xywhn
 from ..torch_utils import torch_distributed_zero_first
 from .augmentations import mixup, random_perspective
 
-RANK = int(os.getenv('RANK', -1))
+RANK = int(os.getenv("RANK", -1))
 
 
 def create_dataloader(
@@ -31,13 +31,13 @@ def create_dataloader(
     image_weights=False,
     close_mosaic=False,
     quad=False,
-    prefix='',
+    prefix="",
     shuffle=False,
     mask_downsample_ratio=1,
     overlap_mask=False,
 ):
     if rect and shuffle:
-        LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
+        LOGGER.warning("WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False")
         shuffle = False
     with torch_distributed_zero_first(rank):  # init dataset *.cache only once if DDP
         dataset = LoadImagesAndLabelsAndMasks(
@@ -119,7 +119,7 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
         index = self.indices[index]  # linear, shuffled, or image_weights
 
         hyp = self.hyp
-        mosaic = self.mosaic and random.random() < hyp['mosaic']
+        mosaic = self.mosaic and random.random() < hyp["mosaic"]
         masks = []
         if mosaic:
             # Load mosaic

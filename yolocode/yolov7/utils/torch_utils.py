@@ -48,42 +48,42 @@ def init_torch_seeds(seed=0):
 def date_modified(path=__file__):
     # return human-readable file modification date, i.e. '2021-3-26'
     t = datetime.datetime.fromtimestamp(Path(path).stat().st_mtime)
-    return f'{t.year}-{t.month}-{t.day}'
+    return f"{t.year}-{t.month}-{t.day}"
 
 
 def git_describe(path=Path(__file__).parent):  # path must be a directory
     # return human-readable git description, i.e. v5.0-5-g3e25f1e https://git-scm.com/docs/git-describe
-    s = f'git -C {path} describe --tags --long --always'
+    s = f"git -C {path} describe --tags --long --always"
     try:
         return subprocess.check_output(s, shell=True, stderr=subprocess.STDOUT).decode()[:-1]
     except subprocess.CalledProcessError:
-        return ''  # not a git repository
+        return ""  # not a git repository
 
 
-def select_device(device='', batch_size=None):
+def select_device(device="", batch_size=None):
     # device = 'cpu' or '0' or '0,1,2,3'
-    s = f'YOLOR 🚀 {git_describe() or date_modified()} torch {torch.__version__} '  # string
-    cpu = device.lower() == 'cpu'
+    s = f"YOLOR 🚀 {git_describe() or date_modified()} torch {torch.__version__} "  # string
+    cpu = device.lower() == "cpu"
     if cpu:
-        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # force torch.cuda.is_available() = False
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # force torch.cuda.is_available() = False
     elif device:  # non-cpu device requested
-        os.environ['CUDA_VISIBLE_DEVICES'] = device  # set environment variable
-        assert torch.cuda.is_available(), f'CUDA unavailable, invalid device {device} requested'  # check availability
+        os.environ["CUDA_VISIBLE_DEVICES"] = device  # set environment variable
+        assert torch.cuda.is_available(), f"CUDA unavailable, invalid device {device} requested"  # check availability
 
     cuda = not cpu and torch.cuda.is_available()
     if cuda:
         n = torch.cuda.device_count()
         if n > 1 and batch_size:  # check that batch_size is compatible with device_count
-            assert batch_size % n == 0, f'batch-size {batch_size} not multiple of GPU count {n}'
-        space = ' ' * len(s)
-        for i, d in enumerate(device.split(',') if device else range(n)):
+            assert batch_size % n == 0, f"batch-size {batch_size} not multiple of GPU count {n}"
+        space = " " * len(s)
+        for i, d in enumerate(device.split(",") if device else range(n)):
             p = torch.cuda.get_device_properties(i)
             s += f"{'' if i == 0 else space}CUDA:{d} ({p.name}, {p.total_memory / 1024 ** 2}MB)\n"  # bytes to MB
     else:
-        s += 'CPU\n'
+        s += "CPU\n"
 
-    logger.info(s.encode().decode('ascii', 'ignore') if platform.system() == 'Windows' else s)  # emoji-safe
-    return torch.device('cuda:0' if cuda else 'cpu')
+    logger.info(s.encode().decode("ascii", "ignore") if platform.system() == "Windows" else s)  # emoji-safe
+    return torch.device("cuda:0" if cuda else "cpu")
 
 
 def time_synchronized():
@@ -100,14 +100,14 @@ def profile(x, ops, n=100, device=None):
     #     m2 = nn.SiLU()
     #     profile(x, [m1, m2], n=100)  # profile speed over 100 iterations
 
-    device = device or torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    device = device or torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     x = x.to(device)
     x.requires_grad = True
-    print(torch.__version__, device.type, torch.cuda.get_device_properties(0) if device.type == 'cuda' else '')
+    print(torch.__version__, device.type, torch.cuda.get_device_properties(0) if device.type == "cuda" else "")
     print(f"\n{'Params':>12s}{'GFLOPS':>12s}{'forward (ms)':>16s}{'backward (ms)':>16s}{'input':>24s}{'output':>24s}")
     for m in ops if isinstance(ops, list) else [ops]:
-        m = m.to(device) if hasattr(m, 'to') else m  # device
-        m = m.half() if hasattr(m, 'half') and isinstance(x, torch.Tensor) and x.dtype is torch.float16 else m  # type
+        m = m.to(device) if hasattr(m, "to") else m  # device
+        m = m.half() if hasattr(m, "half") and isinstance(x, torch.Tensor) and x.dtype is torch.float16 else m  # type
         dtf, dtb, t = 0.0, 0.0, [0.0, 0.0, 0.0]  # dt forward, backward
         try:
             flops = thop.profile(m, inputs=(x,), verbose=False)[0] / 1e9 * 2  # GFLOPS
@@ -122,14 +122,14 @@ def profile(x, ops, n=100, device=None):
                 _ = y.sum().backward()
                 t[2] = time_synchronized()
             except:  # no backward method
-                t[2] = float('nan')
+                t[2] = float("nan")
             dtf += (t[1] - t[0]) * 1000 / n  # ms per op forward
             dtb += (t[2] - t[1]) * 1000 / n  # ms per op backward
 
-        s_in = tuple(x.shape) if isinstance(x, torch.Tensor) else 'list'
-        s_out = tuple(y.shape) if isinstance(y, torch.Tensor) else 'list'
+        s_in = tuple(x.shape) if isinstance(x, torch.Tensor) else "list"
+        s_out = tuple(y.shape) if isinstance(y, torch.Tensor) else "list"
         p = sum(list(x.numel() for x in m.parameters())) if isinstance(m, nn.Module) else 0  # parameters
-        print(f'{p:12}{flops:12.4g}{dtf:16.4g}{dtb:16.4g}{str(s_in):>24s}{str(s_out):>24s}')
+        print(f"{p:12}{flops:12.4g}{dtf:16.4g}{dtb:16.4g}{str(s_in):>24s}{str(s_out):>24s}")
 
 
 def is_parallel(model):
@@ -171,12 +171,12 @@ def prune(model, amount=0.3):
     # Prune model to requested global sparsity
     import torch.nn.utils.prune as prune
 
-    print('Pruning model... ', end='')
+    print("Pruning model... ", end="")
     for name, m in model.named_modules():
         if isinstance(m, nn.Conv2d):
-            prune.l1_unstructured(m, name='weight', amount=amount)  # prune
-            prune.remove(m, 'weight')  # make permanent
-    print(' %.3g global sparsity' % sparsity(model))
+            prune.l1_unstructured(m, name="weight", amount=amount)  # prune
+            prune.remove(m, "weight")  # make permanent
+    print(" %.3g global sparsity" % sparsity(model))
 
 
 def fuse_conv_and_bn(conv, bn):
@@ -213,29 +213,29 @@ def model_info(model, verbose=False, img_size=640):
     n_p = sum(x.numel() for x in model.parameters())  # number parameters
     n_g = sum(x.numel() for x in model.parameters() if x.requires_grad)  # number gradients
     if verbose:
-        print('%5s %40s %9s %12s %20s %10s %10s' % ('layer', 'name', 'gradient', 'parameters', 'shape', 'mu', 'sigma'))
+        print("%5s %40s %9s %12s %20s %10s %10s" % ("layer", "name", "gradient", "parameters", "shape", "mu", "sigma"))
         for i, (name, p) in enumerate(model.named_parameters()):
-            name = name.replace('module_list.', '')
+            name = name.replace("module_list.", "")
             print(
-                '%5g %40s %9s %12g %20s %10.3g %10.3g'
+                "%5g %40s %9s %12g %20s %10.3g %10.3g"
                 % (i, name, p.requires_grad, p.numel(), list(p.shape), p.mean(), p.std())
             )
 
     try:  # FLOPS
         from thop import profile
 
-        stride = max(int(model.stride.max()), 32) if hasattr(model, 'stride') else 32
-        img = torch.zeros((1, model.yaml.get('ch', 3), stride, stride), device=next(model.parameters()).device)  # input
+        stride = max(int(model.stride.max()), 32) if hasattr(model, "stride") else 32
+        img = torch.zeros((1, model.yaml.get("ch", 3), stride, stride), device=next(model.parameters()).device)  # input
         flops = profile(deepcopy(model), inputs=(img,), verbose=False)[0] / 1e9 * 2  # stride GFLOPS
         img_size = img_size if isinstance(img_size, list) else [img_size, img_size]  # expand if int/float
-        fs = ', %.1f GFLOPS' % (flops * img_size[0] / stride * img_size[1] / stride)  # 640x640 GFLOPS
+        fs = ", %.1f GFLOPS" % (flops * img_size[0] / stride * img_size[1] / stride)  # 640x640 GFLOPS
     except (ImportError, Exception):
-        fs = ''
+        fs = ""
 
     logger.info(f"Model Summary: {len(list(model.modules()))} layers, {n_p} parameters, {n_g} gradients{fs}")
 
 
-def load_classifier(name='resnet101', n=2):
+def load_classifier(name="resnet101", n=2):
     # Loads a pretrained model reshaped to n-class output
     model = torchvision.models.__dict__[name](pretrained=True)
 
@@ -261,7 +261,7 @@ def scale_img(img, ratio=1.0, same_shape=False, gs=32):  # img(16,3,256,416)
     else:
         h, w = img.shape[2:]
         s = (int(h * ratio), int(w * ratio))  # new size
-        img = F.interpolate(img, size=s, mode='bilinear', align_corners=False)  # resize
+        img = F.interpolate(img, size=s, mode="bilinear", align_corners=False)  # resize
         if not same_shape:  # pad/crop img
             h, w = [math.ceil(x * ratio / gs) * gs for x in (h, w)]
         return F.pad(img, [0, w - s[1], 0, h - s[0]], value=0.447)  # value = imagenet mean
@@ -270,7 +270,7 @@ def scale_img(img, ratio=1.0, same_shape=False, gs=32):  # img(16,3,256,416)
 def copy_attr(a, b, include=(), exclude=()):
     # Copy attributes from b to a, options to only include [...] and to exclude [...]
     for k, v in b.__dict__.items():
-        if (len(include) and k not in include) or k.startswith('_') or k in exclude:
+        if (len(include) and k not in include) or k.startswith("_") or k in exclude:
             continue
         else:
             setattr(a, k, v)
@@ -308,7 +308,7 @@ class ModelEMA:
                     v *= d
                     v += (1.0 - d) * msd[k].detach()
 
-    def update_attr(self, model, include=(), exclude=('process_group', 'reducer')):
+    def update_attr(self, model, include=(), exclude=("process_group", "reducer")):
         # Update EMA attributes
         copy_attr(self.ema, model, include, exclude)
 
@@ -360,7 +360,7 @@ class TracedModel(nn.Module):
         self.model = model
 
         self.model = revert_sync_batchnorm(self.model)
-        self.model.to('cpu')
+        self.model.to("cpu")
         self.model.eval()
 
         self.detect_layer = self.model.model[-1]

@@ -54,11 +54,11 @@ class YOLOv9Thread(QThread):
 
         # YOLOv9 参数设置
         self.model = None
-        self.data = 'yolocode/yolov9/data/coco.yaml'  # data_dict
+        self.data = "yolocode/yolov9/data/coco.yaml"  # data_dict
         self.imgsz = (640, 640)
-        self.device = ''
+        self.device = ""
         self.dataset = None
-        self.task = 'detect'
+        self.task = "detect"
         self.dnn = False
         self.half = False
         self.agnostic_nms = False
@@ -67,8 +67,8 @@ class YOLOv9Thread(QThread):
         self.done_warmup = False
         self.vid_path, self.vid_writerm, self.vid_cap = None, None, None
         self.batch = None
-        self.project = 'runs/detect'
-        self.name = 'exp'
+        self.project = "runs/detect"
+        self.name = "exp"
         self.exist_ok = False
         self.vid_stride = 1  # 视频帧率
         self.max_det = 1000  # 最大检测数
@@ -132,7 +132,7 @@ class YOLOv9Thread(QThread):
         start_time = time.time()  # used to calculate the frame rate
         while True:
             if self.stop_dtc:
-                self.send_msg.emit('Stop Detection')
+                self.send_msg.emit("Stop Detection")
                 # --- 发送图片和表格结果 --- #
                 self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                 for key, value in self.results_picture.items():
@@ -142,11 +142,11 @@ class YOLOv9Thread(QThread):
                 self.results_table = list()
                 # --- 发送图片和表格结果 --- #
                 # 释放资源
-                if hasattr(dataset, 'threads'):
+                if hasattr(dataset, "threads"):
                     for thread in dataset.threads:
                         if thread.is_alive():
                             thread.join(timeout=1)  # Add timeout
-                if hasattr(dataset, 'cap'):
+                if hasattr(dataset, "cap"):
                     dataset.cap.release()
                 cv2.destroyAllWindows()
                 if isinstance(self.vid_writer[-1], cv2.VideoWriter):
@@ -156,7 +156,7 @@ class YOLOv9Thread(QThread):
             if self.current_model_name != self.new_model_name:
                 weights = self.current_model_name
                 data = self.data
-                self.send_msg.emit(f'Loading Model: {os.path.basename(weights)}')
+                self.send_msg.emit(f"Loading Model: {os.path.basename(weights)}")
                 self.model = DetectMultiBackend_YOLOv9(weights, device=device, dnn=False, data=data, fp16=False)
                 stride, names, pt = self.model.stride, self.model.names, self.model.pt
                 imgsz = check_img_size(self.imgsz, s=stride)  # check image size
@@ -216,9 +216,9 @@ class YOLOv9Thread(QThread):
                     seen += 1
                     if self.webcam:  # batch_size >= 1
                         p, im0, frame = path[i], im0s[i].copy(), dataset.count
-                        s += f'{i}: '
+                        s += f"{i}: "
                     else:
-                        p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
+                        p, im0, frame = path, im0s.copy(), getattr(dataset, "frame", 0)
 
                     p = Path(p)  # to Path
                     if self.save_res:
@@ -246,7 +246,7 @@ class YOLOv9Thread(QThread):
                         # Write results
                         for *xyxy, conf, cls in reversed(det):
                             c = int(cls)  # integer class
-                            label = f'{self.names[c]} {conf:.2f}'
+                            label = f"{self.names[c]} {conf:.2f}"
                             annotator.box_label(xyxy, label, color=colors(c, True))
 
                     # Stream results
@@ -260,7 +260,7 @@ class YOLOv9Thread(QThread):
 
                     # Save results (image with detections)
                     if self.save_res:
-                        if dataset.mode == 'image':
+                        if dataset.mode == "image":
                             cv2.imwrite(save_path, im0)
                         else:  # 'video' or 'stream'
                             if self.vid_path[i] != save_path:  # new video
@@ -274,10 +274,10 @@ class YOLOv9Thread(QThread):
                                 else:  # stream
                                     fps, w, h = 30, im0.shape[1], im0.shape[0]
                                 save_path = str(
-                                    Path(save_path).with_suffix('.mp4')
+                                    Path(save_path).with_suffix(".mp4")
                                 )  # force *.mp4 suffix on results videos
                                 self.vid_writer[i] = cv2.VideoWriter(
-                                    save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h)
+                                    save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h)
                                 )
                             self.vid_writer[i].write(im0)
 
@@ -286,7 +286,7 @@ class YOLOv9Thread(QThread):
 
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
-                    self.send_msg.emit('Finish Detection')
+                    self.send_msg.emit("Finish Detection")
                     # --- 发送图片和表格结果 --- #
                     self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                     for key, value in self.results_picture.items():

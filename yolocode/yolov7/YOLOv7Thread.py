@@ -55,15 +55,15 @@ class YOLOv7Thread(QThread):
         # YOLOv7 参数设置
         self.model = None
         self.imgsz = 640
-        self.device = ''
+        self.device = ""
         self.dataset = None
         self.vid_path, self.vid_writerm, self.vid_cap = None, None, None
         self.annotator = None
         self.data_path = None
         self.source_type = None
         self.batch = None
-        self.project = 'runs/detect'
-        self.name = 'exp'
+        self.project = "runs/detect"
+        self.name = "exp"
         self.exist_ok = False
         self.vid_stride = 1  # 视频帧率
         self.max_det = 1000  # 最大检测数
@@ -93,7 +93,7 @@ class YOLOv7Thread(QThread):
         device = select_device(self.device)
         # Load model
         weights = self.new_model_name
-        self.send_msg.emit(f'Loading model: {os.path.basename(weights)}')
+        self.send_msg.emit(f"Loading model: {os.path.basename(weights)}")
         self.current_model_name = self.new_model_name
         model = attempt_load(weights, map_location=device)  # load FP32 model
         stride = int(model.stride.max())  # model stride
@@ -112,7 +112,7 @@ class YOLOv7Thread(QThread):
             dataset = LoadImages(source, img_size=imgsz, stride=stride)
 
         # Run inference
-        if device.type != 'cpu':
+        if device.type != "cpu":
             model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
 
         if self.is_folder:
@@ -127,17 +127,17 @@ class YOLOv7Thread(QThread):
         start_time = time.time()  # used to calculate the frame rate
         count = 0
         # 获取模型参数
-        half = device.type != 'cpu'  # half precision only supported on CUDA
+        half = device.type != "cpu"  # half precision only supported on CUDA
         if half:
             model.half()  # to FP16
-        names = model.module.names if hasattr(model, 'module') else model.names
+        names = model.module.names if hasattr(model, "module") else model.names
         colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
         old_img_w = old_img_h = imgsz
         old_img_b = 1
         while True:
             # 停止检测
             if self.stop_dtc:
-                self.send_msg.emit('Stop Detection')
+                self.send_msg.emit("Stop Detection")
                 # --- 发送图片和表格结果 --- #
                 self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                 for key, value in self.results_picture.items():
@@ -147,10 +147,10 @@ class YOLOv7Thread(QThread):
                 self.results_table = list()
                 # --- 发送图片和表格结果 --- #
                 # 释放资源
-                if hasattr(dataset, 'threads'):
+                if hasattr(dataset, "threads"):
                     if dataset.threads.is_alive():
                         dataset.threads.join(timeout=5)  # Add timeout
-                if hasattr(dataset, 'cap'):
+                if hasattr(dataset, "cap"):
                     dataset.cap.release()
                 cv2.destroyAllWindows()
                 if isinstance(self.vid_writer, cv2.VideoWriter):
@@ -161,19 +161,19 @@ class YOLOv7Thread(QThread):
                 weights = self.current_model_name
                 # 显卡选择
                 device = select_device(self.device)
-                self.send_msg.emit(f'Loading model: {os.path.basename(weights)}')
+                self.send_msg.emit(f"Loading model: {os.path.basename(weights)}")
                 # Load model
                 model = attempt_load(weights, map_location=device)  # load FP32 model
                 stride = int(model.stride.max())  # model stride
                 imgsz = check_img_size(imgsz, s=stride)  # check img_size
-                half = device.type != 'cpu'  # half precision only supported on CUDA
+                half = device.type != "cpu"  # half precision only supported on CUDA
                 if half:
                     model.half()  # to FP16
                 # Get names and colors
-                names = model.module.names if hasattr(model, 'module') else model.names
+                names = model.module.names if hasattr(model, "module") else model.names
                 colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
                 # Run inference
-                if device.type != 'cpu':
+                if device.type != "cpu":
                     model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
                 old_img_w = old_img_h = imgsz
                 old_img_b = 1
@@ -214,7 +214,7 @@ class YOLOv7Thread(QThread):
                 if img.ndimension() == 3:
                     img = img.unsqueeze(0)
                 # Warmup
-                if device.type != 'cpu' and (
+                if device.type != "cpu" and (
                     old_img_b != img.shape[0] or old_img_h != img.shape[2] or old_img_w != img.shape[3]
                 ):
                     old_img_b = img.shape[0]
@@ -234,9 +234,9 @@ class YOLOv7Thread(QThread):
                     class_nums = 0
                     target_nums = 0
                     if self.webcam:  # batch_size >= 1
-                        p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
+                        p, s, im0, frame = path[i], "%g: " % i, im0s[i].copy(), dataset.count
                     else:
-                        p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
+                        p, s, im0, frame = path, "", im0s, getattr(dataset, "frame", 0)
                     p = Path(p)  # to Path
                     if self.save_res:
                         self.save_path = str(self.save_dir / p.name)  # img.jpg
@@ -260,7 +260,7 @@ class YOLOv7Thread(QThread):
                         for *xyxy, conf, cls in reversed(det):
                             # Add bbox to image
                             c = int(cls)  # integer class
-                            label = f'{names[int(cls)]} {conf:.2f}'
+                            label = f"{names[int(cls)]} {conf:.2f}"
                             plot_one_box(
                                 xyxy, im0, label=label, color=colors[int(cls)], line_thickness=self.line_thickness
                             )
@@ -272,7 +272,7 @@ class YOLOv7Thread(QThread):
 
                     if self.save_res:
                         # Save results (image with detections)
-                        if dataset.mode == 'image':
+                        if dataset.mode == "image":
                             cv2.imwrite(self.save_path, im0)
                         else:  # 'video' or 'stream'
                             if self.vid_path != self.save_path:  # new video
@@ -285,9 +285,9 @@ class YOLOv7Thread(QThread):
                                     h = int(self.vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
                                 else:  # stream
                                     fps, w, h = 30, im0.shape[1], im0.shape[0]
-                                    self.save_path += '.mp4'
+                                    self.save_path += ".mp4"
                                 self.vid_writer = cv2.VideoWriter(
-                                    self.save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h)
+                                    self.save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h)
                                 )
                             self.vid_writer.write(im0)
 
@@ -295,7 +295,7 @@ class YOLOv7Thread(QThread):
                         time.sleep(self.speed_thres / 1000)  # delay , ms
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
-                    self.send_msg.emit('Finish Detection')
+                    self.send_msg.emit("Finish Detection")
                     # --- 发送图片和表格结果 --- #
                     self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                     for key, value in self.results_picture.items():

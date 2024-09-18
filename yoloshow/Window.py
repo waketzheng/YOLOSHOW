@@ -46,8 +46,8 @@ class YOLOSHOWWindow(YOLOSHOW):
                     if jpgname in filename
                 ]
                 self.inputPath = Foldername
-                self.showImg(self.inputPath[0], self.main_leftbox, 'path')  # 显示文件夹中第一张图片
-                self.showStatus('Loaded Folder：{}'.format(os.path.basename(file)))
+                self.showImg(self.inputPath[0], self.main_leftbox, "path")  # 显示文件夹中第一张图片
+                self.showStatus("Loaded Folder：{}".format(os.path.basename(file)))
             # 图片 / 视频
             else:
                 self.inputPath = file
@@ -58,12 +58,12 @@ class YOLOSHOWWindow(YOLOSHOW):
                     ret, frame = self.cap.read()
                     if ret:
                         # rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                        self.showImg(frame, self.main_leftbox, 'img')
+                        self.showImg(frame, self.main_leftbox, "img")
                 # 如果是图片 正常显示
                 else:
-                    self.showImg(self.inputPath, self.main_leftbox, 'path')
-                self.showStatus('Loaded File：{}'.format(os.path.basename(self.inputPath)))
-        glo.set_value('inputPath', self.inputPath)
+                    self.showImg(self.inputPath, self.main_leftbox, "path")
+                self.showStatus("Loaded File：{}".format(os.path.basename(self.inputPath)))
+        glo.set_value("inputPath", self.inputPath)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
@@ -103,14 +103,14 @@ class YOLOSHOWWindow(YOLOSHOW):
 
     def closeEvent(self, event):
         if not self.animation_window:
-            config_file = 'config/setting.json'
+            config_file = "config/setting.json"
             config = dict()
-            config['iou'] = self.ui.iou_spinbox.value()
-            config['conf'] = self.ui.conf_spinbox.value()
-            config['delay'] = self.ui.speed_spinbox.value()
-            config['line_thickness'] = self.ui.line_spinbox.value()
+            config["iou"] = self.ui.iou_spinbox.value()
+            config["conf"] = self.ui.conf_spinbox.value()
+            config["delay"] = self.ui.speed_spinbox.value()
+            config["line_thickness"] = self.ui.line_spinbox.value()
             config_json = json.dumps(config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(config_file, "w", encoding="utf-8") as f:
                 f.write(config_json)
             self.animation_window = QPropertyAnimation(self, b"windowOpacity")
             self.animation_window.setStartValue(1)
@@ -159,8 +159,8 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
                     if jpgname in filename
                 ]
                 self.inputPath = Foldername
-                self.showImg(self.inputPath[0], self.main_leftbox, 'path')  # 显示文件夹中第一张图片
-                self.showStatus('Loaded Folder：{}'.format(os.path.basename(file)))
+                self.showImg(self.inputPath[0], self.main_leftbox, "path")  # 显示文件夹中第一张图片
+                self.showStatus("Loaded Folder：{}".format(os.path.basename(file)))
             # 图片 / 视频
             else:
                 self.inputPath = file
@@ -171,12 +171,12 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
                     ret, frame = self.cap.read()
                     if ret:
                         # rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                        self.showImg(frame, self.main_leftbox, 'img')
+                        self.showImg(frame, self.main_leftbox, "img")
                 # 如果是图片 正常显示
                 else:
-                    self.showImg(self.inputPath, self.main_leftbox, 'path')
-                self.showStatus('Loaded File：{}'.format(os.path.basename(self.inputPath)))
-        glo.set_value('inputPath', self.inputPath)
+                    self.showImg(self.inputPath, self.main_leftbox, "path")
+                self.showStatus("Loaded File：{}".format(os.path.basename(self.inputPath)))
+        glo.set_value("inputPath", self.inputPath)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
@@ -216,14 +216,14 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
 
     def closeEvent(self, event):
         if not self.animation_window:
-            config_file = 'config/setting.json'
+            config_file = "config/setting.json"
             config = dict()
-            config['iou'] = self.ui.iou_spinbox.value()
-            config['conf'] = self.ui.conf_spinbox.value()
-            config['delay'] = self.ui.speed_spinbox.value()
-            config['line_thickness'] = self.ui.line_spinbox.value()
+            config["iou"] = self.ui.iou_spinbox.value()
+            config["conf"] = self.ui.conf_spinbox.value()
+            config["delay"] = self.ui.speed_spinbox.value()
+            config["line_thickness"] = self.ui.line_spinbox.value()
             config_json = json.dumps(config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(config_file, "w", encoding="utf-8") as f:
                 f.write(config_json)
             self.animation_window = QPropertyAnimation(self, b"windowOpacity")
             self.animation_window.setStartValue(1)

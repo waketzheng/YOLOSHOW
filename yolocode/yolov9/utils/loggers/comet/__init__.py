@@ -240,8 +240,8 @@ class CometLogger:
         with open(data_file) as f:
             data_config = yaml.safe_load(f)
 
-        if data_config['path'].startswith(COMET_PREFIX):
-            path = data_config['path'].replace(COMET_PREFIX, "")
+        if data_config["path"].startswith(COMET_PREFIX):
+            path = data_config["path"].replace(COMET_PREFIX, "")
             data_dict = self.download_dataset_artifact(path)
 
             return data_dict
@@ -322,7 +322,7 @@ class CometLogger:
                 artifact.add(image_file, logical_path=image_logical_path, metadata={"split": split})
                 artifact.add(label_file, logical_path=label_logical_path, metadata={"split": split})
             except ValueError as e:
-                logger.error('COMET ERROR: Error adding file to Artifact. Skipping file.')
+                logger.error("COMET ERROR: Error adding file to Artifact. Skipping file.")
                 logger.error(f"COMET ERROR: {e}")
                 continue
 
@@ -439,9 +439,9 @@ class CometLogger:
                 )
 
         # Check if running Experiment with Comet Optimizer
-        if hasattr(self.opt, 'comet_optimizer_id'):
+        if hasattr(self.opt, "comet_optimizer_id"):
             metric = results.get(self.opt.comet_optimizer_metric)
-            self.experiment.log_other('optimizer_metric_value', metric)
+            self.experiment.log_other("optimizer_metric_value", metric)
 
         self.finish_run()
 
@@ -476,14 +476,14 @@ class CometLogger:
                     class_name = self.class_names[c]
                     self.experiment.log_metrics(
                         {
-                            'mAP@.5': ap50[i],
-                            'mAP@.5:.95': ap[i],
-                            'precision': p[i],
-                            'recall': r[i],
-                            'f1': f1[i],
-                            'true_positives': tp[i],
-                            'false_positives': fp[i],
-                            'support': nt[c],
+                            "mAP@.5": ap50[i],
+                            "mAP@.5:.95": ap[i],
+                            "precision": p[i],
+                            "recall": r[i],
+                            "f1": f1[i],
+                            "true_positives": tp[i],
+                            "false_positives": fp[i],
+                            "support": nt[c],
                         },
                         prefix=class_name,
                     )
@@ -499,8 +499,8 @@ class CometLogger:
                 max_categories=num_classes,
                 labels=class_names,
                 epoch=epoch,
-                column_label='Actual Category',
-                row_label='Predicted Category',
+                column_label="Actual Category",
+                row_label="Predicted Category",
                 file_name=f"confusion-matrix-epoch-{epoch}.json",
             )
 

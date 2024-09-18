@@ -15,10 +15,10 @@ from ..plots import Annotator, colors
 
 
 @threaded
-def plot_images_and_masks(images, targets, masks, semasks, paths=None, fname='images.jpg', names=None):
+def plot_images_and_masks(images, targets, masks, semasks, paths=None, fname="images.jpg", names=None):
     try:
         if images.shape[-2:] != semasks.shape[-2:]:
-            m = torch.nn.Upsample(scale_factor=4, mode='nearest')
+            m = torch.nn.Upsample(scale_factor=4, mode="nearest")
             semasks = m(semasks)
 
         for idx in range(images.shape[0]):
@@ -27,7 +27,7 @@ def plot_images_and_masks(images, targets, masks, semasks, paths=None, fname='im
                 masks=semasks[idx, :, :, :].cpu().to(dtype=torch.bool),
                 alpha=1,
             )
-            cv2.imwrite('{}_{}.jpg'.format(fname, idx), torch.permute(output_img, (1, 2, 0)).numpy())
+            cv2.imwrite("{}_{}.jpg".format(fname, idx), torch.permute(output_img, (1, 2, 0)).numpy())
     except:
         pass
 
@@ -78,7 +78,7 @@ def plot_images_and_masks(images, targets, masks, semasks, paths=None, fname='im
             ti = targets[idx]  # image targets
 
             boxes = xywh2xyxy(ti[:, 2:6]).T
-            classes = ti[:, 1].astype('int')
+            classes = ti[:, 1].astype("int")
             labels = ti.shape[1] == 6  # labels if no conf column
             conf = None if labels else ti[:, 6]  # check for confidence presence (label vs pred)
 
@@ -95,7 +95,7 @@ def plot_images_and_masks(images, targets, masks, semasks, paths=None, fname='im
                 color = colors(cls)
                 cls = names[cls] if names else cls
                 if labels or conf[j] > 0.25:  # 0.25 conf thresh
-                    label = f'{cls}' if labels else f'{cls} {conf[j]:.1f}'
+                    label = f"{cls}" if labels else f"{cls} {conf[j]:.1f}"
                     annotator.box_label(box, label, color=color)
 
             # Plot masks

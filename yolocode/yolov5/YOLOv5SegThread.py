@@ -55,17 +55,17 @@ class YOLOv5SegThread(QThread):
 
         # YOLOv5 参数设置
         self.model = None
-        self.data = 'yolocode/yolov5/data/coco128.yaml'  # data_dict
+        self.data = "yolocode/yolov5/data/coco128.yaml"  # data_dict
         self.imgsz = (640, 640)
-        self.device = ''
+        self.device = ""
         self.dataset = None
         self.vid_path, self.vid_writerm, self.vid_cap = None, None, None
         self.annotator = None
         self.data_path = None
         self.source_type = None
         self.batch = None
-        self.project = 'runs/segment'
-        self.name = 'exp'
+        self.project = "runs/segment"
+        self.name = "exp"
         self.exist_ok = False
         self.vid_stride = 1  # 视频帧率
         self.max_det = 1000  # 最大检测数
@@ -97,7 +97,7 @@ class YOLOv5SegThread(QThread):
         device = select_device(self.device)
         weights = self.new_model_name
         self.current_model_name = self.new_model_name
-        self.send_msg.emit(f'Loading Model: {os.path.basename(weights)}')
+        self.send_msg.emit(f"Loading Model: {os.path.basename(weights)}")
         model = DetectMultiBackend_YOLOv5(weights, device=device, dnn=False, data=self.data, fp16=False)
         self.stride, self.names, self.pt = model.stride, model.names, model.pt
         self.imgsz = check_img_size(self.imgsz, s=self.stride)  # check image size
@@ -135,7 +135,7 @@ class YOLOv5SegThread(QThread):
         start_time = time.time()  # used to calculate the frame rate
         while True:
             if self.stop_dtc:
-                self.send_msg.emit('Stop Detection')
+                self.send_msg.emit("Stop Detection")
                 # --- 发送图片和表格结果 --- #
                 self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                 for key, value in self.results_picture.items():
@@ -145,11 +145,11 @@ class YOLOv5SegThread(QThread):
                 self.results_table = list()
                 # --- 发送图片和表格结果 --- #
                 # 释放资源
-                if hasattr(dataset, 'threads'):
+                if hasattr(dataset, "threads"):
                     for thread in dataset.threads:
                         if thread.is_alive():
                             thread.join(timeout=1)  # Add timeout
-                if hasattr(dataset, 'cap') and dataset.cap is not None:
+                if hasattr(dataset, "cap") and dataset.cap is not None:
                     dataset.cap.release()
                 cv2.destroyAllWindows()
                 if isinstance(self.vid_writer[-1], cv2.VideoWriter):
@@ -159,7 +159,7 @@ class YOLOv5SegThread(QThread):
             if self.current_model_name != self.new_model_name:
                 weights = self.current_model_name
                 data = self.data
-                self.send_msg.emit(f'Loading Model: {os.path.basename(weights)}')
+                self.send_msg.emit(f"Loading Model: {os.path.basename(weights)}")
                 self.model = DetectMultiBackend_YOLOv5(weights, device=device, dnn=False, data=data, fp16=False)
                 stride, names, pt = self.model.stride, self.model.names, self.model.pt
                 imgsz = check_img_size(self.imgsz, s=stride)  # check image size
@@ -309,7 +309,7 @@ class YOLOv5SegThread(QThread):
 
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
-                    self.send_msg.emit('Finish Detection')
+                    self.send_msg.emit("Finish Detection")
                     # --- 发送图片和表格结果 --- #
                     self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                     for key, value in self.results_picture.items():

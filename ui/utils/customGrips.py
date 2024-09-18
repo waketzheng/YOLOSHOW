@@ -108,16 +108,16 @@ class CustomGrip(QWidget):
         self.mousePos = None
 
     def resizeEvent(self, event):
-        if hasattr(self.wi, 'container_top'):
+        if hasattr(self.wi, "container_top"):
             self.wi.container_top.setGeometry(0, 0, self.width(), 10)
 
-        elif hasattr(self.wi, 'container_bottom'):
+        elif hasattr(self.wi, "container_bottom"):
             self.wi.container_bottom.setGeometry(0, 0, self.width(), 10)
 
-        elif hasattr(self.wi, 'leftgrip'):
+        elif hasattr(self.wi, "leftgrip"):
             self.wi.leftgrip.setGeometry(0, 0, 10, self.height() - 20)
 
-        elif hasattr(self.wi, 'rightgrip'):
+        elif hasattr(self.wi, "rightgrip"):
             self.wi.rightgrip.setGeometry(0, 0, 10, self.height() - 20)
 
 

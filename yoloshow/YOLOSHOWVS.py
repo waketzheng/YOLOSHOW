@@ -1,7 +1,7 @@
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 import json
 import os
 import shutil
@@ -92,9 +92,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
         # --- 自动加载/动态改变 PT 模型 --- #
         self.pt_Path = f"{self.current_workpath}/ptfiles/"
-        self.pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
-        self.pt_list = [file for file in self.pt_list if file.endswith('.pt')]
-        self.pt_list.sort(key=lambda x: os.path.getsize(f'{self.current_workpath}/ptfiles/' + x))
+        self.pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
+        self.pt_list = [file for file in self.pt_list if file.endswith(".pt")]
+        self.pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
         self.solveYoloConflict([f"{self.current_workpath}/ptfiles/" + pt_file for pt_file in self.pt_list])
         self.ui.model_box1.clear()
         self.ui.model_box1.addItems(self.pt_list)
@@ -108,14 +108,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- 自动加载/动态改变 PT 模型 --- #
 
         # --- 超参数调整 --- #
-        self.ui.iou_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'iou_spinbox'))  # iou box
-        self.ui.iou_slider.valueChanged.connect(lambda x: self.changeValue(x, 'iou_slider'))  # iou scroll bar
-        self.ui.conf_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'conf_spinbox'))  # conf box
-        self.ui.conf_slider.valueChanged.connect(lambda x: self.changeValue(x, 'conf_slider'))  # conf scroll bar
-        self.ui.speed_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'speed_spinbox'))  # speed box
-        self.ui.speed_slider.valueChanged.connect(lambda x: self.changeValue(x, 'speed_slider'))  # speed scroll bar
-        self.ui.line_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'line_spinbox'))  # line box
-        self.ui.line_slider.valueChanged.connect(lambda x: self.changeValue(x, 'line_slider'))  # line slider
+        self.ui.iou_spinbox.valueChanged.connect(lambda x: self.changeValue(x, "iou_spinbox"))  # iou box
+        self.ui.iou_slider.valueChanged.connect(lambda x: self.changeValue(x, "iou_slider"))  # iou scroll bar
+        self.ui.conf_spinbox.valueChanged.connect(lambda x: self.changeValue(x, "conf_spinbox"))  # conf box
+        self.ui.conf_slider.valueChanged.connect(lambda x: self.changeValue(x, "conf_slider"))  # conf scroll bar
+        self.ui.speed_spinbox.valueChanged.connect(lambda x: self.changeValue(x, "speed_spinbox"))  # speed box
+        self.ui.speed_slider.valueChanged.connect(lambda x: self.changeValue(x, "speed_slider"))  # speed scroll bar
+        self.ui.line_spinbox.valueChanged.connect(lambda x: self.changeValue(x, "line_spinbox"))  # line box
+        self.ui.line_slider.valueChanged.connect(lambda x: self.changeValue(x, "line_slider"))  # line slider
         # --- 超参数调整 --- #
 
         # --- 导入 图片/视频、调用摄像头、导入文件夹（批量处理）、调用网络摄像头、结果统计图片、结果统计表格 --- #
@@ -142,26 +142,26 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
         # --- 状态栏 初始化 --- #
         # 状态栏阴影效果
-        self.shadowStyle(self.ui.mainBody, QColor(0, 0, 0, 38), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Class_QF1, QColor(142, 197, 252), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Target_QF1, QColor(159, 172, 230), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Fps_QF1, QColor(170, 128, 213), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Model_QF1, QColor(162, 129, 247), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Class_QF2, QColor(142, 197, 252), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Target_QF2, QColor(159, 172, 230), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Fps_QF2, QColor(170, 128, 213), top_bottom=['top', 'bottom'])
-        self.shadowStyle(self.ui.Model_QF2, QColor(162, 129, 247), top_bottom=['top', 'bottom'])
+        self.shadowStyle(self.ui.mainBody, QColor(0, 0, 0, 38), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Class_QF1, QColor(142, 197, 252), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Target_QF1, QColor(159, 172, 230), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Fps_QF1, QColor(170, 128, 213), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Model_QF1, QColor(162, 129, 247), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Class_QF2, QColor(142, 197, 252), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Target_QF2, QColor(159, 172, 230), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Fps_QF2, QColor(170, 128, 213), top_bottom=["top", "bottom"])
+        self.shadowStyle(self.ui.Model_QF2, QColor(162, 129, 247), top_bottom=["top", "bottom"])
 
         # 状态栏默认显示
         self.model_name1 = self.ui.model_box1.currentText()  # 获取默认 model
-        self.ui.Class_num1.setText('--')
-        self.ui.Target_num1.setText('--')
-        self.ui.fps_label1.setText('--')
+        self.ui.Class_num1.setText("--")
+        self.ui.Target_num1.setText("--")
+        self.ui.fps_label1.setText("--")
         self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))
         self.model_name2 = self.ui.model_box2.currentText()  # 获取默认 model
-        self.ui.Class_num2.setText('--')
-        self.ui.Target_num2.setText('--')
-        self.ui.fps_label2.setText('--')
+        self.ui.Class_num2.setText("--")
+        self.ui.Target_num2.setText("--")
+        self.ui.fps_label2.setText("--")
         self.ui.Model_label2.setText(str(self.model_name2).replace(".pt", ""))
         # --- 状态栏 初始化 --- #
 
@@ -282,9 +282,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     def initModel(self, yolo_thread, yoloname=None, mode="all"):
         if mode == "left":
             # 左侧模型加载
-            yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box1.currentText()
+            yolo_thread.new_model_name = f"{self.current_workpath}/ptfiles/" + self.ui.model_box1.currentText()
             yolo_thread.progress_value = self.ui.progress_bar.maximum()
-            yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+            yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_leftbox, "img"))
             # 第一个模型来控制消息
             yolo_thread.send_msg.connect(lambda x: self.showStatus(x))
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label1.setText(str(x)))
@@ -292,9 +292,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num1.setText(str(x)))
         if mode == "right":
             # 右侧模型加载
-            yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box2.currentText()
+            yolo_thread.new_model_name = f"{self.current_workpath}/ptfiles/" + self.ui.model_box2.currentText()
             yolo_thread.progress_value = self.ui.progress_bar.maximum()
-            yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_rightbox, 'img'))
+            yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_rightbox, "img"))
             # 后一个模型来控制进度条
             yolo_thread.send_progress.connect(lambda x: self.ui.progress_bar.setValue(x))
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label2.setText(str(x)))
@@ -304,35 +304,35 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     # 在MessageBar显示消息
     def showStatus(self, msg):
         self.ui.message_bar.setText(msg)
-        if msg == 'Finish Detection':
+        if msg == "Finish Detection":
             self.quitRunningModel()
             self.ui.run_button.setChecked(False)
             self.ui.progress_bar.setValue(0)
             self.ui.save_status_button.setEnabled(True)
-        elif msg == 'Stop Detection':
+        elif msg == "Stop Detection":
             self.quitRunningModel()
             self.ui.run_button.setChecked(False)
             self.ui.save_status_button.setEnabled(True)
             self.ui.progress_bar.setValue(0)
-            self.ui.Class_num1.setText('--')
-            self.ui.Target_num1.setText('--')
-            self.ui.fps_label1.setText('--')
-            self.ui.Class_num2.setText('--')
-            self.ui.Target_num2.setText('--')
-            self.ui.fps_label2.setText('--')
+            self.ui.Class_num1.setText("--")
+            self.ui.Target_num1.setText("--")
+            self.ui.fps_label1.setText("--")
+            self.ui.Class_num2.setText("--")
+            self.ui.Target_num2.setText("--")
+            self.ui.fps_label2.setText("--")
             self.ui.main_leftbox.clear()  # clear image display
             self.ui.main_rightbox.clear()
 
     # 导出结果状态判断
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:
-            self.showStatus('NOTE: Run image results are not saved.')
+            self.showStatus("NOTE: Run image results are not saved.")
             for yolo_thread in self.yolo_threads:
                 yolo_thread.save_res = False
 
             self.ui.save_button.setEnabled(False)
         elif self.ui.save_status_button.checkState() == Qt.CheckState.Checked:
-            self.showStatus('NOTE: Run image results will be saved. Only save left model result in VS Mode !!!')
+            self.showStatus("NOTE: Run image results will be saved. Only save left model result in VS Mode !!!")
             for yolo_thread in self.yolo_threads:
                 yolo_thread.save_res = True
             self.ui.save_button.setEnabled(True)
@@ -348,18 +348,18 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                         destination_path = os.path.join(outdir, filename)
                         if os.path.isfile(source_path):
                             shutil.copy(source_path, destination_path)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
+                    self.showStatus("Saved Successfully in {}".format(outdir))
                 else:
-                    self.showStatus('Please wait for the result to be generated')
+                    self.showStatus("Please wait for the result to be generated")
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
         else:
             try:
                 if os.path.exists(yolo_thread.res_path):
                     shutil.copy(yolo_thread.res_path, outdir)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
+                    self.showStatus("Saved Successfully in {}".format(outdir))
                 else:
-                    self.showStatus('Please wait for the result to be generated')
+                    self.showStatus("Please wait for the result to be generated")
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
 
@@ -395,9 +395,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         if thread1_status:
             self.showStatus("Please select the Image/Video before starting detection...")
             return
-        config_file = f'{self.current_workpath}/config/save.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        save_path = config['save_path']
+        config_file = f"{self.current_workpath}/config/save.json"
+        config = json.load(open(config_file, "r", encoding="utf-8"))
+        save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
         is_folder = isinstance(self.inputPath, list)
@@ -464,16 +464,16 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread1, folder=False)
             elif "yolov8" in self.model_name and self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8obb_thread1, folder=False)
-        config['save_path'] = self.OutputDir
+        config["save_path"] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
-        with open(config_file, 'w', encoding='utf-8') as f:
+        with open(config_file, "w", encoding="utf-8") as f:
             f.write(config_json)
 
     # 加载 pt 模型到 model_box
     def loadModels(self):
-        pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
-        pt_list = [file for file in pt_list if file.endswith('.pt')]
-        pt_list.sort(key=lambda x: os.path.getsize(f'{self.current_workpath}/ptfiles/' + x))
+        pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
+        pt_list = [file for file in pt_list if file.endswith(".pt")]
+        pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
 
         if pt_list != self.pt_list:
             self.pt_list = pt_list
@@ -819,15 +819,15 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
     def changeModelProcess(self, yolo_thread, yoloname, mode=None):
         if mode == "left":
-            yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box1.currentText()
+            yolo_thread.new_model_name = f"{self.current_workpath}/ptfiles/" + self.ui.model_box1.currentText()
             # 重载 common 和 yolo 模块
-            glo.set_value('yoloname1', yoloname)
+            glo.set_value("yoloname1", yoloname)
             # 停止其他模型
             self.stopOtherModel(yoloname, mode="left")
         else:
-            yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box2.currentText()
+            yolo_thread.new_model_name = f"{self.current_workpath}/ptfiles/" + self.ui.model_box2.currentText()
             # 重载 common 和 yolo 模块
-            glo.set_value('yoloname2', yoloname)
+            glo.set_value("yoloname2", yoloname)
             # 停止其他模型
             self.stopOtherModel(yoloname, mode="right")
 
@@ -972,7 +972,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         else:
             yolo_thread.is_continue = False
             self.runRightModel(mode="pause")
-            self.showStatus('Pause Detection')
+            self.showStatus("Pause Detection")
 
     # 运行模型
     def runModel(self, runbuttonStatus=None):
@@ -981,7 +981,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.run_button.setChecked(True)
         # 首先判断是否两边的模型均为正确模型
         if self.checkModelName(self.model_name1) and self.checkModelName(self.model_name2):
-            self.showStatus('The current model is not supported')
+            self.showStatus("The current model is not supported")
             if self.ui.run_button.isChecked():
                 self.ui.run_button.setChecked(False)
             return
@@ -1015,8 +1015,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     # 开始/暂停 预测
     def runorContinue(self):
         if self.inputPath is not None:
-            glo.set_value('yoloname1', self.model_name1)
-            glo.set_value('yoloname2', self.model_name2)
+            glo.set_value("yoloname1", self.model_name1)
+            glo.set_value("yoloname2", self.model_name2)
             self.reloadModel()
             self.runModel()
         else:
@@ -1031,9 +1031,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.progress_bar.setValue(0)
         self.ui.main_leftbox.clear()  # clear image display
         self.ui.main_rightbox.clear()
-        self.ui.Class_num1.setText('--')
-        self.ui.Target_num1.setText('--')
-        self.ui.fps_label1.setText('--')
-        self.ui.Class_num2.setText('--')
-        self.ui.Target_num2.setText('--')
-        self.ui.fps_label2.setText('--')
+        self.ui.Class_num1.setText("--")
+        self.ui.Target_num1.setText("--")
+        self.ui.fps_label1.setText("--")
+        self.ui.Class_num2.setText("--")
+        self.ui.Target_num2.setText("--")
+        self.ui.fps_label2.setText("--")

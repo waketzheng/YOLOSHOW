@@ -37,7 +37,7 @@ class WebcamThread(QThread):
         cap.release()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cam = Camera()
     cam_num, devices = cam.get_cam_num()
     print(cam_num, devices)

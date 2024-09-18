@@ -47,5 +47,5 @@ if __name__ == "__main__":
     predictor = DetectionPredictor()
     predictor.args.imgsz = 640
     predictor.setup_model(model=r"E:\YOLO\YOLOSHOW\ptfiles\yolov8n.pt")
-    predictor.args.data = 'E:\YOLO\YOLOGUI\yolocode\yolov8\cfg\datasets\coco.yaml'
+    predictor.args.data = "E:\YOLO\YOLOGUI\yolocode\yolov8\cfg\datasets\coco.yaml"
     predictor.predict_cli(source=r"D:\ChromeDownload\VideoTest\shortcut for 20s.mp4")
