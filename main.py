@@ -15,7 +15,8 @@ from yoloshow.ChangeWindow import vs2yoloshow, yoloshow2vs
 from yoloshow.Window import YOLOSHOWVSWindow as yoloshowVSWindow
 from yoloshow.Window import YOLOSHOWWindow as yoloshowWindow
 
-if __name__ == '__main__':
+
+def main() -> None:
     app = QApplication([])  # 创建应用程序实例
     app.setWindowIcon(QIcon('images/swimmingliu.ico'))  # 设置应用程序图标
 
@@ -43,3 +44,7 @@ if __name__ == '__main__':
     yoloshowvs_glo.ui.src_singlemode.clicked.connect(vs2yoloshow)  # 从对比模式切换回单模式
 
     app.exec()  # 启动应用程序的事件循环
+
+
+if __name__ == '__main__':
+    main()

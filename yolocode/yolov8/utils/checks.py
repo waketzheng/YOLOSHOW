@@ -229,7 +229,20 @@ def check_version(
     for r in required.strip(",").split(","):
         op, version = re.match(r"([^0-9]*)([\d.]+)", r).groups()  # split '>=22.04' -> ('>=', '22.04')
         v = parse_version(version)  # '1.2.3' -> (1, 2, 3)
-        if op == "==" and c != v or op == "!=" and c == v or op in (">=", "") and not (c >= v) or op == "<=" and not (c <= v) or op == ">" and not (c > v) or op == "<" and not (c < v):
+        if (
+            op == "=="
+            and c != v
+            or op == "!="
+            and c == v
+            or op in (">=", "")
+            and not (c >= v)
+            or op == "<="
+            and not (c <= v)
+            or op == ">"
+            and not (c > v)
+            or op == "<"
+            and not (c < v)
+        ):
             result = False
     if not result:
         warning = f"WARNING ⚠️ {name}{op}{version} is required, but {name}=={current} is currently installed {msg}"

@@ -240,6 +240,14 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.yolov8obb_thread,
         ]
 
+    def is_yolov8_detect(self) -> bool:
+        return self.model_name.startswith('vest_person') or (
+            "yolov8" in self.model_name
+            and not self.checkSegName(self.model_name)
+            and not self.checkPoseName(self.model_name)
+            and not self.checkObbName(self.model_name)
+        )
+
     # 导出结果
     def saveResult(self):
         if (
@@ -272,12 +280,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=True)
             elif "yolov7" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov7_thread, folder=True)
-            elif (
-                "yolov8" in self.model_name
-                and not self.checkSegName(self.model_name)
-                and not self.checkPoseName(self.model_name)
-                and not self.checkObbName(self.model_name)
-            ):
+            elif self.is_yolov8_detect():
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=True)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
@@ -304,12 +307,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=False)
             elif "yolov7" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov7_thread, folder=False)
-            elif (
-                "yolov8" in self.model_name
-                and not self.checkSegName(self.model_name)
-                and not self.checkPoseName(self.model_name)
-                and not self.checkObbName(self.model_name)
-            ):
+            elif self.is_yolov8_detect():
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=False)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
@@ -457,12 +455,13 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.changeModelProcess(self.yolov5_thread, "yolov5")
         elif "yolov7" in self.model_name:
             self.changeModelProcess(self.yolov7_thread, "yolov7")
-        elif (
-            "yolov8" in self.model_name
-            and not self.checkSegName(self.model_name)
-            and not self.checkPoseName(self.model_name)
-            and not self.checkObbName(self.model_name)
-        ):
+        elif self.is_yolov8_detect():
+            # elif (
+            #     "yolov8" in self.model_name
+            #     and not self.checkSegName(self.model_name)
+            #     and not self.checkPoseName(self.model_name)
+            #     and not self.checkObbName(self.model_name)
+            # ):
             self.changeModelProcess(self.yolov8_thread, "yolov8")
         elif "yolov9" in self.model_name:
             self.changeModelProcess(self.yolov9_thread, "yolov9")
@@ -500,12 +499,13 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.runModelProcess(self.yolov5_thread)
         elif "yolov7" in self.model_name:
             self.runModelProcess(self.yolov7_thread)
-        elif (
-            "yolov8" in self.model_name
-            and not self.checkSegName(self.model_name)
-            and not self.checkPoseName(self.model_name)
-            and not self.checkObbName(self.model_name)
-        ):
+        elif self.is_yolov8_detect():
+            # elif (
+            #     "yolov8" in self.model_name
+            #     and not self.checkSegName(self.model_name)
+            #     and not self.checkPoseName(self.model_name)
+            #     and not self.checkObbName(self.model_name)
+            # ):
             self.runModelProcess(self.yolov8_thread)
         elif "yolov9" in self.model_name:
             self.runModelProcess(self.yolov9_thread)

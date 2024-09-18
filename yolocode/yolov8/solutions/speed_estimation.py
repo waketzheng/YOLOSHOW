@@ -132,7 +132,10 @@ class SpeedEstimator:
 
         if not self.reg_pts[0][0] < track[-1][0] < self.reg_pts[1][0]:
             return
-        if self.reg_pts[1][1] - self.spdl_dist_thresh < track[-1][1] < self.reg_pts[1][1] + self.spdl_dist_thresh or self.reg_pts[0][1] - self.spdl_dist_thresh < track[-1][1] < self.reg_pts[0][1] + self.spdl_dist_thresh:
+        if (
+            self.reg_pts[1][1] - self.spdl_dist_thresh < track[-1][1] < self.reg_pts[1][1] + self.spdl_dist_thresh
+            or self.reg_pts[0][1] - self.spdl_dist_thresh < track[-1][1] < self.reg_pts[0][1] + self.spdl_dist_thresh
+        ):
             direction = "known"
 
         else:
