@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import torch
 from PySide6.QtCore import QThread, Signal
+from ultralytics import YOLO
 
 from models.common import AutoBackend
 from yolocode.yolov5.utils.general import increment_path
@@ -345,7 +346,14 @@ class YOLOv8Thread(QThread):
 
     def inference(self, im, *args, **kwargs):
         """Runs inference on a given image using the specified model and arguments."""
-        return self.model(im, *args, augment=False, visualize=False, embed=False, **kwargs)
+        kwargs.update(augment=False, visualize=False, embed=False)
+        if self.current_model_name.startswith("vest_color"):
+            if not hasattr(self, "person_model"):
+                weight_name = "vest_person.pt"
+                model_path = Path(__file__).parent.resolve().parent / "ptfiles"
+                self.person_model = YOLO(model_path / weight_name)
+            return self.person_model(im, *args, **kwargs)
+        return self.model(im, *args, **kwargs)
 
     def pre_transform(self, im):
         """
