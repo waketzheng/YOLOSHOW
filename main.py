@@ -10,8 +10,9 @@ from PySide6.QtWidgets import QApplication
 # 将ui目录添加到系统路径中
 BASE_DIR = Path(__file__).parent.resolve()
 MODEL_DIR = BASE_DIR / "ptfiles"
-UI_DIR = MODEL_DIR / "ui"
-sys.path.append(str(UI_DIR))
+UI_DIR = BASE_DIR / "ui"
+if (_ui := str(UI_DIR)) not in sys.path:
+    sys.path.append(_ui)
 if not MODEL_DIR.exists():
     MODEL_DIR.mkdir()
 
