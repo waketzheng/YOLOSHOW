@@ -236,7 +236,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         ]
 
     def is_yolov8_detect(self) -> bool:
-        return self.model_name.startswith("vest_person") or (
+        return self.model_name.startswith("vest_") or (
             "yolov8" in self.model_name
             and not self.checkSegName(self.model_name)
             and not self.checkPoseName(self.model_name)
