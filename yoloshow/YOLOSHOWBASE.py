@@ -1,3 +1,13 @@
+import contextlib
+import importlib
+import json
+import os
+import re
+import shutil
+import socket
+from pathlib import Path
+from urllib.parse import urlparse
+
 from ui.utils.AcrylicFlyout import AcrylicFlyout, AcrylicFlyoutView
 from ui.utils.drawFigure import PlottingThread
 from ui.utils.TableView import TableViewQWidget
@@ -6,26 +16,19 @@ from utils import glo
 glo._init()
 glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
-import importlib
-import json
-import os
-import re
-import shutil
-import socket
-from urllib.parse import urlparse
+with contextlib.suppress(FutureWarning):
+    import cv2
+    import numpy as np
+    import torch
+    from PySide6.QtCore import QEasingCurve, QParallelAnimationGroup, QPoint, QPropertyAnimation, Qt
+    from PySide6.QtGui import QImage, QPixmap
+    from PySide6.QtWidgets import QFileDialog, QFrame, QGraphicsDropShadowEffect, QPushButton
+    from qfluentwidgets import Action, MenuAnimationType, RoundMenu
 
-import cv2
-import numpy as np
-import torch
-from PySide6.QtCore import QEasingCurve, QParallelAnimationGroup, QPoint, QPropertyAnimation, Qt
-from PySide6.QtGui import QImage, QPixmap
-from PySide6.QtWidgets import QFileDialog, QFrame, QGraphicsDropShadowEffect, QPushButton
-from qfluentwidgets import Action, MenuAnimationType, RoundMenu
-
-from models import common, experimental, yolo
-from ui.utils.rtspDialog import CustomMessageBox
-from ui.utils.webCamera import Camera, WebcamThread
-from utils.logger import LoggerUtils
+    from models import common, experimental, yolo
+    from ui.utils.rtspDialog import CustomMessageBox
+    from ui.utils.webCamera import Camera, WebcamThread
+    from utils.logger import LoggerUtils
 
 GLOBAL_WINDOW_STATE = True
 
@@ -102,10 +105,7 @@ class YOLOSHOWBASE:
         leftBoxStart = self.ui.leftBox.width()
         _IS_EXTENDED = leftBoxStart == WIDTH_LEFT_BOX_EXTENDED
 
-        if _IS_EXTENDED:
-            leftBoxEnd = WIDTH_LEFT_BOX_STANDARD
-        else:
-            leftBoxEnd = WIDTH_LEFT_BOX_EXTENDED
+        leftBoxEnd = WIDTH_LEFT_BOX_STANDARD if _IS_EXTENDED else WIDTH_LEFT_BOX_EXTENDED
 
         # animation
         self.animation = QPropertyAnimation(self.ui.leftBox, b"minimumWidth")
@@ -216,7 +216,7 @@ class YOLOSHOWBASE:
     def selectFile(self):
         # 获取上次选择文件的路径
         config_file = f"{self.current_workpath}/config/file.json"
-        config = json.load(open(config_file, "r", encoding="utf-8"))
+        config = json.load(Path(config_file).read_bytes())
         file_path = config["file_path"]
         if not os.path.exists(file_path):
             file_path = os.getcwd()
@@ -283,7 +283,7 @@ class YOLOSHOWBASE:
     # 选择文件夹
     def selectFolder(self):
         config_file = f"{self.current_workpath}/config/folder.json"
-        config = json.load(open(config_file, "r", encoding="utf-8"))
+        config = json.load(Path(config_file).read_bytes())
         folder_path = config["folder_path"]
         if not os.path.exists(folder_path):
             folder_path = os.getcwd()
@@ -385,10 +385,7 @@ class YOLOSHOWBASE:
     @staticmethod
     def showImg(img, label, flag):
         try:
-            if flag == "path":
-                img_src = cv2.imdecode(np.fromfile(img, dtype=np.uint8), -1)
-            else:
-                img_src = img
+            img_src = cv2.imdecode(np.fromfile(img, dtype=np.uint8), -1) if flag == "path" else img
             ih, iw, _ = img_src.shape
             w = label.geometry().width()
             h = label.geometry().height()
@@ -423,7 +420,7 @@ class YOLOSHOWBASE:
     def importModel(self):
         # 获取上次选择文件的路径
         config_file = f"{self.current_workpath}/config/model.json"
-        config = json.load(open(config_file, "r", encoding="utf-8"))
+        config = json.load(Path(config_file).read_bytes())
         self.model_path = config["model_path"]
         if not os.path.exists(self.model_path):
             self.model_path = os.getcwd()
@@ -544,7 +541,7 @@ class YOLOSHOWBASE:
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f"{self.current_workpath}/config/save.json"
-        config = json.load(open(config_file, "r", encoding="utf-8"))
+        config = json.load(Path(config_file).read_bytes())
         save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
@@ -655,7 +652,7 @@ class YOLOSHOWBASE:
             with open(config_file, "w", encoding="utf-8") as f:
                 f.write(new_json)
         else:
-            config = json.load(open(config_file, "r", encoding="utf-8"))
+            config = json.load(Path(config_file).read_bytes())
             if len(config) != 4:
                 iou = 0.45
                 conf = 0.25
@@ -675,13 +672,16 @@ class YOLOSHOWBASE:
         self.ui.line_spinbox.setValue(line_thickness)
         self.ui.line_slider.setValue(line_thickness)
 
+    def load_pt_files(self, model_dir: str | None = None) -> list[str]:
+        if model_dir is None:
+            model_dir = f"{self.current_workpath}/ptfiles/"
+        pt_list = [f for f in os.listdir(model_dir) if f.endswith(".pt")]
+        pt_list.sort(key=lambda x: os.path.getsize(model_dir + x), reverse=True)
+        return pt_list
+
     # 加载 pt 模型到 model_box
     def loadModels(self):
-        pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
-        pt_list = [file for file in pt_list if file.endswith(".pt")]
-        pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
-
-        if pt_list != self.pt_list:
+        if (pt_list := self.load_pt_files()) != self.pt_list:
             self.pt_list = pt_list
             self.ui.model_box.clear()
             self.ui.model_box.addItems(self.pt_list)

@@ -15,7 +15,7 @@ sys.path.append(str(UI_DIR))
 if not MODEL_DIR.exists():
     MODEL_DIR.mkdir()
 
-with contextlib.suppress(TypeError):  # Leave it here to fix ruff E402
+with contextlib.suppress(FutureWarning):  # Leave it here to fix ruff E402
     from utils import glo
     from yoloshow.ChangeWindow import vs2yoloshow, yoloshow2vs
     from yoloshow.Window import YOLOSHOWVSWindow as yoloshowVSWindow
@@ -54,8 +54,9 @@ def run_app() -> None:
 
 def main() -> None:
     with open(os.devnull, "w") as f:  # Use `with` syntax to fix SIM115
-        sys.stdout = f  # 禁止标准输出
-        logging.disable(logging.CRITICAL)  # 禁用所有级别的日志
+        if "--verbose" not in sys.argv:
+            sys.stdout = f  # 禁止标准输出
+            logging.disable(logging.CRITICAL)  # 禁用所有级别的日志
         run_app()
 
 

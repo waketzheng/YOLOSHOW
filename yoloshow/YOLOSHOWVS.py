@@ -1,28 +1,32 @@
-from utils import glo
-
-glo._init()
-glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+import contextlib
 import json
 import os
 import shutil
+from pathlib import Path
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QFileDialog, QMainWindow
 
-from ui.YOLOSHOWUIVS import Ui_MainWindow
-from yolocode.yolov5.YOLOv5SegThread import YOLOv5SegThread
-from yolocode.yolov5.YOLOv5Thread import YOLOv5Thread
-from yolocode.yolov7.YOLOv7Thread import YOLOv7Thread
-from yolocode.yolov8.RTDETRThread import RTDETRThread
-from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
-from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
-from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
-from yolocode.yolov8.YOLOv8Thread import YOLOv8Thread
-from yolocode.yolov9.YOLOv9Thread import YOLOv9Thread
-from yolocode.yolov10.YOLOv10Thread import YOLOv10Thread
-from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
+from utils import glo
+
+glo._init()
+glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+
+with contextlib.suppress(FutureWarning):
+    from ui.YOLOSHOWUIVS import Ui_MainWindow
+    from yolocode.yolov5.YOLOv5SegThread import YOLOv5SegThread
+    from yolocode.yolov5.YOLOv5Thread import YOLOv5Thread
+    from yolocode.yolov7.YOLOv7Thread import YOLOv7Thread
+    from yolocode.yolov8.RTDETRThread import RTDETRThread
+    from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
+    from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
+    from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
+    from yolocode.yolov8.YOLOv8Thread import YOLOv8Thread
+    from yolocode.yolov9.YOLOv9Thread import YOLOv9Thread
+    from yolocode.yolov10.YOLOv10Thread import YOLOv10Thread
+    from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
@@ -92,9 +96,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
         # --- 自动加载/动态改变 PT 模型 --- #
         self.pt_Path = f"{self.current_workpath}/ptfiles/"
-        self.pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
-        self.pt_list = [file for file in self.pt_list if file.endswith(".pt")]
-        self.pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
+        self.pt_list = self.load_pt_files(self.pt_Path)
         self.solveYoloConflict([f"{self.current_workpath}/ptfiles/" + pt_file for pt_file in self.pt_list])
         self.ui.model_box1.clear()
         self.ui.model_box1.addItems(self.pt_list)
@@ -392,11 +394,11 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.model_name = self.model_name1
 
         # 默认保存左侧模型的检测结果
-        if thread1_status:
+        if thread1_status or thread2_status:
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f"{self.current_workpath}/config/save.json"
-        config = json.load(open(config_file, "r", encoding="utf-8"))
+        config = json.load(Path(config_file).read_bytes())
         save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
@@ -471,11 +473,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
     # 加载 pt 模型到 model_box
     def loadModels(self):
-        pt_list = os.listdir(f"{self.current_workpath}/ptfiles/")
-        pt_list = [file for file in pt_list if file.endswith(".pt")]
-        pt_list.sort(key=lambda x: os.path.getsize(f"{self.current_workpath}/ptfiles/" + x))
-
-        if pt_list != self.pt_list:
+        if (pt_list := self.load_pt_files()) != self.pt_list:
             self.pt_list = pt_list
             self.ui.model_box1.clear()
             self.ui.model_box1.addItems(self.pt_list)
@@ -484,10 +482,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
     # 检查模型是否符合命名要求
     def checkModelName(self, modelname):
-        for name in self.allModelNames:
-            if modelname in name:
-                return True
-        return False
+        return any(modelname in name for name in self.allModelNames)
 
     # 重新加载模型
     def resignModel(self, yoloname, mode=None):
