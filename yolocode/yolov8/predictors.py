@@ -10,7 +10,7 @@ import torchvision
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from torchvision.models.resnet import ResNet
-from ultralytics.engine.models import Boxes, Results
+from ultralytics.engine.results import Boxes, Results
 
 # from yolocode.yolov8.engine.results import Results
 T = TypeVar("T")
