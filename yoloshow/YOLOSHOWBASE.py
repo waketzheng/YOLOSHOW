@@ -216,7 +216,7 @@ class YOLOSHOWBASE:
     def selectFile(self):
         # 获取上次选择文件的路径
         config_file = f"{self.current_workpath}/config/file.json"
-        config = json.load(Path(config_file).read_bytes())
+        config = json.loads(Path(config_file).read_bytes())
         file_path = config["file_path"]
         if not os.path.exists(file_path):
             file_path = os.getcwd()
@@ -283,7 +283,7 @@ class YOLOSHOWBASE:
     # 选择文件夹
     def selectFolder(self):
         config_file = f"{self.current_workpath}/config/folder.json"
-        config = json.load(Path(config_file).read_bytes())
+        config = json.loads(Path(config_file).read_bytes())
         folder_path = config["folder_path"]
         if not os.path.exists(folder_path):
             folder_path = os.getcwd()
@@ -420,7 +420,7 @@ class YOLOSHOWBASE:
     def importModel(self):
         # 获取上次选择文件的路径
         config_file = f"{self.current_workpath}/config/model.json"
-        config = json.load(Path(config_file).read_bytes())
+        config = json.loads(Path(config_file).read_bytes())
         self.model_path = config["model_path"]
         if not os.path.exists(self.model_path):
             self.model_path = os.getcwd()
@@ -541,7 +541,7 @@ class YOLOSHOWBASE:
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f"{self.current_workpath}/config/save.json"
-        config = json.load(Path(config_file).read_bytes())
+        config = json.loads(Path(config_file).read_bytes())
         save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
@@ -652,7 +652,7 @@ class YOLOSHOWBASE:
             with open(config_file, "w", encoding="utf-8") as f:
                 f.write(new_json)
         else:
-            config = json.load(Path(config_file).read_bytes())
+            config = json.loads(Path(config_file).read_bytes())
             if len(config) != 4:
                 iou = 0.45
                 conf = 0.25
@@ -868,8 +868,8 @@ class YOLOSHOWBASE:
     def showResultStatics(self):
         self.resutl_statistic = dict()
         # 读取 JSON 文件
-        with open(self.current_workpath + r"\config\result.json", "r", encoding="utf-8") as file:
-            self.result_statistic = json.load(file)
+        result_file = Path(self.current_workpath) / "config" / "result.json"
+        self.result_statistic = json.loads(result_file.read_bytes())
         if self.result_statistic:
             # 创建新字典，使用中文键
             result_str = ""

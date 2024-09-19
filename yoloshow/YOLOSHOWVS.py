@@ -398,7 +398,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f"{self.current_workpath}/config/save.json"
-        config = json.load(Path(config_file).read_bytes())
+        config = json.loads(Path(config_file).read_bytes())
         save_path = config["save_path"]
         if not os.path.exists(save_path):
             save_path = os.getcwd()
