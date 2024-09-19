@@ -14,6 +14,7 @@ from ultralytics.engine.results import Boxes, Results
 
 # from yolocode.yolov8.engine.results import Results
 T = TypeVar("T")
+BASE_DIR = Path(__file__).parent.resolve().parent.parent
 
 
 class SingleDataset(Dataset):
@@ -77,7 +78,7 @@ class ColorPredictor:
         #     colors: list[str] = json.loads(color_file.read_bytes())
         #     names = cls._names = dict(enumerate(colors))
         # return names
-        color_file = Path(__file__).parent.resolve().parent / "config" / "colors.json"
+        color_file = BASE_DIR / "config" / "colors.json"
         colors: list[str] = json.loads(color_file.read_bytes())
         return dict(enumerate(colors))
 
@@ -93,8 +94,9 @@ class ColorPredictor:
             device = cls.load_device()
             model = torchvision.models.resnet18().to(device)
             model.fc = torch.nn.Linear(model.fc.in_features, 11).to(device)
-            model_path = Path(__file__).parent.resolve().parent / "ptfiles" / cls.weight_name
-            model.load_state_dict(torch.load(model_path))
+            model_path = BASE_DIR / "ptfiles" / cls.weight_name
+            map_location = torch.device(device) if device == "cpu" else None
+            model.load_state_dict(torch.load(model_path, map_location=map_location))
             model.eval()
             cls._model = model
         return model

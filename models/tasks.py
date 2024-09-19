@@ -3,6 +3,7 @@
 import contextlib
 import sys
 from copy import deepcopy
+from functools import partial
 from pathlib import Path
 
 import torch
@@ -290,9 +291,9 @@ class DetectionModel(BaseModel):
         if isinstance(m, Detect):  # includes all Detect subclasses like Segment, Pose, OBB, WorldDetect
             s = 256  # 2x min stride
             m.inplace = self.inplace
-            forward = lambda x: self.forward(x)[0] if isinstance(m, (Segment, Pose, OBB)) else self.forward(x)
+            forward = partial(self.forward_item, 0) if isinstance(m, (Segment, Pose, OBB)) else self.forward
             if isinstance(m, v10Detect):
-                forward = lambda x: self.forward(x)["one2many"]
+                forward = partial(self.forward_item, "one2many")
             m.stride = torch.tensor([s / x.shape[-2] for x in forward(torch.zeros(1, ch, s, s))])  # forward
             self.stride = m.stride
             m.bias_init()  # only run once
@@ -304,6 +305,9 @@ class DetectionModel(BaseModel):
         if verbose:
             self.info()
             LOGGER.info("")
+
+    def forward_item(self, key: str | int, x):
+        return self.forward(x)[key]
 
     def _predict_augment(self, x):
         """Perform augmentations on input image x and return augmented inference and train outputs."""
@@ -761,6 +765,8 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
     ensemble = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
+        if (p := Path(w)).name == "vest_color.pt":
+            w = p.with_name("vest_person.pt")
         ckpt, w = torch_safe_load(w)  # load ckpt
         args = {**DEFAULT_CFG_DICT, **ckpt["train_args"]} if "train_args" in ckpt else None  # combined args
         model = (ckpt.get("ema") or ckpt["model"]).to(device).float()  # FP32 model
