@@ -8,6 +8,8 @@ if exist venv (
     %Inspired from https://blog.csdn.net/ovdoesLV/article/details/138873171%
     venv\Scripts\pyside6-uic.exe ui\YOLOSHOWUI.ui -o ui\YOLOSHOWUI.py
     venv\Scripts\pyside6-rcc.exe ui\YOLOSHOWUI.qrc -o ui\YOLOSHOWUI_rc.py
+    %setx YOLOSHOW_HOST http://localhost:8000%
+    echo Going to start main script
 )
 venv\Scripts\python main.py
 pause
