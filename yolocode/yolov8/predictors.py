@@ -66,6 +66,7 @@ class ColorPredictor:
     default_conf = 0.25
     min_size = 15
     weight_name = "vest_color.pt"
+    show_result = True
     # _names: dict[int, str]
     _device: str
     _model: ResNet
@@ -135,4 +136,6 @@ class ColorPredictor:
             if changed:
                 result.update(result.boxes.data[retain_idx])
             result.names = cls.load_names()
+            if cls.show_result:
+                result.show()
         return result
