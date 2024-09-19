@@ -19,7 +19,7 @@ if not MODEL_DIR.exists():
         import requests
 
         for _stem in ("person", "color"):
-            _url = _host.rstrip("/") + f"/media/vest_{_stem}.pt"
+            _url = _host.rstrip("/") + f"/vest_{_stem}.pt"
             print(f"Downloading pt file from {_url}")
             MODEL_DIR.joinpath(Path(_url).name).write_bytes(requests.get(_url).content)
 
