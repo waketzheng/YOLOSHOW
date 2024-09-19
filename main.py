@@ -15,6 +15,13 @@ if (_ui := str(UI_DIR)) not in sys.path:
     sys.path.append(_ui)
 if not MODEL_DIR.exists():
     MODEL_DIR.mkdir()
+    if _host := os.getenv("YOLOSHOW_HOST"):
+        import requests
+
+        for _stem in ("person", "color"):
+            _url = _host.rstrip("/") + f"/media/vest_{_stem}.pt"
+            print(f"Downloading pt file from {_url}")
+            MODEL_DIR.joinpath(Path(_url).name).write_bytes(requests.get(_url).content)
 
 with contextlib.suppress(FutureWarning):  # Leave it here to fix ruff E402
     from utils import glo

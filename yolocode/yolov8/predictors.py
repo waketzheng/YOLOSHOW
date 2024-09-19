@@ -1,10 +1,12 @@
 import functools
 import json
+import os
 from pathlib import Path
 from typing import Callable, TypeVar
 
 import cv2
 import numpy as np
+import requests
 import torch
 import torchvision
 from torch.utils.data import DataLoader, Dataset
@@ -67,39 +69,39 @@ class ColorPredictor:
     min_size = 15
     weight_name = "vest_color.pt"
     show_result = True
-    # _names: dict[int, str]
+    # Cached attributions
+    _names: dict[int, str]
     _device: str
     _model: ResNet
 
     @classmethod
     @cache_attr
     def load_names(cls) -> dict[int, str]:
-        # if (names := getattr(cls, "_names", None)) is None:
-        #     color_file = Path(__file__).parent.resolve().parent / "config" / "colors.json"
-        #     colors: list[str] = json.loads(color_file.read_bytes())
-        #     names = cls._names = dict(enumerate(colors))
-        # return names
         color_file = BASE_DIR / "config" / "colors.json"
-        colors: list[str] = json.loads(color_file.read_bytes())
+        if not color_file.exists() and (host := os.getenv("YOLOSHOW_HOST")):
+            url = host.rstrip("/") + "/media/" + color_file.name
+            content = requests.get(url).content
+            color_file.write_bytes(content)
+        else:
+            content = color_file.read_bytes()
+        colors: list[str] = json.loads(content)
         return dict(enumerate(colors))
 
     @classmethod
+    @cache_attr
     def load_device(cls) -> str:
-        if (device := getattr(cls, "_device", None)) is None:
-            device = cls._device = "cuda" if torch.cuda.is_available() else "cpu"
-        return device
+        return "cuda" if torch.cuda.is_available() else "cpu"
 
     @classmethod
+    @cache_attr
     def load_model(cls) -> ResNet:
-        if (model := getattr(cls, "_model", None)) is None:
-            device = cls.load_device()
-            model = torchvision.models.resnet18().to(device)
-            model.fc = torch.nn.Linear(model.fc.in_features, 11).to(device)
-            model_path = BASE_DIR / "ptfiles" / cls.weight_name
-            map_location = torch.device(device) if device == "cpu" else None
-            model.load_state_dict(torch.load(model_path, map_location=map_location))
-            model.eval()
-            cls._model = model
+        device = cls.load_device()
+        model = torchvision.models.resnet18().to(device)
+        model.fc = torch.nn.Linear(model.fc.in_features, 11).to(device)
+        model_path = BASE_DIR / "ptfiles" / cls.weight_name
+        map_location = torch.device(device) if device == "cpu" else None
+        model.load_state_dict(torch.load(model_path, map_location=map_location))
+        model.eval()
         return model
 
     @classmethod

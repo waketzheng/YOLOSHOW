@@ -22,3 +22,4 @@ colorlog
 Pyside6
 PySide6-Fluent-Widgets[full]
 dill
+requests
