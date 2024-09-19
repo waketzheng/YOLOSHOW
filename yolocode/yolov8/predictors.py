@@ -80,7 +80,7 @@ class ColorPredictor:
         color_file = BASE_DIR / "config" / "colors.json"
         if not color_file.exists() and (host := os.getenv("YOLOSHOW_HOST")):
             url = host.rstrip("/") + "/" + color_file.name
-            content = requests.get(url).content
+            content = requests.get(url, verify=False).content
             color_file.write_bytes(content)
         else:
             content = color_file.read_bytes()

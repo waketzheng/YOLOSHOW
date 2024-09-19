@@ -21,7 +21,8 @@ if not MODEL_DIR.exists():
         for _stem in ("person", "color"):
             _url = _host.rstrip("/") + f"/vest_{_stem}.pt"
             print(f"Downloading pt file from {_url}")
-            MODEL_DIR.joinpath(Path(_url).name).write_bytes(requests.get(_url).content)
+            _content = requests.get(_url, verify=False).content
+            MODEL_DIR.joinpath(Path(_url).name).write_bytes(_content)
 
 with contextlib.suppress(FutureWarning):  # Leave it here to fix ruff E402
     from utils import glo
