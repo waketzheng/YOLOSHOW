@@ -9,12 +9,12 @@ import numpy as np
 import requests
 import torch
 import torchvision
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from torchvision.models.resnet import ResNet
 from ultralytics.engine.results import Boxes, Results
 
-# from yolocode.yolov8.engine.results import Results
 T = TypeVar("T")
 BASE_DIR = Path(__file__).parent.resolve().parent.parent
 
@@ -26,8 +26,10 @@ class SingleDataset(Dataset):
     def __getitem__(self, index) -> np.float32:
         return self.crop_and_transform(self.im, self.person_box)
 
-    def __init__(self, img, box) -> None:
-        self.im = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    def __init__(self, img: Image.Image | np.ndarray, box: Boxes) -> None:
+        if isinstance(img, Image.Image):
+            img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+        self.im = img
         self.person_box = box
 
     @staticmethod
@@ -53,6 +55,18 @@ class SingleDataset(Dataset):
 
 
 def cache_attr(func: Callable[..., T]) -> Callable[..., T]:
+    """把函数执行结果缓存到类属性里，方法名若为load_model，则结果会存在`_model`属性
+
+    Usage::
+        >>> from ultralytics import YOLO
+        >>> class A:
+        ...     _model: YOLO  # 这行可省略，但写出来更直观
+        ...     @classmethod
+        ...     @cache_attr
+        ...     def load_model(cls) -> YOLO:
+        ...         return YOLO('yolov8n.pt')
+    """
+
     @functools.wraps(func)
     def load_attr(cls, *args, **kw) -> T:
         attr = func.__name__.replace("load", "")
